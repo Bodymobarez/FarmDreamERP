@@ -14,10 +14,12 @@ interface FilterBarProps {
   showPenFilter?: boolean;
   showBatchFilter?: boolean;
   showStatusFilter?: boolean;
+  showTypeFilter?: boolean;
   onSearchChange?: (value: string) => void;
   onPenChange?: (value: string) => void;
   onBatchChange?: (value: string) => void;
   onStatusChange?: (value: string) => void;
+  onTypeChange?: (value: string) => void;
 }
 
 export function FilterBar({
@@ -25,10 +27,12 @@ export function FilterBar({
   showPenFilter = false,
   showBatchFilter = false,
   showStatusFilter = false,
+  showTypeFilter = false,
   onSearchChange,
   onPenChange,
   onBatchChange,
   onStatusChange,
+  onTypeChange,
 }: FilterBarProps) {
   return (
     <div className="flex flex-wrap gap-4">
@@ -44,6 +48,21 @@ export function FilterBar({
           />
         </div>
       </div>
+
+      {showTypeFilter && (
+        <Select onValueChange={onTypeChange}>
+          <SelectTrigger className="w-[180px]" data-testid="select-type">
+            <SelectValue placeholder="جميع الأصناف" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">جميع الأصناف</SelectItem>
+            <SelectItem value="بقر">بقر</SelectItem>
+            <SelectItem value="جاموس">جاموس</SelectItem>
+            <SelectItem value="أغنام">أغنام</SelectItem>
+            <SelectItem value="ماعز">ماعز</SelectItem>
+          </SelectContent>
+        </Select>
+      )}
 
       {showPenFilter && (
         <Select onValueChange={onPenChange}>

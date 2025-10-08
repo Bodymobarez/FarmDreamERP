@@ -9,6 +9,7 @@ interface AnimalCardProps {
   pen: string;
   batch: string;
   sex: string;
+  animalType: string;
   currentWeight?: number;
   entryWeight?: number;
   status: "active" | "sold" | "dead";
@@ -21,6 +22,7 @@ export function AnimalCard({
   pen,
   batch,
   sex,
+  animalType,
   currentWeight,
   entryWeight,
   status,
@@ -38,6 +40,13 @@ export function AnimalCard({
     dead: "نافق",
   };
 
+  const typeColors: Record<string, string> = {
+    "بقر": "bg-chart-2/10 text-chart-2 border-chart-2/20",
+    "جاموس": "bg-chart-5/10 text-chart-5 border-chart-5/20",
+    "أغنام": "bg-chart-4/10 text-chart-4 border-chart-4/20",
+    "ماعز": "bg-chart-3/10 text-chart-3 border-chart-3/20",
+  };
+
   const weightGain = currentWeight && entryWeight ? currentWeight - entryWeight : 0;
 
   return (
@@ -45,7 +54,12 @@ export function AnimalCard({
       <div className="flex items-start justify-between mb-3">
         <div>
           <h3 className="text-lg font-bold mb-1" data-testid={`text-eartag-${earTag}`}>رقم الأذن: {earTag}</h3>
-          <p className="text-sm text-muted-foreground">{sex === "ذكر" ? "ذكر" : "أنثى"}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-sm text-muted-foreground">{sex === "ذكر" ? "ذكر" : "أنثى"}</p>
+            <Badge className={typeColors[animalType] || "bg-primary/10 text-primary border-primary/20"} data-testid={`badge-type-${earTag}`}>
+              {animalType}
+            </Badge>
+          </div>
         </div>
         <Badge className={statusColors[status]} data-testid={`badge-status-${earTag}`}>
           {statusLabels[status]}

@@ -7,7 +7,8 @@ import {
   Wallet,
   BarChart3,
   Settings,
-  Home
+  Home,
+  TrendingUp
 } from "lucide-react";
 import {
   Sidebar,
@@ -28,6 +29,11 @@ const menuItems = [
     title: "لوحة التحكم",
     url: "/",
     icon: LayoutDashboard,
+  },
+  {
+    title: "مؤشرات الأداء",
+    url: "/kpi",
+    icon: TrendingUp,
   },
   {
     title: "الحيوانات",

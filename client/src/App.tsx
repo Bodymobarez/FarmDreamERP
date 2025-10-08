@@ -8,6 +8,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/Dashboard";
+import KPI from "@/pages/KPI";
 import Animals from "@/pages/Animals";
 import Weights from "@/pages/Weights";
 import PensBatches from "@/pages/PensBatches";
@@ -20,6 +21,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Dashboard} />
+      <Route path="/kpi" component={KPI} />
       <Route path="/animals" component={Animals} />
       <Route path="/weights" component={Weights} />
       <Route path="/pens-batches" component={PensBatches} />
