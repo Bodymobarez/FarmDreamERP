@@ -9,14 +9,18 @@
       }
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/assets/(.*)",
+      "headers": { "cache-control": "public, max-age=31536000, immutable" }
+    },
+    {
+      "src": "/(animals|weights|inventory|kpi|dashboard|customers|suppliers|receptions|financial-reports|reports|cost-centers|transactions|goals|.*)",
+      "dest": "/index.html"
     }
   ]
 }
