@@ -1,8 +1,20 @@
 import express, { type Request, Response, NextFunction } from "express";
+import cors from "cors";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
+
+// Enable CORS for production deployment
+app.use(cors({
+  origin: [
+    'https://farm.adsolutions-eg.com',
+    'http://localhost:5001',
+    'http://localhost:5173', // Vite dev server
+  ],
+  credentials: true,
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
