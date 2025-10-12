@@ -10,10 +10,10 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# Source files (only dist is needed)
-client/src
-server
-shared/schema.ts
+# Source files that are not needed for build
+# client/src is needed for Vercel build
+server/logs
+tmp/
 
 # Build artifacts
 .next/
