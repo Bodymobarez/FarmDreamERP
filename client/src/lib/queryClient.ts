@@ -45,13 +45,17 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: getQueryFn({ on401: "throw" }),
-      refetchInterval: false,
-      refetchOnWindowFocus: false,
-      staleTime: Infinity,
+      refetchInterval: 30000, // تحديث كل 30 ثانية
+      refetchOnWindowFocus: true, // تحديث عند العودة للصفحة
+      staleTime: 5000, // البيانات تعتبر قديمة بعد 5 ثواني
       retry: false,
     },
     mutations: {
       retry: false,
+      onSuccess: () => {
+        // إعادة تحديث جميع الاستعلامات بعد نجاح أي mutation
+        queryClient.invalidateQueries();
+      },
     },
   },
 });

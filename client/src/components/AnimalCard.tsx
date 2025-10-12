@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Eye, TrendingUp } from "lucide-react";
+import { Eye, TrendingUp, DollarSign } from "lucide-react";
 
 interface AnimalCardProps {
   id: string;
@@ -14,6 +14,7 @@ interface AnimalCardProps {
   entryWeight?: number;
   status: "active" | "sold" | "dead";
   onClick?: () => void;
+  onSell?: () => void;
 }
 
 export function AnimalCard({
@@ -27,6 +28,7 @@ export function AnimalCard({
   entryWeight,
   status,
   onClick,
+  onSell,
 }: AnimalCardProps) {
   const statusColors = {
     active: "bg-chart-1/10 text-chart-1 border-chart-1/20",
@@ -92,15 +94,32 @@ export function AnimalCard({
         )}
       </div>
 
-      <Button
-        variant="outline"
-        className="w-full"
-        onClick={onClick}
-        data-testid={`button-view-${earTag}`}
-      >
-        <Eye className="w-4 h-4 ml-2" />
-        عرض التفاصيل
-      </Button>
+      <div className="flex gap-2">
+        <Button
+          variant="outline"
+          className="flex-1"
+          onClick={onClick}
+          data-testid={`button-view-${earTag}`}
+        >
+          <Eye className="w-4 h-4 ml-2" />
+          عرض
+        </Button>
+        
+        {status === "active" && onSell && (
+          <Button
+            variant="default"
+            className="flex-1 bg-chart-1 hover:bg-chart-1/90"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSell();
+            }}
+            data-testid={`button-sell-${earTag}`}
+          >
+            <DollarSign className="w-4 h-4 ml-2" />
+            بيع
+          </Button>
+        )}
+      </div>
     </Card>
   );
 }
