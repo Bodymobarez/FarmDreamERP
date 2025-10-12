@@ -26,18 +26,26 @@ import {
 } from "lucide-react";
 
 export default function Dashboard() {
+  console.log('🔵 Dashboard component rendering...');
+  
   // Fetch data
-  const { data: animalsData } = useQuery({ queryKey: ["/api/animals"] });
+  const { data: animalsData, isLoading: isLoadingAnimals } = useQuery({ queryKey: ["/api/animals"] });
   const animals = (animalsData as any[]) || [];
 
-  const { data: batchesData } = useQuery({ queryKey: ["/api/batches"] });
+  const { data: batchesData, isLoading: isLoadingBatches } = useQuery({ queryKey: ["/api/batches"] });
   const batches = (batchesData as any[]) || [];
 
-  const { data: customersData } = useQuery({ queryKey: ["/api/customers"] });
+  const { data: customersData, isLoading: isLoadingCustomers } = useQuery({ queryKey: ["/api/customers"] });
   const customers = (customersData as any[]) || [];
 
-  const { data: suppliersData } = useQuery({ queryKey: ["/api/suppliers"] });
+  const { data: suppliersData, isLoading: isLoadingSuppliers } = useQuery({ queryKey: ["/api/suppliers"] });
   const suppliers = (suppliersData as any[]) || [];
+  
+  console.log('📊 Dashboard data:', { 
+    animals: animals.length, 
+    batches: batches.length,
+    loading: isLoadingAnimals || isLoadingBatches || isLoadingCustomers || isLoadingSuppliers
+  });
 
   const { data: transactionsData } = useQuery({ queryKey: ["/api/transactions"] });
   const transactions = (transactionsData as any[]) || [];
@@ -98,6 +106,23 @@ export default function Dashboard() {
 
   // الأنشطة الأخيرة
   const recentActivities = [];
+
+  // Show loading state
+  const isLoading = isLoadingAnimals || isLoadingBatches || isLoadingCustomers || isLoadingSuppliers;
+  
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-xl font-semibold text-gray-700">جاري تحميل لوحة التحكم...</p>
+          <p className="text-sm text-gray-500 mt-2">يرجى الانتظار قليلاً</p>
+        </div>
+      </div>
+    );
+  }
+
+  console.log('✅ Dashboard rendering UI');
 
   return (
     <div className="p-6 space-y-6">
