@@ -373,7 +373,7 @@ export default function FinancialReports() {
       percentage: expenses.total > 0 ? (expenses.feed / expenses.total * 100) : 0, 
       items: feedExpenses.length, 
       avgPerItem: feedExpenses.length > 0 ? expenses.feed / feedExpenses.length : 0, 
-      trend: "+5%" 
+      trend: "0%" 
     },
     { 
       category: "رواتب", 
@@ -381,7 +381,7 @@ export default function FinancialReports() {
       percentage: expenses.total > 0 ? (expenses.salaries / expenses.total * 100) : 0, 
       items: salaryExpenses.length, 
       avgPerItem: salaryExpenses.length > 0 ? expenses.salaries / salaryExpenses.length : 0, 
-      trend: "+2%" 
+      trend: "0%" 
     },
     { 
       category: "أدوية", 
@@ -389,7 +389,7 @@ export default function FinancialReports() {
       percentage: expenses.total > 0 ? (expenses.medicine / expenses.total * 100) : 0, 
       items: medicineExpenses.length, 
       avgPerItem: medicineExpenses.length > 0 ? expenses.medicine / medicineExpenses.length : 0, 
-      trend: "-3%" 
+      trend: "0%" 
     },
     { 
       category: "مرافق", 
@@ -397,7 +397,7 @@ export default function FinancialReports() {
       percentage: expenses.total > 0 ? (expenses.utilities / expenses.total * 100) : 0, 
       items: utilityExpenses.length, 
       avgPerItem: utilityExpenses.length > 0 ? expenses.utilities / utilityExpenses.length : 0, 
-      trend: "+1%" 
+      trend: "0%" 
     },
     { 
       category: "صيانة", 
@@ -405,7 +405,7 @@ export default function FinancialReports() {
       percentage: expenses.total > 0 ? (expenses.maintenance / expenses.total * 100) : 0, 
       items: maintenanceExpenses.length, 
       avgPerItem: maintenanceExpenses.length > 0 ? expenses.maintenance / maintenanceExpenses.length : 0, 
-      trend: "+7%" 
+      trend: "0%" 
     },
     { 
       category: "نقل", 
@@ -421,7 +421,7 @@ export default function FinancialReports() {
       percentage: expenses.total > 0 ? (expenses.other / expenses.total * 100) : 0, 
       items: otherExpenses.length, 
       avgPerItem: otherExpenses.length > 0 ? expenses.other / otherExpenses.length : 0, 
-      trend: "+4%" 
+      trend: "0%" 
     }
   ];
 

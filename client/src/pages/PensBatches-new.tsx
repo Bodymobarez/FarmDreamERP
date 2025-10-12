@@ -22,22 +22,11 @@ export default function PensBatches() {
     queryKey: ["/api/animals"],
   });
 
-  // Mock pens data - would come from API
-  const pens = [
-    { id: 1, name: "عنبر 1", capacity: 50, current: 6, batch: "الدفعة الأولى", avgWeight: 44.2, status: "نشط" },
-    { id: 2, name: "عنبر 3", capacity: 50, current: 42, batch: "الدفعة الثانية", avgWeight: 38.5, status: "نشط" },
-    { id: 3, name: "عنبر 5", capacity: 60, current: 50, batch: "الدفعة الثالثة", avgWeight: 41.8, status: "نشط" },
-    { id: 4, name: "عنبر 7", capacity: 45, current: 0, batch: null, avgWeight: 0, status: "فارغ" },
-    { id: 5, name: "عنبر 9", capacity: 55, current: 35, batch: "الدفعة الرابعة", avgWeight: 39.2, status: "نشط" },
-  ];
+  // بيانات العنابر ستأتي من API
+  const pens: any[] = [];
 
-  const batches = [
-    { id: 1, name: "الدفعة الأولى", count: 6, receivedDate: "7/5/2025", avgAdg: 0.92, fcr: 3.0, status: "نشط", supplier: "المورد الأول" },
-    { id: 2, name: "الدفعة الثانية", count: 42, receivedDate: "20/5/2025", avgAdg: 0.88, fcr: 3.1, status: "نشط", supplier: "المورد الثاني" },
-    { id: 3, name: "الدفعة الثالثة", count: 50, receivedDate: "1/6/2025", avgAdg: 0.85, fcr: 3.2, status: "نشط", supplier: "المورد الأول" },
-    { id: 4, name: "الدفعة الرابعة", count: 35, receivedDate: "15/6/2025", avgAdg: 0.90, fcr: 2.9, status: "نشط", supplier: "المورد الثالث" },
-    { id: 5, name: "الدفعة الخامسة", count: 48, receivedDate: "30/6/2025", avgAdg: 0.87, fcr: 3.0, status: "مباعة", supplier: "المورد الثاني" },
-  ];
+  // بيانات الدفعات ستأتي من API
+  const batches: any[] = [];
 
   // Calculate statistics
   const totalPens = pens.length;
@@ -194,7 +183,7 @@ export default function PensBatches() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-orange-600 mb-1">أحدث دفعة</p>
-                <p className="text-3xl font-bold text-gray-900">15</p>
+                <p className="text-3xl font-bold text-gray-900">0</p>
                 <p className="text-xs text-gray-600 mt-1">
                   يوم مضى
                 </p>

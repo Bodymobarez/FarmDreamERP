@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { insertAnimalSchema, type InsertAnimal } from "@shared/schema";
 import {
   Dialog,
@@ -36,6 +36,18 @@ export function AddAnimalDialog() {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // جلب الدفعات من قاعدة البيانات
+  const { data: batches = [] } = useQuery({
+    queryKey: ["/api/batches"],
+    queryFn: async () => {
+      const response = await fetch("/api/batches");
+      if (!response.ok) {
+        throw new Error("فشل في جلب الدفعات");
+      }
+      return response.json();
+    },
+  });
 
   const form = useForm<InsertAnimal>({
     resolver: zodResolver(insertAnimalSchema),
@@ -255,16 +267,12 @@ export function AddAnimalDialog() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="الدفعة الأولى">الدفعة الأولى</SelectItem>
-                        <SelectItem value="الدفعة الثانية">الدفعة الثانية</SelectItem>
-                        <SelectItem value="الدفعة الثالثة">الدفعة الثالثة</SelectItem>
-                        <SelectItem value="الدفعة الرابعة">الدفعة الرابعة</SelectItem>
-                        <SelectItem value="الدفعة الخامسة">الدفعة الخامسة</SelectItem>
-                        <SelectItem value="الدفعة السادسة">الدفعة السادسة</SelectItem>
-                        <SelectItem value="الدفعة السابعة">الدفعة السابعة</SelectItem>
-                        <SelectItem value="الدفعة الثامنة">الدفعة الثامنة</SelectItem>
-                        <SelectItem value="الدفعة التاسعة">الدفعة التاسعة</SelectItem>
-                        <SelectItem value="الدفعة العاشرة">الدفعة العاشرة</SelectItem>
+                        <SelectItem value="">بدون تخصيص</SelectItem>
+                        {batches.map((batch: any) => (
+                          <SelectItem key={batch.id} value={batch.batchNumber}>
+                            {batch.name} ({batch.batchNumber})
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />

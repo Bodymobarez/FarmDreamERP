@@ -31,7 +31,7 @@ export function PerformanceMetrics() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
           title="متوسط ADG"
-          value="0.85 كجم/يوم"
+          value="0 كجم/يوم"
           subtitle="الزيادة اليومية"
           change={5}
           isPositive={true}
@@ -45,7 +45,7 @@ export function PerformanceMetrics() {
         />
         <MetricCard
           title="التكلفة لكل رأس"
-          value="2,450 ج"
+          value="0 ج"
           subtitle="متوسط التكلفة"
           change={8}
           isPositive={false}

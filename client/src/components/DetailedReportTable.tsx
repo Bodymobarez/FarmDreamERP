@@ -21,13 +21,8 @@ interface AnimalReportData {
   status: "active" | "sold" | "dead";
 }
 
-const mockData: AnimalReportData[] = [
-  { earTag: "98", batch: "دفعة 3", entryWeight: 24.8, currentWeight: 42.5, adg: 0.91, feedCost: 2100, treatmentCost: 150, totalCost: 2450, status: "active" },
-  { earTag: "75", batch: "دفعة 2", entryWeight: 22.0, currentWeight: 38.2, adg: 0.88, feedCost: 2150, treatmentCost: 200, totalCost: 2550, status: "active" },
-  { earTag: "52", batch: "دفعة 1", entryWeight: 25.5, currentWeight: 45.0, adg: 0.92, feedCost: 2050, treatmentCost: 120, totalCost: 2350, status: "sold" },
-  { earTag: "89", batch: "دفعة 3", entryWeight: 23.5, currentWeight: 40.3, adg: 0.86, feedCost: 2200, treatmentCost: 180, totalCost: 2580, status: "active" },
-  { earTag: "64", batch: "دفعة 2", entryWeight: 21.8, currentWeight: 37.8, adg: 0.87, feedCost: 2100, treatmentCost: 160, totalCost: 2460, status: "active" },
-];
+// البيانات ستأتي من قاعدة البيانات عبر API
+const mockData: AnimalReportData[] = [];
 
 export function DetailedReportTable() {
   const statusColors = {

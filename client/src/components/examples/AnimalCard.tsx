@@ -19,7 +19,7 @@ export default function AnimalCardExample() {
           id="2"
           earTag="75"
           pen="عنبر 3"
-          batch="الدفعة الثانية"
+          batch=""
           sex="ذكر"
           currentWeight={38.2}
           entryWeight={22.0}
@@ -30,7 +30,7 @@ export default function AnimalCardExample() {
           id="3"
           earTag="52"
           pen="عنبر 1"
-          batch="الدفعة الأولى"
+          batch=""
           sex="أنثى"
           currentWeight={45.0}
           entryWeight={25.5}

@@ -85,8 +85,8 @@ export function FilterBar({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">جميع الدفعات</SelectItem>
-            <SelectItem value="batch1">الدفعة الأولى</SelectItem>
-            <SelectItem value="batch2">الدفعة الثانية</SelectItem>
+
+
             <SelectItem value="batch3">الدفعة الثالثة</SelectItem>
           </SelectContent>
         </Select>

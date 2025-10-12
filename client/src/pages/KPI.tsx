@@ -323,10 +323,10 @@ export default function KPI() {
                     onClick={async () => {
                       const headers = ['المؤشر', 'القيمة', 'الهدف', 'النسبة'];
                       const data = [
-                        ['ADG', `${displayStats.adg.toFixed(2)} كجم`, '0.85 كجم', `${((displayStats.adg / 0.85) * 100).toFixed(1)}%`],
+                        ['ADG', `${displayStats.adg.toFixed(2)} كجم`, '0 كجم', '0%'],
                         ['FCR', displayStats.fcr.toFixed(1), '3.2', `${((3.2 / displayStats.fcr) * 100).toFixed(1)}%`],
                         ['معدل البقاء', `${displayStats.survival}%`, '97%', `${((displayStats.survival / 97) * 100).toFixed(1)}%`],
-                        ['التكلفة/رأس', `${displayStats.cost} ج`, '2,200 ج', `${((2200 / displayStats.cost) * 100).toFixed(1)}%`],
+                        ['التكلفة/رأس', `${displayStats.cost} ج`, '0 ج', '0%'],
                       ];
                       const success = await exportToPDF('تقرير مؤشرات الأداء الرئيسية (KPI)', headers, data, 'مؤشرات_الأداء_KPI.pdf');
                       if (success) {
@@ -521,7 +521,7 @@ export default function KPI() {
                 <div className="text-right">
                   <Badge className="bg-green-100 text-green-700 hover:bg-green-200">
                     <TrendingUp className="w-3 h-3 mr-1" />
-                    +5.8%
+                    0%
                   </Badge>
                 </div>
               </div>
@@ -531,7 +531,7 @@ export default function KPI() {
               <div className="mt-3 w-full bg-green-100 rounded-full h-2">
                 <div className="bg-green-500 h-2 rounded-full animate-shimmer" style={{width: `${Math.min((displayStats.adg / 0.85) * 100, 100)}%`}}></div>
               </div>
-              <p className="text-xs text-green-600 mt-1 font-medium">هدف: 0.85 كجم | تحقق: {((displayStats.adg / 0.85) * 100).toFixed(1)}%</p>
+              <p className="text-xs text-green-600 mt-1 font-medium">هدف: 0 كجم | تحقق: 0%</p>
             </div>
           </div>
 
@@ -547,7 +547,7 @@ export default function KPI() {
                 <div className="text-right">
                   <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200">
                     <TrendingDown className="w-3 h-3 mr-1" />
-                    -6.2%
+                    0%
                   </Badge>
                 </div>
               </div>
@@ -557,7 +557,7 @@ export default function KPI() {
               <div className="mt-3 w-full bg-blue-100 rounded-full h-2">
                 <div className="bg-blue-500 h-2 rounded-full animate-shimmer" style={{width: `${Math.min((3.2 / displayStats.fcr) * 100, 100)}%`}}></div>
               </div>
-              <p className="text-xs text-blue-600 mt-1 font-medium">هدف: 3.2 | تحقق: {((3.2 / displayStats.fcr) * 100).toFixed(1)}%</p>
+              <p className="text-xs text-blue-600 mt-1 font-medium">هدف: 0 | تحقق: 0%</p>
             </div>
           </div>
 
@@ -573,7 +573,7 @@ export default function KPI() {
                 <div className="text-right">
                   <Badge variant="destructive" className="bg-red-100 text-red-700 hover:bg-red-200">
                     <TrendingUp className="w-3 h-3 mr-1" />
-                    +8.3%
+                    0%
                   </Badge>
                 </div>
               </div>
@@ -621,7 +621,7 @@ export default function KPI() {
               <div className="mt-3 w-full bg-emerald-100 rounded-full h-2">
                 <div className="bg-emerald-500 h-2 rounded-full animate-shimmer" style={{width: `${displayStats.survival}%`}}></div>
               </div>
-              <p className="text-xs text-emerald-600 mt-1 font-medium">هدف: 97% | تحقق: {((displayStats.survival / 97) * 100).toFixed(1)}%</p>
+              <p className="text-xs text-emerald-600 mt-1 font-medium">هدف: 0% | تحقق: 0%</p>
             </div>
           </div>
         </div>
@@ -632,11 +632,11 @@ export default function KPI() {
               <Scale className="w-6 h-6" />
             </div>
             <div className="text-left">
-              <p className="text-xs text-chart-1">↓ 6.2%</p>
+              <p className="text-xs text-chart-1">0%</p>
             </div>
           </div>
           <p className="text-sm text-muted-foreground mb-1">معدل تحويل العلف</p>
-          <p className="text-3xl font-bold">3.0</p>
+          <p className="text-3xl font-bold">0.0</p>
           <p className="text-xs text-muted-foreground mt-2">FCR - Feed Conversion Ratio</p>
         </Card>
 
@@ -646,7 +646,7 @@ export default function KPI() {
               <DollarSign className="w-6 h-6" />
             </div>
             <div className="text-left">
-              <p className="text-xs text-destructive">↑ 8.3%</p>
+              <p className="text-xs text-destructive">0%</p>
             </div>
           </div>
           <p className="text-sm text-muted-foreground mb-1">التكلفة لكل رأس</p>
@@ -664,8 +664,8 @@ export default function KPI() {
             </div>
           </div>
           <p className="text-sm text-muted-foreground mb-1">معدل النفوق</p>
-          <p className="text-3xl font-bold">1.2%</p>
-          <p className="text-xs text-muted-foreground mt-2">3 من 250 حيوان</p>
+          <p className="text-3xl font-bold">0.0%</p>
+          <p className="text-xs text-muted-foreground mt-2">0 من 0 حيوان</p>
         </Card>
       </div>
 
@@ -836,10 +836,10 @@ export default function KPI() {
                 <Target className="w-8 h-8 text-chart-1" />
                 <div>
                   <p className="text-sm text-muted-foreground">الهدف الشهري</p>
-                  <p className="text-2xl font-bold">0.85 كجم/يوم</p>
+                  <p className="text-2xl font-bold">0 كجم/يوم</p>
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground">تم تحقيق الهدف بنسبة 105.9%</p>
+              <p className="text-xs text-muted-foreground">تم تحقيق الهدف بنسبة 0%</p>
             </Card>
 
             <Card className="p-6">
@@ -847,10 +847,10 @@ export default function KPI() {
                 <Calendar className="w-8 h-8 text-chart-2" />
                 <div>
                   <p className="text-sm text-muted-foreground">أفضل شهر</p>
-                  <p className="text-2xl font-bold">يونيو 2025</p>
+                  <p className="text-2xl font-bold">-</p>
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground">ADG: 0.90 كجم/يوم</p>
+              <p className="text-xs text-muted-foreground">ADG: 0.00 كجم/يوم</p>
             </Card>
 
             <Card className="p-6">
@@ -858,7 +858,7 @@ export default function KPI() {
                 <Percent className="w-8 h-8 text-chart-1" />
                 <div>
                   <p className="text-sm text-muted-foreground">التحسن السنوي</p>
-                  <p className="text-2xl font-bold text-chart-1">+15.4%</p>
+                  <p className="text-2xl font-bold text-chart-1">0%</p>
                 </div>
               </div>
               <p className="text-xs text-muted-foreground">مقارنة بالعام الماضي</p>
@@ -899,7 +899,7 @@ export default function KPI() {
                   <p className="text-2xl font-bold">3.2</p>
                 </div>
               </div>
-              <p className="text-xs text-chart-1">تم تحسين FCR بنسبة 6.2%</p>
+              <p className="text-xs text-chart-1">لا توجد بيانات للمقارنة</p>
             </Card>
 
             <Card className="p-6">
@@ -910,7 +910,7 @@ export default function KPI() {
                   <p className="text-2xl font-bold">3.0</p>
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground">يونيو 2025</p>
+              <p className="text-xs text-muted-foreground">-</p>
             </Card>
 
             <Card className="p-6">
@@ -956,19 +956,19 @@ export default function KPI() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between p-3 bg-chart-1/10 rounded-lg">
                   <span className="text-sm">أعلاف</span>
-                  <span className="font-bold">1,470 ج (60%)</span>
+                  <span className="font-bold">0 ج (0%)</span>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-chart-3/10 rounded-lg">
                   <span className="text-sm">علاجات بيطرية</span>
-                  <span className="font-bold">294 ج (12%)</span>
+                  <span className="font-bold">0 ج (0%)</span>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-chart-2/10 rounded-lg">
                   <span className="text-sm">عمالة</span>
-                  <span className="font-bold">490 ج (20%)</span>
+                  <span className="font-bold">0 ج (0%)</span>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-chart-4/10 rounded-lg">
                   <span className="text-sm">مرافق وأخرى</span>
-                  <span className="font-bold">196 ج (8%)</span>
+                  <span className="font-bold">0 ج (0%)</span>
                 </div>
               </div>
             </Card>
@@ -976,19 +976,9 @@ export default function KPI() {
             <Card className="p-6">
               <h4 className="font-bold mb-4">مقارنة الدفعات</h4>
               <div className="space-y-3">
-                <div className="p-3 bg-card rounded-lg border border-card-border">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm font-medium">الدفعة الأولى</span>
-                    <span className="text-xs text-chart-1">الأقل تكلفة</span>
-                  </div>
-                  <p className="text-2xl font-bold">2,200 ج</p>
-                </div>
-                <div className="p-3 bg-card rounded-lg border border-card-border">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm font-medium">الدفعة الثالثة</span>
-                    <span className="text-xs text-destructive">الأعلى تكلفة</span>
-                  </div>
-                  <p className="text-2xl font-bold">2,450 ج</p>
+                <div className="text-center py-8 text-muted-foreground">
+                  <p>لا توجد دفعات للمقارنة</p>
+                  <p className="text-sm">ستظهر المقارنة عند إضافة دفعات</p>
                 </div>
               </div>
             </Card>
@@ -1025,15 +1015,15 @@ export default function KPI() {
             <Card className="p-6 bg-chart-1/5">
               <div className="text-center">
                 <p className="text-sm text-muted-foreground mb-2">متوسط الربح لكل رأس</p>
-                <p className="text-4xl font-bold text-chart-1">575 ج</p>
-                <p className="text-xs text-muted-foreground mt-2">هامش ربح 19.6%</p>
+                <p className="text-4xl font-bold text-chart-1">0 ج</p>
+                <p className="text-xs text-muted-foreground mt-2">هامش ربح 0%</p>
               </div>
             </Card>
 
             <Card className="p-6 bg-chart-2/5">
               <div className="text-center">
                 <p className="text-sm text-muted-foreground mb-2">الربح المتوقع</p>
-                <p className="text-4xl font-bold text-chart-2">56,350 ج</p>
+                <p className="text-4xl font-bold text-chart-2">0 ج</p>
                 <p className="text-xs text-muted-foreground mt-2">للدفعة الكاملة (98 رأس)</p>
               </div>
             </Card>
@@ -1041,7 +1031,7 @@ export default function KPI() {
             <Card className="p-6 bg-chart-3/5">
               <div className="text-center">
                 <p className="text-sm text-muted-foreground mb-2">ROI العائد على الاستثمار</p>
-                <p className="text-4xl font-bold text-chart-3">23.5%</p>
+                <p className="text-4xl font-bold text-chart-3">0%</p>
                 <p className="text-xs text-muted-foreground mt-2">خلال 3 أشهر</p>
               </div>
             </Card>
@@ -1087,19 +1077,19 @@ export default function KPI() {
                 </h4>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
-                    <div className="text-2xl font-bold text-blue-600">96.2%</div>
+                    <div className="text-2xl font-bold text-blue-600">0%</div>
                     <div className="text-xs text-black/70">كفاءة التغذية</div>
                   </div>
                   <div className="text-center p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200">
-                    <div className="text-2xl font-bold text-green-600">104.5%</div>
+                    <div className="text-2xl font-bold text-green-600">0%</div>
                     <div className="text-xs text-black/70">كفاءة النمو</div>
                   </div>
                   <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-200">
-                    <div className="text-2xl font-bold text-purple-600">92.8%</div>
+                    <div className="text-2xl font-bold text-purple-600">0%</div>
                     <div className="text-xs text-black/70">كفاءة الصحة</div>
                   </div>
                   <div className="text-center p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-200">
-                    <div className="text-2xl font-bold text-amber-600">88.3%</div>
+                    <div className="text-2xl font-bold text-amber-600">0%</div>
                     <div className="text-xs text-black/70">كفاءة التكلفة</div>
                   </div>
                 </div>
@@ -1111,18 +1101,18 @@ export default function KPI() {
                   تنبيهات ذكية
                 </h4>
                 <div className="space-y-3">
-                  <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center gap-3">
-                    <AlertTriangle className="w-4 h-4 text-yellow-600" />
+                  <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg flex items-center gap-3">
+                    <AlertTriangle className="w-4 h-4 text-gray-600" />
                     <div>
-                      <p className="text-sm font-medium text-black">ارتفاع في استهلاك العلف</p>
-                      <p className="text-xs text-black/70">الدفعة الثالثة تحتاج مراجعة</p>
+                      <p className="text-sm font-medium text-black">لا توجد تنبيهات</p>
+                      <p className="text-xs text-black/70">ستظهر التنبيهات عند إضافة بيانات</p>
                     </div>
                   </div>
                   <div className="p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
                     <CheckCircle className="w-4 h-4 text-green-600" />
                     <div>
                       <p className="text-sm font-medium text-black">أداء ممتاز في النمو</p>
-                      <p className="text-xs text-black/70">تجاوز الهدف بنسبة 5.9%</p>
+                      <p className="text-xs text-black/70">لم يتم تحقيق الهدف</p>
                     </div>
                   </div>
                   <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center gap-3">
@@ -1151,13 +1141,13 @@ export default function KPI() {
               </div>
               <div className="text-center p-6 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-2xl text-white">
                 <TrendingUp className="w-8 h-8 mx-auto mb-2" />
-                <div className="text-3xl font-bold">+12.5%</div>
+                <div className="text-3xl font-bold">0%</div>
                 <div className="text-sm opacity-90">تحسن شهري</div>
                 <div className="text-xs opacity-75 mt-1">مقارنة بالشهر الماضي</div>
               </div>
               <div className="text-center p-6 bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl text-white">
                 <Target className="w-8 h-8 mx-auto mb-2" />
-                <div className="text-3xl font-bold">94.2%</div>
+                <div className="text-3xl font-bold">0%</div>
                 <div className="text-sm opacity-90">تحقيق الأهداف</div>
                 <div className="text-xs opacity-75 mt-1">من إجمالي المؤشرات</div>
               </div>

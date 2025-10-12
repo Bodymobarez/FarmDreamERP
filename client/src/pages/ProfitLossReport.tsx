@@ -213,14 +213,14 @@ export default function ProfitLossReport() {
     {
       title: "إجمالي الأرباح المحققة",
       value: `${(animalReports.reduce((sum, a) => sum + a.profit, 0)).toLocaleString()} جنيه مصري`,
-      change: "+15.3%",
+      change: "0%",
       icon: TrendingUp,
       color: "text-green-500",
     },
     {
       title: "عدد الحيوانات المباعة",
       value: animalReports.length,
-      change: "من 50 حيوان",
+      change: "من 0 حيوان",
       icon: Beef,
       color: "text-blue-500",
     },
@@ -491,7 +491,7 @@ export default function ProfitLossReport() {
                   {(animalReports.reduce((sum, a) => sum + a.profit, 0)).toLocaleString('ar-EG')} جنيه مصري
                 </p>
                 <p className="text-xs text-gray-600 mt-1">
-                  +15.3% عن الشهر السابق
+                  0% عن الشهر السابق
                 </p>
               </div>
               <div className="p-3 bg-emerald-100 rounded-full">
@@ -508,7 +508,7 @@ export default function ProfitLossReport() {
                 <p className="text-sm font-medium text-blue-600 mb-1">عدد الحيوانات المباعة</p>
                 <p className="text-3xl font-bold text-gray-900">{animalReports.length}</p>
                 <p className="text-xs text-gray-600 mt-1">
-                  من إجمالي 50 حيوان
+                  من إجمالي 0 حيوان
                 </p>
               </div>
               <div className="p-3 bg-blue-100 rounded-full">

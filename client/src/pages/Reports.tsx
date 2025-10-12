@@ -86,8 +86,8 @@ export default function Reports() {
       color: "from-green-500 to-green-600",
       bgColor: "border-green-200 bg-gradient-to-br from-green-50/50",
       iconBg: "bg-green-100 text-green-600",
-      value: "425,000 ج",
-      change: "+12.5%",
+      value: "0 ج",
+      change: "0%",
       trend: "up",
       records: 47,
     },
@@ -99,7 +99,7 @@ export default function Reports() {
       color: "from-red-500 to-red-600",
       bgColor: "border-red-200 bg-gradient-to-br from-red-50/50",
       iconBg: "bg-red-100 text-red-600",
-      value: "185,000 ج",
+      value: "0 ج",
       change: "+8.3%",
       trend: "up",
       records: 34,
@@ -113,7 +113,7 @@ export default function Reports() {
       bgColor: "border-blue-200 bg-gradient-to-br from-blue-50/50",
       iconBg: "bg-blue-100 text-blue-600",
       value: "5 عملاء",
-      change: "+2 جديد",
+      change: "+0 جديد",
       trend: "up",
       records: 5,
     },
@@ -126,7 +126,7 @@ export default function Reports() {
       bgColor: "border-purple-200 bg-gradient-to-br from-purple-50/50",
       iconBg: "bg-purple-100 text-purple-600",
       value: "5 موردين",
-      change: "+3 جديد",
+      change: "+0 جديد",
       trend: "up",
       records: 5,
     },
@@ -138,7 +138,7 @@ export default function Reports() {
       color: "from-orange-500 to-orange-600",
       bgColor: "border-orange-200 bg-gradient-to-br from-orange-50/50",
       iconBg: "bg-orange-100 text-orange-600",
-      value: "67,000 ج",
+      value: "0 ج",
       change: "-5.2%",
       trend: "down",
       records: 15,
@@ -152,7 +152,7 @@ export default function Reports() {
       bgColor: "border-cyan-200 bg-gradient-to-br from-cyan-50/50",
       iconBg: "bg-cyan-100 text-cyan-600",
       value: "7 معاملات",
-      change: "+4 جديد",
+      change: "+0 جديد",
       trend: "up",
       records: 7,
     },
@@ -508,7 +508,7 @@ export default function Reports() {
               <div className="flex items-center gap-1 mt-2">
                 <ArrowUpRight className="w-4 h-4 text-green-600" />
                 <span className="text-sm font-medium text-green-600">
-                  +12.5%
+                  0%
                 </span>
               </div>
             </div>

@@ -243,7 +243,7 @@ export default function Inventory() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-green-600 mb-1">نمو المخزون</p>
-                <p className="text-3xl font-bold text-gray-900">+12.5%</p>
+                <p className="text-3xl font-bold text-gray-900">0%</p>
                 <p className="text-xs text-gray-600 mt-1">
                   عن الشهر الماضي
                 </p>

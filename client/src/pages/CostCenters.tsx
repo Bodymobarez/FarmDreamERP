@@ -38,7 +38,7 @@ export default function CostCenters() {
   const batches = [
     {
       id: "1",
-      batchNumber: "الدفعة الأولى",
+      batchNumber: "",
       batchName: "دفعة يناير 2024",
       startDate: "2024-01-01",
       status: "active",
@@ -57,7 +57,7 @@ export default function CostCenters() {
     },
     {
       id: "2",
-      batchNumber: "الدفعة الثانية",
+      batchNumber: "",
       batchName: "دفعة فبراير 2024",
       startDate: "2024-02-01",
       closeDate: "2024-06-15",
@@ -77,7 +77,7 @@ export default function CostCenters() {
     },
     {
       id: "3",
-      batchNumber: "الدفعة الثالثة",
+      batchNumber: "",
       batchName: "دفعة مارس 2024",
       startDate: "2024-03-01",
       status: "active",
@@ -107,7 +107,7 @@ export default function CostCenters() {
     {
       title: "إجمالي الحيوانات النشطة",
       value: batches.reduce((sum, b) => sum + b.activeAnimals, 0),
-      change: "70 حيوان",
+      change: "0 حيوان",
       icon: Activity,
       color: "text-green-500",
     },

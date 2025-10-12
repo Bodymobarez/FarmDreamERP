@@ -82,7 +82,8 @@ export default function PensBatches() {
       return sum + batchAdg;
     }, 0) / activeBatches : 0;
 
-  const avgFcr = 3.2; // Default FCR - would be calculated from feed consumption data
+  // حساب FCR من البيانات الحقيقية - إذا لم توجد بيانات أعلاف فالقيمة ستكون 0
+  const avgFcr = 0; // سيتم حسابها من بيانات استهلاك الأعلاف
 
   return (
     <div className="space-y-8">
@@ -225,7 +226,11 @@ export default function PensBatches() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-orange-600 mb-1">أحدث دفعة</p>
-                <p className="text-3xl font-bold text-gray-900">15</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {batches.length > 0 ? 
+                    Math.floor((new Date().getTime() - new Date(batches[batches.length - 1]?.createdAt || new Date()).getTime()) / (1000 * 60 * 60 * 24)) 
+                    : 0}
+                </p>
                 <p className="text-xs text-gray-600 mt-1">
                   يوم مضى
                 </p>

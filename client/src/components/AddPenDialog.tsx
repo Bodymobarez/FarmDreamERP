@@ -202,24 +202,6 @@ export function AddPenDialog() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">بدون تخصيص</SelectItem>
-                <SelectItem value="الدفعة الأولى">
-                  <div className="flex items-center gap-3">
-                    <span className="font-medium">الدفعة الأولى</span>
-                    <span className="text-xs text-gray-500">6 حيوانات</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="الدفعة الثانية">
-                  <div className="flex items-center gap-3">
-                    <span className="font-medium">الدفعة الثانية</span>
-                    <span className="text-xs text-gray-500">42 حيوان</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="الدفعة الثالثة">
-                  <div className="flex items-center gap-3">
-                    <span className="font-medium">الدفعة الثالثة</span>
-                    <span className="text-xs text-gray-500">50 حيوان</span>
-                  </div>
-                </SelectItem>
               </SelectContent>
             </Select>
             <p className="text-xs text-gray-600">يمكن تخصيص العنبر لدفعة معينة</p>

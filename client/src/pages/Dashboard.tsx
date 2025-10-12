@@ -97,48 +97,7 @@ export default function Dashboard() {
   }, 0);
 
   // الأنشطة الأخيرة
-  const recentActivities = [
-    {
-      id: 1,
-      type: "sale",
-      title: "عملية بيع جديدة",
-      description: "تم بيع 5 رؤوس للعميل أحمد محمد",
-      time: "منذ 15 دقيقة",
-      icon: DollarSign,
-      color: "text-green-600",
-      bg: "bg-green-100",
-    },
-    {
-      id: 2,
-      type: "purchase",
-      title: "عملية شراء",
-      description: "تم شراء 200 كجم أعلاف من المورد الأعلاف الذهبية",
-      time: "منذ ساعة",
-      icon: ShoppingCart,
-      color: "text-blue-600",
-      bg: "bg-blue-100",
-    },
-    {
-      id: 3,
-      type: "animal",
-      title: "إضافة حيوانات جديدة",
-      description: "تم إضافة 8 رؤوس جديدة إلى الدفعة 3",
-      time: "منذ ساعتين",
-      icon: Beef,
-      color: "text-purple-600",
-      bg: "bg-purple-100",
-    },
-    {
-      id: 4,
-      type: "treatment",
-      title: "علاج بيطري",
-      description: "تم علاج 3 حيوانات - فحص روتيني",
-      time: "منذ 3 ساعات",
-      icon: Activity,
-      color: "text-orange-600",
-      bg: "bg-orange-100",
-    },
-  ];
+  const recentActivities = [];
 
   return (
     <div className="p-6 space-y-6">
@@ -176,7 +135,7 @@ export default function Dashboard() {
             </div>
             <div className="flex items-center gap-1 text-sm font-medium text-emerald-600">
               <ArrowUpRight className="w-4 h-4" />
-              +18.7%
+              0%
             </div>
           </div>
           <div>
@@ -194,7 +153,7 @@ export default function Dashboard() {
             </div>
             <div className="flex items-center gap-1 text-sm font-medium text-blue-600">
               <ArrowUpRight className="w-4 h-4" />
-              +12.5%
+              0%
             </div>
           </div>
           <div>
@@ -212,7 +171,7 @@ export default function Dashboard() {
             </div>
             <div className="flex items-center gap-1 text-sm font-medium text-red-600">
               <ArrowUpRight className="w-4 h-4" />
-              +8.3%
+              0%
             </div>
           </div>
           <div>
@@ -230,7 +189,7 @@ export default function Dashboard() {
             </div>
             <div className="flex items-center gap-1 text-sm font-medium text-purple-600">
               <ArrowUpRight className="w-4 h-4" />
-              +3.2%
+              0%
             </div>
           </div>
           <div>
@@ -387,27 +346,35 @@ export default function Dashboard() {
               </Button>
             </div>
             <div className="space-y-4">
-              {recentActivities.map((activity) => {
-                const Icon = activity.icon;
-                return (
-                  <div
-                    key={activity.id}
-                    className="flex items-start gap-4 p-4 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow"
-                  >
-                    <div className={`w-10 h-10 ${activity.bg} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                      <Icon className={`w-5 h-5 ${activity.color}`} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-gray-900">{activity.title}</p>
-                      <p className="text-sm text-gray-600 mt-1">{activity.description}</p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <Clock className="w-3 h-3 text-gray-400" />
-                        <span className="text-xs text-gray-500">{activity.time}</span>
+              {recentActivities.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <Activity className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                  <p className="font-medium">لا توجد أنشطة حديثة</p>
+                  <p className="text-sm text-gray-400 mt-1">ستظهر الأنشطة هنا عند بدء استخدام النظام</p>
+                </div>
+              ) : (
+                recentActivities.map((activity) => {
+                  const Icon = activity.icon;
+                  return (
+                    <div
+                      key={activity.id}
+                      className="flex items-start gap-4 p-4 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow"
+                    >
+                      <div className={`w-10 h-10 ${activity.bg} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                        <Icon className={`w-5 h-5 ${activity.color}`} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-gray-900">{activity.title}</p>
+                        <p className="text-sm text-gray-600 mt-1">{activity.description}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Clock className="w-3 h-3 text-gray-400" />
+                          <span className="text-xs text-gray-500">{activity.time}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
           </Card>
 
