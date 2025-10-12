@@ -1,0 +1,27 @@
+
+> rest-express@1.0.0 dev
+> cross-env NODE_ENV=development tsx server/index.ts
+
+Environment: development
+Setting up Vite...
+Vite setup complete!
+1:19:11 AM [express] 🚀 Server is running on http://0.0.0.0:5001
+1:19:11 AM [express] 📱 Open your browser to http://localhost:5001
+1:19:19 AM [express] GET /api/animals 200 in 2ms :: []
+1:19:24 AM [express] GET /api/batches 200 in 0ms :: []
+1:19:28 AM [express] GET /api/customers 200 in 1ms :: []
+1:19:28 AM [express] GET /api/suppliers 200 in 0ms :: []
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+Browserslist: browsers data (caniuse-lite) is 12 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+1:19:34 AM [express] GET /api/batches 200 in 0ms :: []
+1:19:34 AM [express] GET /api/customers 304 in 0ms :: []
+1:19:34 AM [express] GET /api/transactions 304 in 0ms :: []
+1:19:34 AM [express] GET /api/animals 304 in 1ms :: []
+1:19:34 AM [express] GET /api/inventory 304 in 0ms :: []
+1:19:34 AM [express] GET /api/suppliers 304 in 0ms :: []

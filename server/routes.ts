@@ -281,6 +281,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Batches (Cost Centers) endpoints
+  app.get("/api/batches", async (req, res) => {
+    try {
+      const batches = await storage.getBatches();
+      res.json(batches);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/batches", async (req, res) => {
+    try {
+      const batch = await storage.insertBatch(req.body);
+      res.status(201).json(batch);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/batches/:id", async (req, res) => {
+    try {
+      const batch = await storage.getBatchById(req.params.id);
+      if (!batch) {
+        res.status(404).json({ message: "الدفعة غير موجودة" });
+        return;
+      }
+      res.json(batch);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.put("/api/batches/:id", async (req, res) => {
+    try {
+      const batch = await storage.updateBatch(req.params.id, req.body);
+      if (!batch) {
+        res.status(404).json({ message: "الدفعة غير موجودة" });
+        return;
+      }
+      res.json(batch);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/batches/:id", async (req, res) => {
+    try {
+      await storage.deleteBatch(req.params.id);
+      res.status(204).send();
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // Performance Goals endpoints
   app.get("/api/performance-goals", async (req, res) => {
     try {
