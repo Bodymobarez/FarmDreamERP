@@ -2,15 +2,12 @@
 > rest-express@1.0.0 dev
 > cross-env NODE_ENV=development tsx server/index.ts
 
+[dotenv@17.2.3] injecting env (18) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
 Environment: development
 Setting up Vite...
 Vite setup complete!
-1:19:11 AM [express] 🚀 Server is running on http://0.0.0.0:5001
-1:19:11 AM [express] 📱 Open your browser to http://localhost:5001
-1:19:19 AM [express] GET /api/animals 200 in 2ms :: []
-1:19:24 AM [express] GET /api/batches 200 in 0ms :: []
-1:19:28 AM [express] GET /api/customers 200 in 1ms :: []
-1:19:28 AM [express] GET /api/suppliers 200 in 0ms :: []
+1:52:20 AM [express] 🚀 Server is running on http://0.0.0.0:5001
+1:52:20 AM [express] 📱 Open your browser to http://localhost:5001
 Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
 Template loaded, length: 759
 Page transformed, length: 1014
@@ -19,273 +16,83 @@ Browserslist: browsers data (caniuse-lite) is 12 months old. Please run:
   Why you should do it regularly: https://github.com/browserslist/update-db#readme
 
 A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
-1:19:34 AM [express] GET /api/batches 200 in 0ms :: []
-1:19:34 AM [express] GET /api/customers 304 in 0ms :: []
-1:19:34 AM [express] GET /api/transactions 304 in 0ms :: []
-1:19:34 AM [express] GET /api/animals 304 in 1ms :: []
-1:19:34 AM [express] GET /api/inventory 304 in 0ms :: []
-1:19:34 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:20:04 AM [express] GET /api/batches 304 in 1ms :: []
-1:20:04 AM [express] GET /api/customers 304 in 0ms :: []
-1:20:04 AM [express] GET /api/transactions 304 in 0ms :: []
-1:20:04 AM [express] GET /api/animals 304 in 0ms :: []
-1:20:04 AM [express] GET /api/inventory 304 in 1ms :: []
-1:20:04 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:20:34 AM [express] GET /api/batches 304 in 0ms :: []
-1:20:34 AM [express] GET /api/inventory 304 in 1ms :: []
-1:20:34 AM [express] GET /api/customers 304 in 0ms :: []
-1:20:34 AM [express] GET /api/transactions 304 in 0ms :: []
-1:20:34 AM [express] GET /api/animals 304 in 0ms :: []
-1:20:34 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:21:04 AM [express] GET /api/batches 304 in 0ms :: []
-1:21:04 AM [express] GET /api/customers 304 in 0ms :: []
-1:21:04 AM [express] GET /api/inventory 304 in 0ms :: []
-1:21:04 AM [express] GET /api/transactions 304 in 0ms :: []
-1:21:04 AM [express] GET /api/animals 304 in 0ms :: []
-1:21:04 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:21:32 AM [vite] hmr update /src/App.tsx, /src/index.css
-1:21:32 AM [express] GET /api/animals 304 in 0ms :: []
-1:21:34 AM [express] GET /api/batches 304 in 0ms :: []
-1:21:34 AM [express] GET /api/customers 304 in 0ms :: []
-1:21:34 AM [express] GET /api/inventory 304 in 0ms :: []
-1:21:34 AM [express] GET /api/transactions 304 in 0ms :: []
-1:21:34 AM [express] GET /api/suppliers 304 in 1ms :: []
-1:21:34 AM [vite] hmr update /src/App.tsx, /src/index.css
-1:22:02 AM [express] GET /api/animals 304 in 1ms :: []
-1:22:04 AM [express] GET /api/batches 304 in 0ms :: []
-1:22:04 AM [express] GET /api/customers 304 in 1ms :: []
-1:22:04 AM [express] GET /api/transactions 304 in 2ms :: []
-1:22:04 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:22:04 AM [express] GET /api/inventory 304 in 1ms :: []
-1:22:32 AM [express] GET /api/animals 304 in 0ms :: []
-1:22:34 AM [express] GET /api/batches 304 in 0ms :: []
-1:22:34 AM [express] GET /api/customers 304 in 1ms :: []
-1:22:34 AM [express] GET /api/transactions 304 in 1ms :: []
-1:22:34 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:22:34 AM [express] GET /api/inventory 304 in 0ms :: []
-1:23:02 AM [express] GET /api/animals 304 in 1ms :: []
-1:23:04 AM [express] GET /api/batches 304 in 0ms :: []
-1:23:04 AM [express] GET /api/transactions 304 in 0ms :: []
-1:23:04 AM [express] GET /api/customers 304 in 0ms :: []
-1:23:04 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:23:04 AM [express] GET /api/inventory 304 in 1ms :: []
-1:23:32 AM [express] GET /api/animals 304 in 0ms :: []
-1:23:34 AM [express] GET /api/customers 304 in 1ms :: []
-1:23:34 AM [express] GET /api/inventory 304 in 0ms :: []
-1:23:34 AM [express] GET /api/batches 304 in 1ms :: []
-1:23:34 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:23:34 AM [express] GET /api/transactions 304 in 0ms :: []
-1:24:02 AM [express] GET /api/animals 304 in 0ms :: []
-1:24:04 AM [express] GET /api/customers 304 in 0ms :: []
-1:24:04 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:24:04 AM [express] GET /api/batches 304 in 1ms :: []
-1:24:04 AM [express] GET /api/inventory 304 in 0ms :: []
-1:24:04 AM [express] GET /api/transactions 304 in 1ms :: []
-1:24:13 AM [vite] hmr update /src/App.tsx, /src/index.css
-1:24:13 AM [express] GET /api/animals 304 in 0ms :: []
-1:24:34 AM [express] GET /api/customers 304 in 0ms :: []
-1:24:34 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:24:34 AM [express] GET /api/batches 304 in 0ms :: []
-1:24:34 AM [express] GET /api/inventory 304 in 0ms :: []
-1:24:34 AM [express] GET /api/transactions 304 in 0ms :: []
-1:24:43 AM [express] GET /api/animals 304 in 0ms :: []
-1:25:04 AM [express] GET /api/customers 304 in 0ms :: []
-1:25:04 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:25:04 AM [express] GET /api/batches 304 in 0ms :: []
-1:25:04 AM [express] GET /api/inventory 304 in 0ms :: []
-1:25:04 AM [express] GET /api/transactions 304 in 0ms :: []
-1:25:13 AM [express] GET /api/animals 304 in 1ms :: []
-1:25:19 AM [express] GET /api/animals 200 in 0ms :: []
+1:52:23 AM [express] GET /api/batches 304 in 766ms :: []
+1:52:23 AM [express] GET /api/inventory 304 in 766ms :: []
+1:52:23 AM [express] GET /api/animals 304 in 782ms :: [{"id":"12f4a907-6b60-4779-9fd1-157adf44c2eb",…
+1:52:25 AM [express] GET /api/animals 200 in 283ms :: [{"id":"12f4a907-6b60-4779-9fd1-157adf44c2eb",…
+1:52:54 AM [express] GET /api/animals 304 in 739ms :: [{"id":"12f4a907-6b60-4779-9fd1-157adf44c2eb",…
+1:52:54 AM [express] GET /api/inventory 304 in 741ms :: []
+1:52:54 AM [express] GET /api/batches 304 in 749ms :: []
+1:53:14 AM [express] GET /api/animals 200 in 584ms :: [{"id":"12f4a907-6b60-4779-9fd1-157adf44c2eb",…
 Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
 Template loaded, length: 759
 Page transformed, length: 1014
-1:25:27 AM [express] GET /api/batches 304 in 0ms :: []
-1:25:27 AM [express] GET /api/inventory 304 in 0ms :: []
-1:25:27 AM [express] GET /api/customers 304 in 0ms :: []
-1:25:27 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:25:27 AM [express] GET /api/animals 304 in 0ms :: []
-1:25:27 AM [express] GET /api/transactions 304 in 0ms :: []
-1:25:57 AM [express] GET /api/batches 304 in 0ms :: []
-1:25:57 AM [express] GET /api/transactions 304 in 0ms :: []
-1:25:57 AM [express] GET /api/inventory 304 in 0ms :: []
-1:25:57 AM [express] GET /api/customers 304 in 0ms :: []
-1:25:57 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:25:57 AM [express] GET /api/animals 304 in 0ms :: []
-1:26:27 AM [express] GET /api/batches 304 in 0ms :: []
-1:26:27 AM [express] GET /api/transactions 304 in 0ms :: []
-1:26:27 AM [express] GET /api/inventory 304 in 0ms :: []
-1:26:27 AM [express] GET /api/customers 304 in 0ms :: []
-1:26:27 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:26:27 AM [express] GET /api/animals 304 in 1ms :: []
-1:26:57 AM [express] GET /api/batches 304 in 0ms :: []
-1:26:57 AM [express] GET /api/transactions 304 in 0ms :: []
-1:26:57 AM [express] GET /api/inventory 304 in 0ms :: []
-1:26:57 AM [express] GET /api/customers 304 in 1ms :: []
-1:26:57 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:26:57 AM [express] GET /api/animals 304 in 1ms :: []
-1:27:27 AM [express] GET /api/transactions 304 in 2ms :: []
-1:27:27 AM [express] GET /api/batches 304 in 0ms :: []
-1:27:27 AM [express] GET /api/inventory 304 in 1ms :: []
-1:27:27 AM [express] GET /api/customers 304 in 0ms :: []
-1:27:27 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:27:27 AM [express] GET /api/animals 304 in 0ms :: []
-1:27:57 AM [express] GET /api/transactions 304 in 0ms :: []
-1:27:57 AM [express] GET /api/batches 304 in 0ms :: []
-1:27:57 AM [express] GET /api/inventory 304 in 0ms :: []
-1:27:57 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:27:57 AM [express] GET /api/customers 304 in 0ms :: []
-1:27:57 AM [express] GET /api/animals 304 in 0ms :: []
-1:28:27 AM [express] GET /api/transactions 304 in 0ms :: []
-1:28:27 AM [express] GET /api/batches 304 in 0ms :: []
-1:28:27 AM [express] GET /api/inventory 304 in 0ms :: []
-1:28:27 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:28:27 AM [express] GET /api/customers 304 in 0ms :: []
-1:28:27 AM [express] GET /api/animals 304 in 1ms :: []
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 759
-Page transformed, length: 1014
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 759
-Page transformed, length: 1014
-1:28:57 AM [express] GET /api/transactions 304 in 0ms :: []
-1:28:57 AM [express] GET /api/batches 304 in 0ms :: []
-1:28:57 AM [express] GET /api/inventory 304 in 0ms :: []
-1:28:57 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:28:57 AM [express] GET /api/customers 304 in 0ms :: []
-1:28:57 AM [express] GET /api/animals 304 in 0ms :: []
-1:29:27 AM [express] GET /api/transactions 304 in 1ms :: []
-1:29:27 AM [express] GET /api/batches 304 in 0ms :: []
-1:29:27 AM [express] GET /api/inventory 304 in 1ms :: []
-1:29:27 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:29:27 AM [express] GET /api/customers 304 in 0ms :: []
-1:29:27 AM [express] GET /api/animals 304 in 0ms :: []
-1:29:47 AM [express] GET /api/animals 200 in 0ms :: []
-1:29:47 AM [express] GET /api/batches 200 in 0ms :: []
-1:29:47 AM [express] GET /api/customers 200 in 1ms :: []
-1:29:47 AM [express] GET /api/suppliers 200 in 0ms :: []
-1:29:47 AM [express] GET /api/transactions 200 in 1ms :: []
-1:29:47 AM [express] GET /api/inventory 200 in 0ms :: []
-1:29:57 AM [express] GET /api/batches 304 in 0ms :: []
-1:29:57 AM [express] GET /api/transactions 304 in 0ms :: []
-1:29:57 AM [express] GET /api/inventory 304 in 0ms :: []
-1:29:57 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:29:57 AM [express] GET /api/customers 304 in 0ms :: []
-1:29:57 AM [express] GET /api/animals 304 in 0ms :: []
-1:30:00 AM [vite] hmr update /src/pages/Dashboard.tsx, /src/index.css
-1:30:19 AM [vite] hmr update /src/pages/Dashboard.tsx, /src/index.css
-1:30:20 AM [express] GET /api/animals 304 in 0ms :: []
-1:30:20 AM [express] GET /api/suppliers 304 in 0ms :: []
-1:30:20 AM [express] GET /api/customers 304 in 0ms :: []
-1:30:20 AM [express] GET /api/transactions 304 in 1ms :: []
-1:30:20 AM [express] GET /api/batches 304 in 0ms :: []
-1:30:20 AM [express] GET /api/inventory 304 in 0ms :: []
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 759
-Page transformed, length: 1014
-1:30:28 AM [express] GET /api/animals 304 in 0ms :: []
-1:30:28 AM [express] GET /api/batches 304 in 0ms :: []
-1:30:28 AM [express] GET /api/inventory 304 in 0ms :: []
-1:30:58 AM [express] GET /api/animals 304 in 1ms :: []
-1:30:58 AM [express] GET /api/batches 304 in 0ms :: []
-1:30:58 AM [express] GET /api/inventory 304 in 0ms :: []
-1:31:28 AM [express] GET /api/animals 304 in 0ms :: []
-1:31:28 AM [express] GET /api/batches 304 in 0ms :: []
-1:31:28 AM [express] GET /api/inventory 304 in 0ms :: []
-1:31:58 AM [express] GET /api/animals 304 in 1ms :: []
-1:31:58 AM [express] GET /api/batches 304 in 0ms :: []
-1:31:58 AM [express] GET /api/inventory 304 in 0ms :: []
-1:32:28 AM [express] GET /api/animals 304 in 1ms :: []
-1:32:28 AM [express] GET /api/batches 304 in 0ms :: []
-1:32:28 AM [express] GET /api/inventory 304 in 1ms :: []
-1:32:58 AM [express] GET /api/animals 304 in 1ms :: []
-1:32:58 AM [express] GET /api/batches 304 in 0ms :: []
-1:32:58 AM [express] GET /api/inventory 304 in 1ms :: []
-1:33:15 AM [express] POST /api/animals 201 in 5ms :: {"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:33:21 AM [express] GET /api/animals 200 in 0ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:33:28 AM [express] GET /api/animals 200 in 0ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:33:28 AM [express] GET /api/batches 304 in 0ms :: []
-1:33:28 AM [express] GET /api/inventory 304 in 0ms :: []
-1:33:58 AM [express] GET /api/animals 304 in 1ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:33:58 AM [express] GET /api/batches 304 in 0ms :: []
-1:33:58 AM [express] GET /api/inventory 304 in 0ms :: []
-1:34:28 AM [express] GET /api/animals 304 in 0ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:34:28 AM [express] GET /api/batches 304 in 0ms :: []
-1:34:28 AM [express] GET /api/inventory 304 in 0ms :: []
-1:34:37 AM [vite] hmr update /src/pages/Dashboard.tsx, /src/index.css
-1:34:58 AM [express] GET /api/animals 304 in 1ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:34:58 AM [express] GET /api/batches 304 in 0ms :: []
-1:34:58 AM [express] GET /api/inventory 304 in 0ms :: []
-1:35:28 AM [express] GET /api/animals 304 in 0ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:35:28 AM [express] GET /api/batches 304 in 0ms :: []
-1:35:28 AM [express] GET /api/inventory 304 in 0ms :: []
-1:35:58 AM [express] GET /api/animals 304 in 0ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:35:58 AM [express] GET /api/batches 304 in 0ms :: []
-1:35:58 AM [express] GET /api/inventory 304 in 0ms :: []
-1:36:28 AM [express] GET /api/animals 304 in 0ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:36:28 AM [express] GET /api/batches 304 in 0ms :: []
-1:36:28 AM [express] GET /api/inventory 304 in 0ms :: []
-1:36:58 AM [express] GET /api/animals 304 in 2ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:36:58 AM [express] GET /api/batches 304 in 0ms :: []
-1:36:58 AM [express] GET /api/inventory 304 in 0ms :: []
-1:37:28 AM [express] GET /api/animals 304 in 1ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:37:28 AM [express] GET /api/batches 304 in 0ms :: []
-1:37:28 AM [express] GET /api/inventory 304 in 0ms :: []
-1:37:58 AM [express] GET /api/animals 304 in 0ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:37:58 AM [express] GET /api/batches 304 in 0ms :: []
-1:37:58 AM [express] GET /api/inventory 304 in 0ms :: []
-1:38:17 AM [express] POST /api/suppliers 400 in 2ms :: {"message":"بيانات غير صحيحة","errors":[{"cod…
-1:38:28 AM [express] GET /api/animals 304 in 0ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:38:28 AM [express] GET /api/batches 304 in 0ms :: []
-1:38:28 AM [express] GET /api/inventory 304 in 0ms :: []
-1:38:57 AM [express] POST /api/suppliers 201 in 3ms :: {"id":"cb7e7564-4b8a-4d43-8d12-24c58f959679",…
-1:38:58 AM [express] GET /api/animals 304 in 1ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:38:58 AM [express] GET /api/batches 304 in 1ms :: []
-1:38:58 AM [express] GET /api/inventory 304 in 0ms :: []
-1:39:03 AM [express] POST /api/suppliers 201 in 1ms :: {"id":"3c77e3d1-08d2-49cf-bab3-909004a9cac4",…
-1:39:10 AM [express] POST /api/suppliers 201 in 2ms :: {"id":"5a67c920-81e4-433c-aa13-0de579a96fa5",…
-1:39:22 AM [express] POST /api/customers 201 in 1ms :: {"id":"e1209c8e-a497-4986-a73b-768d07a221f3",…
-1:39:23 AM [express] POST /api/customers 201 in 1ms :: {"id":"cd2112a9-fb9e-4008-a317-fafb2ca15b5b",…
-1:39:24 AM [express] POST /api/customers 201 in 0ms :: {"id":"befe5ae9-ccb4-4ad1-927e-30c123ae7ac8",…
-1:39:28 AM [express] GET /api/animals 304 in 1ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:39:28 AM [express] GET /api/batches 304 in 0ms :: []
-1:39:28 AM [express] GET /api/inventory 304 in 0ms :: []
-1:39:35 AM [express] POST /api/batches 201 in 1ms :: {"id":"13026d46-33ee-4428-9ad8-5e9e8980a52c","b…
-1:39:36 AM [express] POST /api/batches 201 in 0ms :: {"id":"1567611b-6ae0-4b9b-a7bb-6e0821b398dc","b…
-1:39:37 AM [express] POST /api/batches 201 in 0ms :: {"id":"7245992c-8150-4709-8444-09f285af3a33","b…
-1:39:57 AM [express] POST /api/animals 201 in 1ms :: {"id":"d290940f-a38f-49fe-a8b0-c2dfb613d6ce","e…
-1:39:58 AM [express] POST /api/animals 201 in 1ms :: {"id":"dc09b37d-da8c-446a-abf3-4beb8dfb75fc","e…
-1:39:58 AM [express] GET /api/animals 200 in 1ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:39:58 AM [express] GET /api/batches 200 in 0ms :: [{"id":"13026d46-33ee-4428-9ad8-5e9e8980a52c","b…
-1:39:58 AM [express] GET /api/inventory 304 in 0ms :: []
-1:39:59 AM [express] POST /api/animals 201 in 0ms :: {"id":"79b843c8-9178-43bd-a696-7030f9cbd35b","e…
-1:40:00 AM [express] POST /api/animals 201 in 0ms :: {"id":"fdf65cd6-0df9-4e84-91e9-8f6837497df1","e…
-1:40:01 AM [express] POST /api/animals 201 in 1ms :: {"id":"3d4e5541-8b8e-4bb1-9e9c-2d2a0ce50793","e…
-1:40:02 AM [express] POST /api/animals 201 in 0ms :: {"id":"8d3f1025-d055-4ab5-bb81-755232980d83","e…
-1:40:04 AM [express] POST /api/animals 201 in 1ms :: {"id":"f70ced7e-6c68-415a-9a45-c3cecc9f774a","e…
-1:40:05 AM [express] POST /api/animals 201 in 0ms :: {"id":"35099815-dddd-4bd5-b2dc-24af8b4d2d6c","e…
-1:40:21 AM [express] POST /api/inventory 201 in 1ms :: {"id":"3229ffac-c014-467b-b2da-e42bdb4c1046",…
-1:40:22 AM [express] POST /api/inventory 201 in 0ms :: {"id":"44ffbda1-91d6-46ae-b891-1f472d85cacc",…
-1:40:25 AM [express] POST /api/inventory 201 in 0ms :: {"id":"168af360-50a4-4a50-8b03-6f1c2dcf41c4",…
-1:40:27 AM [express] POST /api/inventory 201 in 1ms :: {"id":"c6ba1298-00b4-4c45-b016-01e9f93356b0",…
-1:40:28 AM [express] POST /api/inventory 201 in 0ms :: {"id":"ca71065c-d1d8-407d-988b-a45ed484f8bc",…
-1:40:28 AM [express] GET /api/animals 200 in 1ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:40:28 AM [express] GET /api/batches 304 in 0ms :: [{"id":"13026d46-33ee-4428-9ad8-5e9e8980a52c","b…
-1:40:28 AM [express] GET /api/inventory 200 in 1ms :: [{"id":"3229ffac-c014-467b-b2da-e42bdb4c1046",…
-1:40:44 AM [express] POST /api/transactions 400 in 1ms :: {"message":"بيانات غير صحيحة","errors":[{"…
-1:40:45 AM [express] POST /api/transactions 400 in 0ms :: {"message":"بيانات غير صحيحة","errors":[{"…
-1:40:46 AM [express] POST /api/transactions 400 in 0ms :: {"message":"بيانات غير صحيحة","errors":[{"…
-1:40:47 AM [express] POST /api/transactions 400 in 0ms :: {"message":"بيانات غير صحيحة","errors":[{"…
-1:40:47 AM [express] POST /api/transactions 400 in 1ms :: {"message":"بيانات غير صحيحة","errors":[{"…
-1:40:54 AM [express] GET /api/animals 304 in 1ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:40:54 AM [express] GET /api/batches 304 in 0ms :: [{"id":"13026d46-33ee-4428-9ad8-5e9e8980a52c","b…
-1:40:58 AM [express] GET /api/inventory 304 in 0ms :: [{"id":"3229ffac-c014-467b-b2da-e42bdb4c1046",…
-1:41:05 AM [express] POST /api/transactions 400 in 0ms :: {"message":"بيانات غير صحيحة","errors":[{"…
-1:41:06 AM [express] POST /api/transactions 400 in 0ms :: {"message":"بيانات غير صحيحة","errors":[{"…
-1:41:07 AM [express] POST /api/transactions 400 in 0ms :: {"message":"بيانات غير صحيحة","errors":[{"…
-1:41:16 AM [express] GET /api/suppliers 200 in 1ms :: [{"id":"cb7e7564-4b8a-4d43-8d12-24c58f959679",…
-1:41:16 AM [express] GET /api/customers 200 in 0ms :: [{"id":"e1209c8e-a497-4986-a73b-768d07a221f3",…
-1:41:16 AM [express] GET /api/animals 200 in 0ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:41:16 AM [express] GET /api/batches 200 in 0ms :: [{"id":"13026d46-33ee-4428-9ad8-5e9e8980a52c","b…
-1:41:16 AM [express] GET /api/inventory 200 in 0ms :: [{"id":"3229ffac-c014-467b-b2da-e42bdb4c1046",…
-1:41:24 AM [express] GET /api/animals 304 in 1ms :: [{"id":"1bd84ce9-203a-4516-a743-f8a3e738bf7f","e…
-1:41:24 AM [express] GET /api/batches 304 in 0ms :: [{"id":"13026d46-33ee-4428-9ad8-5e9e8980a52c","b…
+1:53:15 AM [express] GET /api/animals 304 in 420ms :: [{"id":"12f4a907-6b60-4779-9fd1-157adf44c2eb",…
+1:53:15 AM [express] GET /api/inventory 304 in 882ms :: []
+1:53:15 AM [express] GET /api/batches 304 in 907ms :: []
+1:53:15 AM [express] GET /api/customers 304 in 955ms :: []
+1:53:15 AM [express] GET /api/suppliers 304 in 972ms :: []
+1:53:16 AM [express] GET /api/transactions 304 in 1131ms :: []
+1:53:46 AM [express] GET /api/animals 304 in 775ms :: [{"id":"12f4a907-6b60-4779-9fd1-157adf44c2eb",…
+1:53:46 AM [express] GET /api/inventory 304 in 645ms :: []
+1:53:46 AM [express] GET /api/suppliers 304 in 752ms :: []
+1:53:46 AM [express] GET /api/customers 304 in 769ms :: []
+1:53:46 AM [express] GET /api/batches 304 in 983ms :: []
+1:53:46 AM [express] GET /api/transactions 304 in 759ms :: []
+1:53:47 AM [express] POST /api/suppliers 201 in 155ms :: {"id":"7e0ae0f7-6cdf-42d4-b064-861dbbc7d576…
+1:53:47 AM [express] POST /api/suppliers 201 in 153ms :: {"id":"b9d66025-ca1e-4eab-8b9d-7552057b7fbc…
+1:53:49 AM [express] POST /api/customers 201 in 155ms :: {"id":"98e28e9c-8cc0-4413-968a-767427f946b1…
+1:53:49 AM [express] POST /api/customers 201 in 284ms :: {"id":"f4e0237e-f8bd-410e-9bbe-ba61f3b19edb…
+1:53:50 AM [express] POST /api/batches 500 in 0ms :: {"message":"value.toISOString is not a function…
+1:53:50 AM [express] POST /api/batches 500 in 1ms :: {"message":"value.toISOString is not a function…
+1:53:51 AM [express] POST /api/animals 201 in 191ms :: {"id":"93be255d-439b-4a97-982e-82fdbe769c8e",…
+1:53:52 AM [express] POST /api/animals 201 in 155ms :: {"id":"98d7baa6-94c8-45d0-8212-87cf34024c6d",…
+1:53:52 AM [express] POST /api/animals 201 in 153ms :: {"id":"f7112b5d-43cf-4f87-a423-2fcf65886705",…
+1:53:53 AM [express] POST /api/inventory 201 in 221ms :: {"id":"78ef627d-69ca-4ded-9f37-30dd3bc00a28…
+1:53:53 AM [express] POST /api/inventory 201 in 169ms :: {"id":"9d8a5d3e-b26f-4a28-8079-696725cc4e61…
+1:53:54 AM [express] POST /api/inventory 201 in 177ms :: {"id":"f91fd76b-66cf-471c-b9cf-b60cc7e16891…
+1:54:17 AM [express] GET /api/animals 200 in 911ms :: [{"id":"f7112b5d-43cf-4f87-a423-2fcf65886705",…
+1:54:17 AM [express] GET /api/inventory 200 in 928ms :: [{"id":"9d8a5d3e-b26f-4a28-8079-696725cc4e61…
+1:54:17 AM [express] GET /api/batches 304 in 732ms :: []
+1:54:17 AM [express] GET /api/transactions 304 in 732ms :: []
+1:54:18 AM [express] GET /api/suppliers 200 in 1285ms :: [{"id":"b9d66025-ca1e-4eab-8b9d-7552057b7fb…
+1:54:18 AM [express] GET /api/customers 200 in 1285ms :: [{"id":"98e28e9c-8cc0-4413-968a-767427f946b…
+1:54:19 AM [express] POST /api/batches 500 in 171ms :: {"message":"null value in column \"batch_name…
+1:54:19 AM [express] POST /api/batches 500 in 293ms :: {"message":"null value in column \"batch_name…
+1:54:21 AM [express] POST /api/animals 201 in 153ms :: {"id":"83cba7c5-775b-4ebf-b725-6b0746f9a189",…
+1:54:21 AM [express] POST /api/animals 201 in 154ms :: {"id":"1b9c6bd7-1164-4b71-beba-a49272a0fe0d",…
+1:54:21 AM [express] POST /api/animals 201 in 147ms :: {"id":"dd04e70d-c5de-44a8-97e9-7fde617c52a5",…
+1:54:22 AM [express] POST /api/inventory 201 in 151ms :: {"id":"f9802a69-da4a-4cd2-a119-d79630e3cdf4…
+1:54:22 AM [express] POST /api/inventory 201 in 162ms :: {"id":"01afc17e-dd95-412d-8470-82e72ebf1e25…
+1:54:23 AM [express] POST /api/inventory 201 in 339ms :: {"id":"dd320a0d-b5e2-4256-a2ba-d2e1a0aa4bfa…
+1:54:24 AM [express] GET /api/suppliers 200 in 284ms :: [{"id":"b9d66025-ca1e-4eab-8b9d-7552057b7fbc…
+1:54:24 AM [express] GET /api/customers 200 in 176ms :: [{"id":"98e28e9c-8cc0-4413-968a-767427f946b1…
+1:54:24 AM [express] GET /api/batches 200 in 172ms :: []
+1:54:24 AM [express] GET /api/animals 200 in 163ms :: [{"id":"dd04e70d-c5de-44a8-97e9-7fde617c52a5",…
+1:54:25 AM [express] GET /api/inventory 200 in 345ms :: [{"id":"9d8a5d3e-b26f-4a28-8079-696725cc4e61…
+1:54:47 AM [express] GET /api/animals 200 in 754ms :: [{"id":"dd04e70d-c5de-44a8-97e9-7fde617c52a5",…
+1:54:48 AM [express] GET /api/inventory 200 in 613ms :: [{"id":"9d8a5d3e-b26f-4a28-8079-696725cc4e61…
+1:54:48 AM [express] GET /api/customers 304 in 251ms :: [{"id":"98e28e9c-8cc0-4413-968a-767427f946b1…
+1:54:48 AM [express] GET /api/transactions 304 in 854ms :: []
+1:54:48 AM [express] GET /api/batches 304 in 857ms :: []
+1:54:48 AM [express] GET /api/suppliers 304 in 785ms :: [{"id":"b9d66025-ca1e-4eab-8b9d-7552057b7fbc…
+1:55:11 AM [express] POST /api/batches 201 in 673ms :: {"id":"4f1f33b9-9b89-44fb-8e93-ef26c7280664",…
+1:55:12 AM [express] POST /api/batches 201 in 155ms :: {"id":"b748ed7c-9314-4003-b361-827eec1a638b",…
+1:55:12 AM [express] POST /api/batches 201 in 152ms :: {"id":"36ce3576-54fc-4a05-9cca-1e4c9c04d25b",…
+1:55:13 AM [express] POST /api/suppliers 201 in 149ms :: {"id":"82e5550f-e603-491d-8687-7b421eeec21e…
+1:55:13 AM [express] POST /api/customers 201 in 149ms :: {"id":"e0421a43-728a-44bf-a5fd-7557a6980fb9…
+1:55:17 AM [express] POST /api/animals 201 in 150ms :: {"id":"a2b99e94-f289-4dae-a51f-076f7ca0e15a",…
+1:55:17 AM [express] POST /api/animals 201 in 149ms :: {"id":"879e707a-4f19-42b7-b0b8-a78f9dae5c74",…
+1:55:17 AM [express] POST /api/animals 201 in 149ms :: {"id":"429964ec-9cce-452b-b429-ef445a3e9709",…
+1:55:18 AM [express] GET /api/animals 200 in 170ms :: [{"id":"429964ec-9cce-452b-b429-ef445a3e9709",…
+1:55:18 AM [express] GET /api/inventory 304 in 223ms :: [{"id":"9d8a5d3e-b26f-4a28-8079-696725cc4e61…
+1:55:18 AM [express] GET /api/transactions 304 in 303ms :: []
+1:55:18 AM [express] GET /api/customers 200 in 697ms :: [{"id":"e0421a43-728a-44bf-a5fd-7557a6980fb9…
+1:55:18 AM [express] GET /api/suppliers 200 in 162ms :: [{"id":"b9d66025-ca1e-4eab-8b9d-7552057b7fbc…
+1:55:19 AM [express] GET /api/suppliers 200 in 219ms :: [{"id":"b9d66025-ca1e-4eab-8b9d-7552057b7fbc…
+1:55:19 AM [express] GET /api/batches 200 in 1142ms :: [{"id":"36ce3576-54fc-4a05-9cca-1e4c9c04d25b"…
+1:55:19 AM [express] GET /api/customers 200 in 253ms :: [{"id":"e0421a43-728a-44bf-a5fd-7557a6980fb9…
+1:55:19 AM [express] GET /api/batches 200 in 154ms :: [{"id":"36ce3576-54fc-4a05-9cca-1e4c9c04d25b",…
+1:55:20 AM [express] GET /api/animals 200 in 161ms :: [{"id":"429964ec-9cce-452b-b429-ef445a3e9709",…
+1:55:20 AM [express] GET /api/inventory 200 in 164ms :: [{"id":"9d8a5d3e-b26f-4a28-8079-696725cc4e61…
+1:55:20 AM [express] GET /api/animals 200 in 165ms :: [{"id":"429964ec-9cce-452b-b429-ef445a3e9709",…
