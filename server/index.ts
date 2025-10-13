@@ -75,10 +75,21 @@ app.use((req, res, next) => {
   // Other ports are firewalled. Default to 5001 if not specified.
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
+  // For Vercel deployment, export the app instead of starting the server
+  if (process.env.VERCEL) {
+    // Export app for Vercel
+    return app;
+  }
+
   const port = parseInt(process.env.PORT || '5001', 10);
   const host = process.env.HOST || "0.0.0.0";
   server.listen(port, host, () => {
     log(`🚀 Server is running on http://${host}:${port}`);
     log(`📱 Open your browser to http://localhost:${port}`);
   });
+  
+  return app;
 })();
+
+// Export for Vercel
+export default app;
