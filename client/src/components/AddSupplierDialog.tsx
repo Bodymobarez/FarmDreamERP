@@ -65,10 +65,17 @@ export function AddSupplierDialog() {
 
   const mutation = useMutation({
     mutationFn: async (data: InsertSupplier) => {
+      // Add auto-generated supplier number
+      const supplierData = {
+        ...data,
+        supplierNumber: `SUP-${Date.now()}`,
+        balance: "0"
+      };
+      
       const response = await fetch("/api/suppliers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(supplierData),
       });
 
       if (!response.ok) {
@@ -369,7 +376,7 @@ export function AddSupplierDialog() {
                 </Button>
                 <Button 
                   type="submit" 
-                  disabled={mutation.isPending || !form.formState.isValid}
+                  disabled={mutation.isPending || !form.watch('name')}
                   className="bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 shadow-lg hover:shadow-xl transition-all gap-2"
                 >
                   {mutation.isPending ? (

@@ -47,8 +47,27 @@ export function AddPenDialog() {
 
     setLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Real API call to create pen
+      const response = await fetch("/api/pens", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          capacity: parseInt(formData.capacity),
+          penType: formData.penType,
+          batchName: formData.batchName !== "none" ? formData.batchName : null,
+          location: formData.location,
+          notes: formData.notes,
+          status: "نشط",
+          current: 0,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create pen");
+      }
+
+      const newPen = await response.json();
       
       toast({
         title: "✅ تم إنشاء العنبر بنجاح",

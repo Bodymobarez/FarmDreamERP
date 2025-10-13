@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Animal, type InsertAnimal, type Reception, type InsertReception, type Supplier, type InsertSupplier, type Customer, type InsertCustomer, type Transaction, type InsertTransaction, type Batch, type InsertBatch, type BatchExpense, type InsertBatchExpense, type AnimalSale, type InsertAnimalSale, type PerformanceGoal, type InsertPerformanceGoal, type InventoryItem, type InsertInventoryItem, type InventoryTransaction, type InsertInventoryTransaction, type VeterinaryTreatment, type InsertVeterinaryTreatment, type Voucher, type InsertVoucher } from "@shared/schema";
+import { type User, type InsertUser, type Animal, type InsertAnimal, type Reception, type InsertReception, type Supplier, type InsertSupplier, type Customer, type InsertCustomer, type Transaction, type InsertTransaction, type Batch, type InsertBatch, type BatchExpense, type InsertBatchExpense, type AnimalSale, type InsertAnimalSale, type PerformanceGoal, type InsertPerformanceGoal, type InventoryItem, type InsertInventoryItem, type InventoryTransaction, type InsertInventoryTransaction, type VeterinaryTreatment, type InsertVeterinaryTreatment, type Voucher, type InsertVoucher, type AccountingEntry, type InsertAccountingEntry } from "../shared/schema";
 import { randomUUID } from "crypto";
 
 // modify the interface with any CRUD methods
@@ -99,6 +99,19 @@ export interface IStorage {
   insertVoucher(voucher: InsertVoucher): Promise<Voucher>;
   updateVoucher(id: string, voucher: Partial<InsertVoucher>): Promise<Voucher | undefined>;
   deleteVoucher(id: string): Promise<void>;
+  
+  // Accounting Entries methods
+  getAccountingEntries(): Promise<AccountingEntry[]>;
+  getAccountingEntryById(id: string): Promise<AccountingEntry | undefined>;
+  insertAccountingEntry(entry: InsertAccountingEntry): Promise<AccountingEntry>;
+  updateAccountingEntry(id: string, entry: Partial<InsertAccountingEntry>): Promise<AccountingEntry | undefined>;
+  deleteAccountingEntry(id: string): Promise<void>;
+  
+  // Financial Reports methods
+  getTrialBalance(): Promise<any[]>;
+  getProfitLossReport(startDate: Date, endDate: Date): Promise<any>;
+  getBalanceSheet(date: Date): Promise<any>;
+  getCashFlowReport(startDate: Date, endDate: Date): Promise<any>;
 }
 
 export class InMemoryStorage implements IStorage {
@@ -820,6 +833,565 @@ export class InMemoryStorage implements IStorage {
   async deleteVoucher(id: string): Promise<void> {
     this.vouchers.delete(id);
   }
+
+
 }
 
-export const storage = new InMemoryStorage();
+// Database Storage Implementation using Drizzle ORM
+import { db } from "./db";
+import { users, animals, receptions, suppliers, customers, transactions, batches, batchExpenses, animalSales, performanceGoals, inventoryItems, inventoryTransactions, veterinaryTreatments, vouchers, accountingEntries } from "../shared/schema";
+import { eq, and, gte, lte, desc, asc, sql } from "drizzle-orm";
+
+export class DbStorage implements IStorage {
+  // Users methods
+  async getUser(id: string): Promise<User | undefined> {
+    const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const result = await db.select().from(users).where(eq(users.username, username)).limit(1);
+    return result[0];
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    const result = await db.insert(users).values(user).returning();
+    return result[0];
+  }
+
+  // Animals methods
+  async getAnimals(): Promise<Animal[]> {
+    return await db.select().from(animals).orderBy(desc(animals.createdAt));
+  }
+
+  async getAnimalById(id: string): Promise<Animal | undefined> {
+    const result = await db.select().from(animals).where(eq(animals.id, id)).limit(1);
+    return result[0];
+  }
+
+  async insertAnimal(animal: InsertAnimal): Promise<Animal> {
+    const result = await db.insert(animals).values(animal).returning();
+    return result[0];
+  }
+
+  async updateAnimal(id: string, animal: Partial<InsertAnimal>): Promise<Animal | undefined> {
+    const result = await db.update(animals).set({ ...animal, updatedAt: new Date() }).where(eq(animals.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteAnimal(id: string): Promise<void> {
+    await db.delete(animals).where(eq(animals.id, id));
+  }
+
+  // Receptions methods
+  async getReceptions(): Promise<Reception[]> {
+    return await db.select().from(receptions).orderBy(desc(receptions.createdAt));
+  }
+
+  async getReceptionById(id: string): Promise<Reception | undefined> {
+    const result = await db.select().from(receptions).where(eq(receptions.id, id)).limit(1);
+    return result[0];
+  }
+
+  async insertReception(reception: InsertReception): Promise<Reception> {
+    const result = await db.insert(receptions).values(reception).returning();
+    return result[0];
+  }
+
+  async updateReception(id: string, reception: Partial<InsertReception>): Promise<Reception | undefined> {
+    const result = await db.update(receptions).set({ ...reception, updatedAt: new Date() }).where(eq(receptions.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteReception(id: string): Promise<void> {
+    await db.delete(receptions).where(eq(receptions.id, id));
+  }
+
+  // Suppliers methods
+  async getSuppliers(): Promise<Supplier[]> {
+    return await db.select().from(suppliers).orderBy(asc(suppliers.name));
+  }
+
+  async getSupplierById(id: string): Promise<Supplier | undefined> {
+    const result = await db.select().from(suppliers).where(eq(suppliers.id, id)).limit(1);
+    return result[0];
+  }
+
+  async insertSupplier(supplier: InsertSupplier): Promise<Supplier> {
+    const result = await db.insert(suppliers).values(supplier).returning();
+    return result[0];
+  }
+
+  async updateSupplier(id: string, supplier: Partial<InsertSupplier>): Promise<Supplier | undefined> {
+    const result = await db.update(suppliers).set({ ...supplier, updatedAt: new Date() }).where(eq(suppliers.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteSupplier(id: string): Promise<void> {
+    await db.delete(suppliers).where(eq(suppliers.id, id));
+  }
+
+  // Customers methods
+  async getCustomers(): Promise<Customer[]> {
+    return await db.select().from(customers).orderBy(asc(customers.name));
+  }
+
+  async getCustomerById(id: string): Promise<Customer | undefined> {
+    const result = await db.select().from(customers).where(eq(customers.id, id)).limit(1);
+    return result[0];
+  }
+
+  async insertCustomer(customer: InsertCustomer): Promise<Customer> {
+    const result = await db.insert(customers).values(customer).returning();
+    return result[0];
+  }
+
+  async updateCustomer(id: string, customer: Partial<InsertCustomer>): Promise<Customer | undefined> {
+    const result = await db.update(customers).set({ ...customer, updatedAt: new Date() }).where(eq(customers.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteCustomer(id: string): Promise<void> {
+    await db.delete(customers).where(eq(customers.id, id));
+  }
+
+  // Transactions methods
+  async getTransactions(): Promise<Transaction[]> {
+    return await db.select().from(transactions).orderBy(desc(transactions.createdAt));
+  }
+
+  async getTransactionById(id: string): Promise<Transaction | undefined> {
+    const result = await db.select().from(transactions).where(eq(transactions.id, id)).limit(1);
+    return result[0];
+  }
+
+  async insertTransaction(transaction: InsertTransaction): Promise<Transaction> {
+    const result = await db.insert(transactions).values(transaction).returning();
+    return result[0];
+  }
+
+  async updateTransaction(id: string, transaction: Partial<InsertTransaction>): Promise<Transaction | undefined> {
+    const result = await db.update(transactions).set({ ...transaction, updatedAt: new Date() }).where(eq(transactions.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteTransaction(id: string): Promise<void> {
+    await db.delete(transactions).where(eq(transactions.id, id));
+  }
+
+  // Batches methods
+  async getBatches(): Promise<Batch[]> {
+    return await db.select().from(batches).orderBy(desc(batches.createdAt));
+  }
+
+  async getBatchById(id: string): Promise<Batch | undefined> {
+    const result = await db.select().from(batches).where(eq(batches.id, id)).limit(1);
+    return result[0];
+  }
+
+  async insertBatch(batch: InsertBatch): Promise<Batch> {
+    const result = await db.insert(batches).values(batch).returning();
+    return result[0];
+  }
+
+  async updateBatch(id: string, batch: Partial<InsertBatch>): Promise<Batch | undefined> {
+    const result = await db.update(batches).set({ ...batch, updatedAt: new Date() }).where(eq(batches.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteBatch(id: string): Promise<void> {
+    await db.delete(batches).where(eq(batches.id, id));
+  }
+
+  // Batch Expenses methods
+  async getBatchExpenses(): Promise<BatchExpense[]> {
+    return await db.select().from(batchExpenses).orderBy(desc(batchExpenses.createdAt));
+  }
+
+  async getBatchExpenseById(id: string): Promise<BatchExpense | undefined> {
+    const result = await db.select().from(batchExpenses).where(eq(batchExpenses.id, id)).limit(1);
+    return result[0];
+  }
+
+  async insertBatchExpense(expense: InsertBatchExpense): Promise<BatchExpense> {
+    const result = await db.insert(batchExpenses).values(expense).returning();
+    return result[0];
+  }
+
+  async updateBatchExpense(id: string, expense: Partial<InsertBatchExpense>): Promise<BatchExpense | undefined> {
+    const result = await db.update(batchExpenses).set({ ...expense, updatedAt: new Date() }).where(eq(batchExpenses.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteBatchExpense(id: string): Promise<void> {
+    await db.delete(batchExpenses).where(eq(batchExpenses.id, id));
+  }
+
+  // Animal Sales methods
+  async getAnimalSales(): Promise<AnimalSale[]> {
+    return await db.select().from(animalSales).orderBy(desc(animalSales.createdAt));
+  }
+
+  async getAnimalSaleById(id: string): Promise<AnimalSale | undefined> {
+    const result = await db.select().from(animalSales).where(eq(animalSales.id, id)).limit(1);
+    return result[0];
+  }
+
+  async insertAnimalSale(sale: InsertAnimalSale): Promise<AnimalSale> {
+    const result = await db.insert(animalSales).values(sale).returning();
+    return result[0];
+  }
+
+  async updateAnimalSale(id: string, sale: Partial<InsertAnimalSale>): Promise<AnimalSale | undefined> {
+    const result = await db.update(animalSales).set({ ...sale, updatedAt: new Date() }).where(eq(animalSales.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteAnimalSale(id: string): Promise<void> {
+    await db.delete(animalSales).where(eq(animalSales.id, id));
+  }
+
+  // Performance Goals methods
+  async getPerformanceGoals(): Promise<PerformanceGoal[]> {
+    return await db.select().from(performanceGoals).orderBy(desc(performanceGoals.createdAt));
+  }
+
+  async getPerformanceGoalById(id: string): Promise<PerformanceGoal | undefined> {
+    const result = await db.select().from(performanceGoals).where(eq(performanceGoals.id, id)).limit(1);
+    return result[0];
+  }
+
+  async insertPerformanceGoal(goal: InsertPerformanceGoal): Promise<PerformanceGoal> {
+    const result = await db.insert(performanceGoals).values(goal).returning();
+    return result[0];
+  }
+
+  async updatePerformanceGoal(id: string, goal: Partial<InsertPerformanceGoal>): Promise<PerformanceGoal | undefined> {
+    const result = await db.update(performanceGoals).set({ ...goal, updatedAt: new Date() }).where(eq(performanceGoals.id, id)).returning();
+    return result[0];
+  }
+
+  async deletePerformanceGoal(id: string): Promise<void> {
+    await db.delete(performanceGoals).where(eq(performanceGoals.id, id));
+  }
+
+  // Inventory methods
+  async getInventory(): Promise<InventoryItem[]> {
+    return await db.select().from(inventoryItems).orderBy(asc(inventoryItems.itemName));
+  }
+
+  async getInventoryItemById(id: string): Promise<InventoryItem | undefined> {
+    const result = await db.select().from(inventoryItems).where(eq(inventoryItems.id, id)).limit(1);
+    return result[0];
+  }
+
+  async insertInventoryItem(item: InsertInventoryItem): Promise<InventoryItem> {
+    const result = await db.insert(inventoryItems).values(item).returning();
+    return result[0];
+  }
+
+  async updateInventoryItem(id: string, item: Partial<InsertInventoryItem>): Promise<InventoryItem | undefined> {
+    const result = await db.update(inventoryItems).set({ ...item, updatedAt: new Date() }).where(eq(inventoryItems.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteInventoryItem(id: string): Promise<void> {
+    await db.delete(inventoryItems).where(eq(inventoryItems.id, id));
+  }
+
+  // Inventory Transactions methods
+  async getInventoryTransactions(): Promise<InventoryTransaction[]> {
+    return await db.select().from(inventoryTransactions).orderBy(desc(inventoryTransactions.createdAt));
+  }
+
+  async getInventoryTransactionById(id: string): Promise<InventoryTransaction | undefined> {
+    const result = await db.select().from(inventoryTransactions).where(eq(inventoryTransactions.id, id)).limit(1);
+    return result[0];
+  }
+
+  async insertInventoryTransaction(transaction: InsertInventoryTransaction): Promise<InventoryTransaction> {
+    const result = await db.insert(inventoryTransactions).values(transaction).returning();
+    
+    // Update inventory item stock
+    const item = await this.getInventoryItemById(transaction.itemId);
+    if (item) {
+      const currentStock = parseFloat(item.currentStock);
+      const transactionQty = parseFloat(transaction.quantity);
+      const newStock = transaction.transactionType === "in" 
+        ? currentStock + transactionQty 
+        : currentStock - transactionQty;
+      
+      await this.updateInventoryItem(transaction.itemId, {
+        currentStock: newStock.toString()
+      });
+    }
+    
+    return result[0];
+  }
+
+  async updateInventoryTransaction(id: string, transaction: Partial<InsertInventoryTransaction>): Promise<InventoryTransaction | undefined> {
+    const result = await db.update(inventoryTransactions).set({ ...transaction, updatedAt: new Date() }).where(eq(inventoryTransactions.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteInventoryTransaction(id: string): Promise<void> {
+    await db.delete(inventoryTransactions).where(eq(inventoryTransactions.id, id));
+  }
+
+  // Veterinary Treatments methods
+  async getVeterinaryTreatments(animalId?: string): Promise<VeterinaryTreatment[]> {
+    if (animalId) {
+      return await db.select().from(veterinaryTreatments).where(eq(veterinaryTreatments.animalId, animalId)).orderBy(desc(veterinaryTreatments.treatmentDate));
+    }
+    return await db.select().from(veterinaryTreatments).orderBy(desc(veterinaryTreatments.treatmentDate));
+  }
+
+  async getVeterinaryTreatmentById(id: string): Promise<VeterinaryTreatment | undefined> {
+    const result = await db.select().from(veterinaryTreatments).where(eq(veterinaryTreatments.id, id)).limit(1);
+    return result[0];
+  }
+
+  async insertVeterinaryTreatment(treatment: InsertVeterinaryTreatment): Promise<VeterinaryTreatment> {
+    const result = await db.insert(veterinaryTreatments).values(treatment).returning();
+    return result[0];
+  }
+
+  async updateVeterinaryTreatment(id: string, treatment: Partial<InsertVeterinaryTreatment>): Promise<VeterinaryTreatment | undefined> {
+    const result = await db.update(veterinaryTreatments).set({ ...treatment, updatedAt: new Date() }).where(eq(veterinaryTreatments.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteVeterinaryTreatment(id: string): Promise<void> {
+    await db.delete(veterinaryTreatments).where(eq(veterinaryTreatments.id, id));
+  }
+
+  // Legacy method names for compatibility
+  async getTreatments(): Promise<VeterinaryTreatment[]> {
+    return this.getVeterinaryTreatments();
+  }
+
+  async getTreatmentById(id: string): Promise<VeterinaryTreatment | undefined> {
+    return this.getVeterinaryTreatmentById(id);
+  }
+
+  async insertTreatment(treatment: InsertVeterinaryTreatment): Promise<VeterinaryTreatment> {
+    return this.insertVeterinaryTreatment(treatment);
+  }
+
+  async updateTreatment(id: string, treatment: Partial<InsertVeterinaryTreatment>): Promise<VeterinaryTreatment | undefined> {
+    return this.updateVeterinaryTreatment(id, treatment);
+  }
+
+  async deleteTreatment(id: string): Promise<void> {
+    return this.deleteVeterinaryTreatment(id);
+  }
+
+  // Vouchers methods
+  async getVouchers(): Promise<Voucher[]> {
+    return await db.select().from(vouchers).orderBy(desc(vouchers.createdAt));
+  }
+
+  async getVoucherById(id: string): Promise<Voucher | undefined> {
+    const result = await db.select().from(vouchers).where(eq(vouchers.id, id)).limit(1);
+    return result[0];
+  }
+
+  async insertVoucher(voucher: InsertVoucher): Promise<Voucher> {
+    const result = await db.insert(vouchers).values(voucher).returning();
+    return result[0];
+  }
+
+  async updateVoucher(id: string, voucher: Partial<InsertVoucher>): Promise<Voucher | undefined> {
+    const result = await db.update(vouchers).set({ ...voucher, updatedAt: new Date() }).where(eq(vouchers.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteVoucher(id: string): Promise<void> {
+    await db.delete(vouchers).where(eq(vouchers.id, id));
+  }
+
+  // 💰 ACCOUNTING ENTRIES METHODS
+  async getAccountingEntries(): Promise<AccountingEntry[]> {
+    return await db.select().from(accountingEntries).orderBy(desc(accountingEntries.entryDate));
+  }
+
+  async getAccountingEntryById(id: string): Promise<AccountingEntry | undefined> {
+    const result = await db.select().from(accountingEntries).where(eq(accountingEntries.id, id)).limit(1);
+    return result[0];
+  }
+
+  async insertAccountingEntry(entry: InsertAccountingEntry): Promise<AccountingEntry> {
+    // Auto-generate entry number if not provided
+    if (!entry.entryNumber) {
+      const count = await db.select({ count: sql`count(*)` }).from(accountingEntries);
+      const entryCount = parseInt(count[0].count.toString()) + 1;
+      entry.entryNumber = `JE-${new Date().getFullYear()}-${String(entryCount).padStart(4, '0')}`;
+    }
+    
+    const result = await db.insert(accountingEntries).values(entry).returning();
+    return result[0];
+  }
+
+  async updateAccountingEntry(id: string, entry: Partial<InsertAccountingEntry>): Promise<AccountingEntry | undefined> {
+    const result = await db.update(accountingEntries).set({ ...entry, updatedAt: new Date() }).where(eq(accountingEntries.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteAccountingEntry(id: string): Promise<void> {
+    await db.delete(accountingEntries).where(eq(accountingEntries.id, id));
+  }
+
+  // 📊 FINANCIAL REPORTS METHODS
+  async getTrialBalance(): Promise<any[]> {
+    const entries = await db.select({
+      accountCode: accountingEntries.accountCode,
+      accountName: accountingEntries.accountName,
+      debit: accountingEntries.debit,
+      credit: accountingEntries.credit,
+    }).from(accountingEntries);
+
+    // Group by account and sum debits/credits
+    const accounts = new Map<string, any>();
+    
+    entries.forEach(entry => {
+      const key = `${entry.accountCode}-${entry.accountName}`;
+      if (!accounts.has(key)) {
+        accounts.set(key, {
+          accountCode: entry.accountCode,
+          accountName: entry.accountName,
+          totalDebit: 0,
+          totalCredit: 0,
+          balance: 0
+        });
+      }
+      
+      const account = accounts.get(key);
+      account.totalDebit += parseFloat(entry.debit);
+      account.totalCredit += parseFloat(entry.credit);
+      account.balance = account.totalDebit - account.totalCredit;
+    });
+
+    return Array.from(accounts.values());
+  }
+
+  async getProfitLossReport(startDate: Date, endDate: Date): Promise<any> {
+    const entries = await db.select().from(accountingEntries)
+      .where(and(
+        gte(accountingEntries.entryDate, startDate),
+        lte(accountingEntries.entryDate, endDate)
+      ));
+
+    let revenue = 0;
+    let expenses = 0;
+    
+    entries.forEach(entry => {
+      // Revenue accounts (4xxxx)
+      if (entry.accountCode.startsWith('4')) {
+        revenue += parseFloat(entry.credit) - parseFloat(entry.debit);
+      }
+      // Expense accounts (5xxxx)
+      else if (entry.accountCode.startsWith('5')) {
+        expenses += parseFloat(entry.debit) - parseFloat(entry.credit);
+      }
+    });
+
+    return {
+      period: { startDate, endDate },
+      revenue,
+      expenses,
+      profit: revenue - expenses,
+      profitMargin: revenue > 0 ? ((revenue - expenses) / revenue) * 100 : 0
+    };
+  }
+
+  async getBalanceSheet(date: Date): Promise<any> {
+    const entries = await db.select().from(accountingEntries)
+      .where(lte(accountingEntries.entryDate, date));
+
+    let assets = 0;
+    let liabilities = 0;
+    let equity = 0;
+    
+    entries.forEach(entry => {
+      const balance = parseFloat(entry.debit) - parseFloat(entry.credit);
+      
+      // Assets (1xxxx)
+      if (entry.accountCode.startsWith('1')) {
+        assets += balance;
+      }
+      // Liabilities (2xxxx)
+      else if (entry.accountCode.startsWith('2')) {
+        liabilities += -balance; // Credit balance
+      }
+      // Equity (3xxxx)
+      else if (entry.accountCode.startsWith('3')) {
+        equity += -balance; // Credit balance
+      }
+    });
+
+    return {
+      date,
+      assets,
+      liabilities,
+      equity,
+      totalLiabilitiesAndEquity: liabilities + equity
+    };
+  }
+
+  async getCashFlowReport(startDate: Date, endDate: Date): Promise<any> {
+    const entries = await db.select().from(accountingEntries)
+      .where(and(
+        gte(accountingEntries.entryDate, startDate),
+        lte(accountingEntries.entryDate, endDate),
+        eq(accountingEntries.accountCode, '1010') // Cash account
+      ));
+
+    let inflow = 0;
+    let outflow = 0;
+    
+    entries.forEach(entry => {
+      const debit = parseFloat(entry.debit);
+      const credit = parseFloat(entry.credit);
+      
+      if (debit > credit) {
+        inflow += debit - credit;
+      } else {
+        outflow += credit - debit;
+      }
+    });
+
+    return {
+      period: { startDate, endDate },
+      inflow,
+      outflow,
+      netFlow: inflow - outflow
+    };
+  }
+
+  // Clear all data method
+  async clearAllData(): Promise<void> {
+    try {
+      await db.delete(accountingEntries);
+      await db.delete(vouchers);
+      await db.delete(veterinaryTreatments);
+      await db.delete(inventoryTransactions);
+      await db.delete(inventoryItems);
+      await db.delete(performanceGoals);
+      await db.delete(animalSales);
+      await db.delete(batchExpenses);
+      await db.delete(batches);
+      await db.delete(transactions);
+      await db.delete(customers);
+      await db.delete(suppliers);
+      await db.delete(receptions);
+      await db.delete(animals);
+      await db.delete(users);
+      console.log("✅ All data cleared successfully");
+    } catch (error) {
+      console.error("❌ Error clearing data:", error);
+      throw error;
+    }
+  }
+}
+
+export const storage = new DbStorage();

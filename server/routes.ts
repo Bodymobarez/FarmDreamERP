@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertAnimalSchema, insertReceptionSchema, insertSupplierSchema, insertCustomerSchema, insertTransactionSchema, insertVoucherSchema } from "@shared/schema";
+import { insertAnimalSchema, insertReceptionSchema, insertSupplierSchema, insertCustomerSchema, insertTransactionSchema, insertVoucherSchema } from "../shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Animals endpoints
@@ -433,7 +433,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Inventory Items endpoints
   app.get("/api/inventory", async (req, res) => {
     try {
-      const items = await storage.getInventoryItems();
+      const items = await storage.getInventory();
       res.json(items);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
@@ -757,6 +757,209 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       await storage.deleteVoucher(req.params.id);
       res.status(204).send();
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // 💰 ACCOUNTING ENTRIES ENDPOINTS
+  app.get("/api/accounting-entries", async (req, res) => {
+    try {
+      const entries = await storage.getAccountingEntries();
+      res.json(entries);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/accounting-entries", async (req, res) => {
+    try {
+      const entry = await storage.insertAccountingEntry(req.body);
+      res.status(201).json(entry);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/accounting-entries/:id", async (req, res) => {
+    try {
+      const entry = await storage.getAccountingEntryById(req.params.id);
+      if (!entry) {
+        res.status(404).json({ message: "القيد المحاسبي غير موجود" });
+        return;
+      }
+      res.json(entry);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.put("/api/accounting-entries/:id", async (req, res) => {
+    try {
+      const entry = await storage.updateAccountingEntry(req.params.id, req.body);
+      if (!entry) {
+        res.status(404).json({ message: "القيد المحاسبي غير موجود" });
+        return;
+      }
+      res.json(entry);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/accounting-entries/:id", async (req, res) => {
+    try {
+      await storage.deleteAccountingEntry(req.params.id);
+      res.status(204).send();
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // 📊 FINANCIAL REPORTS ENDPOINTS
+  app.get("/api/reports/trial-balance", async (req, res) => {
+    try {
+      const trialBalance = await storage.getTrialBalance();
+      res.json(trialBalance);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/reports/profit-loss", async (req, res) => {
+    try {
+      const startDate = req.query.startDate ? new Date(req.query.startDate as string) : new Date(new Date().getFullYear(), 0, 1);
+      const endDate = req.query.endDate ? new Date(req.query.endDate as string) : new Date();
+      
+      const report = await storage.getProfitLossReport(startDate, endDate);
+      res.json(report);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/reports/balance-sheet", async (req, res) => {
+    try {
+      const date = req.query.date ? new Date(req.query.date as string) : new Date();
+      
+      const report = await storage.getBalanceSheet(date);
+      res.json(report);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/reports/cash-flow", async (req, res) => {
+    try {
+      const startDate = req.query.startDate ? new Date(req.query.startDate as string) : new Date(new Date().getFullYear(), 0, 1);
+      const endDate = req.query.endDate ? new Date(req.query.endDate as string) : new Date();
+      
+      const report = await storage.getCashFlowReport(startDate, endDate);
+      res.json(report);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // 🔄 AUTO-ACCOUNTING: Create accounting entries when transactions happen
+  app.post("/api/auto-accounting/animal-purchase", async (req, res) => {
+    try {
+      const { animalId, supplierId, amount, description } = req.body;
+      
+      // Generate entry number
+      const entryNumber = `AP-${Date.now()}`;
+      
+      // Debit: Animals Asset
+      await storage.insertAccountingEntry({
+        entryNumber: entryNumber + "-1",
+        entryType: "purchase",
+        relatedType: "animal",
+        relatedId: animalId,
+        accountCode: "1200",
+        accountName: "الحيوانات",
+        debit: amount.toString(),
+        credit: "0",
+        description: `شراء حيوان - ${description}`
+      });
+      
+      // Credit: Accounts Payable or Cash
+      await storage.insertAccountingEntry({
+        entryNumber: entryNumber + "-2", 
+        entryType: "purchase",
+        relatedType: "supplier",
+        relatedId: supplierId,
+        accountCode: "2100",
+        accountName: "الموردين",
+        debit: "0",
+        credit: amount.toString(),
+        description: `شراء حيوان - ${description}`
+      });
+      
+      res.json({ message: "تم إنشاء القيود المحاسبية بنجاح", entryNumber });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/auto-accounting/animal-sale", async (req, res) => {
+    try {
+      const { animalId, customerId, saleAmount, costAmount, description } = req.body;
+      
+      const entryNumber = `AS-${Date.now()}`;
+      
+      // Debit: Cash/Customers
+      await storage.insertAccountingEntry({
+        entryNumber: entryNumber + "-1",
+        entryType: "sale",
+        relatedType: "customer",
+        relatedId: customerId,
+        accountCode: "1010",
+        accountName: "النقدية",
+        debit: saleAmount.toString(),
+        credit: "0",
+        description: `بيع حيوان - ${description}`
+      });
+      
+      // Credit: Sales Revenue
+      await storage.insertAccountingEntry({
+        entryNumber: entryNumber + "-2",
+        entryType: "sale", 
+        relatedType: "animal",
+        relatedId: animalId,
+        accountCode: "4100",
+        accountName: "إيرادات المبيعات",
+        debit: "0",
+        credit: saleAmount.toString(),
+        description: `بيع حيوان - ${description}`
+      });
+      
+      // Debit: Cost of Goods Sold
+      await storage.insertAccountingEntry({
+        entryNumber: entryNumber + "-3",
+        entryType: "sale",
+        relatedType: "animal", 
+        relatedId: animalId,
+        accountCode: "5100",
+        accountName: "تكلفة البضاعة المباعة",
+        debit: costAmount.toString(),
+        credit: "0",
+        description: `تكلفة حيوان مباع - ${description}`
+      });
+      
+      // Credit: Animals Asset
+      await storage.insertAccountingEntry({
+        entryNumber: entryNumber + "-4",
+        entryType: "sale",
+        relatedType: "animal",
+        relatedId: animalId, 
+        accountCode: "1200",
+        accountName: "الحيوانات",
+        debit: "0",
+        credit: costAmount.toString(),
+        description: `تكلفة حيوان مباع - ${description}`
+      });
+      
+      res.json({ message: "تم إنشاء قيود البيع بنجاح", entryNumber });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }

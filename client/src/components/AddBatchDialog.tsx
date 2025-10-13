@@ -48,9 +48,28 @@ export function AddBatchDialog() {
 
     setLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      // Real API call to create batch
+      const response = await fetch("/api/batches", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          batchName: formData.name,
+          batchNumber: `B-${Date.now()}`, // Generate batch number
+          receivedDate: formData.receivedDate,
+          count: parseInt(formData.count),
+          supplier: formData.supplier,
+          averageWeight: parseFloat(formData.averageWeight),
+          totalCost: parseFloat(formData.totalCost),
+          notes: formData.notes,
+          status: "active"
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create batch");
+      }
+
+      const newBatch = await response.json();
       const costPerAnimal = (parseFloat(formData.totalCost) / parseInt(formData.count)).toFixed(2);
       
       toast({
@@ -59,7 +78,7 @@ export function AddBatchDialog() {
           <div className="space-y-1">
             <p>الدفعة: {formData.name}</p>
             <p>العدد: {formData.count} حيوان</p>
-                        <p>التكلفة: {costPerAnimal} جنيه/حيوان</p>
+            <p>التكلفة: {costPerAnimal} جنيه/حيوان</p>
             <p className="text-cyan-600">المورد: {formData.supplier}</p>
           </div>
         ),

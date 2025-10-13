@@ -1,339 +1,66 @@
-
-> rest-express@1.0.0 dev
-> NODE_ENV=development tsx server/index.ts
-
-Environment: development
-Setting up Vite...
-Vite setup complete!
-3:21:50 PM [express] 🚀 Server is running on http://0.0.0.0:5001
-3:21:50 PM [express] 📱 Open your browser to http://localhost:5001
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-Browserslist: browsers data (caniuse-lite) is 12 months old. Please run:
-  npx update-browserslist-db@latest
-  Why you should do it regularly: https://github.com/browserslist/update-db#readme
-
-A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:23:15 PM [vite] hmr update /src/pages/Dashboard.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-3:23:15 PM [express] GET /api/animals 200 in 2ms :: []
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Template loaded, length: 758
-Template loaded, length: 758
-Page transformed, length: 1603
-3:23:15 PM [express] GET /api/weights 200 in 4ms
-Page transformed, length: 1603
-Page transformed, length: 1603
-3:23:15 PM [express] GET /api/batches 200 in 5ms
-3:23:15 PM [express] GET /api/expenses 200 in 4ms
-3:23:15 PM [express] GET /api/animals 304 in 0ms :: []
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Template loaded, length: 758
-Template loaded, length: 758
-Page transformed, length: 1603
-Page transformed, length: 1603
-3:23:15 PM [express] GET /api/weights 200 in 22ms
-3:23:15 PM [express] GET /api/batches 200 in 22ms
-Page transformed, length: 1603
-3:23:15 PM [express] GET /api/expenses 200 in 23ms
-3:23:26 PM [vite] hmr update /src/pages/Dashboard.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Template loaded, length: 758
-Template loaded, length: 758
-Page transformed, length: 1603
-3:23:26 PM [express] GET /api/weights 200 in 4ms
-Page transformed, length: 1603
-Page transformed, length: 1603
-3:23:26 PM [express] GET /api/batches 200 in 9ms
-3:23:26 PM [express] GET /api/expenses 200 in 9ms
-3:23:57 PM [vite] hmr update /src/pages/Dashboard.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Template loaded, length: 758
-Template loaded, length: 758
-Page transformed, length: 1603
-3:23:57 PM [express] GET /api/weights 200 in 3ms
-Page transformed, length: 1603
-Page transformed, length: 1603
-3:23:57 PM [express] GET /api/expenses 200 in 4ms
-3:23:57 PM [express] GET /api/batches 200 in 5ms
-3:24:05 PM [vite] hmr update /src/pages/Dashboard.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Template loaded, length: 758
-Template loaded, length: 758
-Page transformed, length: 1603
-Page transformed, length: 1603
-3:24:05 PM [express] GET /api/weights 200 in 5ms
-3:24:05 PM [express] GET /api/batches 200 in 5ms
-Page transformed, length: 1603
-3:24:05 PM [express] GET /api/expenses 200 in 4ms
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-3:24:58 PM [express] GET /api/animals 304 in 0ms :: []
-Template loaded, length: 758
-Template loaded, length: 758
-Template loaded, length: 758
-Page transformed, length: 1603
-Page transformed, length: 1603
-3:24:58 PM [express] GET /api/weights 200 in 21ms
-3:24:58 PM [express] GET /api/expenses 200 in 20ms
-Page transformed, length: 1603
-3:24:58 PM [express] GET /api/batches 200 in 22ms
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-3:26:12 PM [express] GET /api/animals 304 in 0ms :: []
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Template loaded, length: 758
-Template loaded, length: 758
-Page transformed, length: 1603
-3:26:12 PM [express] GET /api/weights 200 in 3ms
-Page transformed, length: 1603
-Page transformed, length: 1603
-3:26:12 PM [express] GET /api/batches 200 in 3ms
-3:26:12 PM [express] GET /api/expenses 200 in 3ms
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:27:06 PM [express] GET /api/animals 200 in 0ms :: []
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Template loaded, length: 758
-Template loaded, length: 758
-Page transformed, length: 1603
-3:27:06 PM [express] GET /api/weights 200 in 21ms
-Page transformed, length: 1603
-Page transformed, length: 1603
-3:27:06 PM [express] GET /api/batches 200 in 31ms
-3:27:06 PM [express] GET /api/expenses 200 in 32ms
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:28:39 PM [vite] hmr update /src/pages/KPI.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-3:28:56 PM [vite] hmr update /src/pages/KPI.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-3:29:05 PM [vite] hmr update /src/pages/KPI.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-3:29:14 PM [vite] hmr update /src/pages/KPI.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-3:29:29 PM [vite] hmr update /src/pages/KPI.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-3:29:37 PM [express] GET /api/animals 304 in 0ms :: []
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Template loaded, length: 758
-Template loaded, length: 758
-Page transformed, length: 1603
-3:29:37 PM [express] GET /api/weights 200 in 13ms
-Page transformed, length: 1603
-Page transformed, length: 1603
-3:29:37 PM [express] GET /api/batches 200 in 21ms
-3:29:37 PM [express] GET /api/expenses 200 in 21ms
-3:32:16 PM [vite] hmr update /src/pages/KPI.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-3:32:57 PM [vite] hmr update /src/pages/KPI.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-3:32:57 PM [vite] ✨ new dependencies optimized: @radix-ui/react-dropdown-menu
-3:32:57 PM [vite] ✨ optimized dependencies changed. reloading
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Template loaded, length: 758
-Page transformed, length: 1603
-Page transformed, length: 1603
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-3:32:58 PM [express] GET /api/animals 304 in 0ms :: []
-Template loaded, length: 758
-Page transformed, length: 1603
-3:32:58 PM [express] GET /api/batches 200 in 69ms
-3:32:58 PM [express] GET /api/animals 304 in 0ms :: []
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Template loaded, length: 758
-Page transformed, length: 1603
-3:32:58 PM [express] GET /api/batches 200 in 20ms
-Page transformed, length: 1603
-3:33:24 PM [vite] hmr update /src/App.tsx?v=MXDGhj3OsSwP3yoEucdls, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-3:33:24 PM [vite] hmr update /src/pages/Reports.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls, /src/pages/KPI.tsx
-3:33:24 PM [vite] page reload src/test.html
-3:33:24 PM [vite] page reload src/main.tsx
-3:33:24 PM [vite] page reload src/AppSimple.tsx
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:33:24 PM [vite] hmr update /src/pages/Dashboard.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-3:33:24 PM [vite] hmr update /src/pages/KPI.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-3:33:24 PM [vite] hmr update /src/pages/KPI.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-3:33:24 PM [express] GET /api/animals 304 in 1ms :: []
-Template loaded, length: 758
-Page transformed, length: 1603
-3:33:24 PM [express] GET /api/batches 200 in 5ms
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:33:30 PM [vite] hmr update /src/pages/KPI.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:33:30 PM [express] GET /api/batches 200 in 3ms
-3:33:39 PM [vite] hmr update /src/pages/KPI.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:33:39 PM [express] GET /api/batches 200 in 9ms
-3:33:44 PM [vite] hmr update /src/pages/KPI.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:33:44 PM [express] GET /api/batches 200 in 2ms
-3:33:53 PM [vite] hmr update /src/pages/KPI.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:33:53 PM [express] GET /api/batches 200 in 3ms
-3:34:06 PM [vite] hmr update /src/pages/KPI.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:34:06 PM [express] GET /api/batches 200 in 4ms
-3:34:14 PM [vite] hmr update /src/pages/KPI.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:34:15 PM [express] GET /api/batches 200 in 6ms
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-3:34:26 PM [express] GET /api/animals 304 in 0ms :: []
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Template loaded, length: 758
-Template loaded, length: 758
-Page transformed, length: 1603
-3:34:26 PM [express] GET /api/weights 200 in 5ms
-Page transformed, length: 1603
-Page transformed, length: 1603
-3:34:26 PM [express] GET /api/expenses 200 in 3ms
-3:34:26 PM [express] GET /api/batches 200 in 4ms
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:34:33 PM [express] GET /api/batches 200 in 3ms
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:36:58 PM [vite] hmr update /src/pages/Reports.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls, /src/pages/KPI.tsx
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:36:58 PM [express] GET /api/batches 200 in 3ms
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:36:59 PM [express] GET /api/batches 200 in 2ms
-3:37:21 PM [vite] hmr update /src/pages/Reports.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls, /src/pages/KPI.tsx
-3:37:21 PM [vite] hmr update /src/pages/KPI.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:37:21 PM [express] GET /api/batches 200 in 3ms
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:37:22 PM [express] GET /api/batches 200 in 3ms
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:37:55 PM [express] GET /api/animals 304 in 1ms :: []
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Template loaded, length: 758
-Template loaded, length: 758
-Page transformed, length: 1603
-Page transformed, length: 1603
-3:37:55 PM [express] GET /api/weights 200 in 10ms
-3:37:55 PM [express] GET /api/batches 200 in 11ms
-Page transformed, length: 1603
-3:37:55 PM [express] GET /api/expenses 200 in 13ms
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:37:59 PM [express] GET /api/batches 200 in 2ms
-3:42:00 PM [vite] hmr update /src/pages/Reports.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls, /src/pages/KPI.tsx
-3:42:01 PM [vite] ✨ new dependencies optimized: pdfmake/build/pdfmake, pdfmake/build/vfs_fonts
-3:42:01 PM [vite] ✨ optimized dependencies changed. reloading
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Template loaded, length: 758
-Page transformed, length: 1603
-Page transformed, length: 1603
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:42:23 PM [vite] hmr update /src/pages/Reports.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls, /src/pages/KPI.tsx
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:42:23 PM [express] GET /api/animals 304 in 0ms :: []
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:42:23 PM [express] GET /api/batches 200 in 23ms
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-3:42:23 PM [express] GET /api/animals 304 in 0ms :: []
-Template loaded, length: 758
-Page transformed, length: 1603
-3:42:23 PM [express] GET /api/batches 200 in 4ms
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:42:28 PM [vite] hmr update /src/pages/Reports.tsx, /src/index.css?v=MXDGhj3OsSwP3yoEucdls, /src/pages/KPI.tsx
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:42:29 PM [express] GET /api/batches 200 in 2ms
-Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
-Template loaded, length: 758
-Page transformed, length: 1603
-3:42:29 PM [express] GET /api/batches 200 in 3ms
+[dotenv@17.2.3] injecting env (19) from .env -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+[STABLE SERVER] 🚀 Server is running on http://0.0.0.0:5001
+[STABLE SERVER] 📱 Open your browser to http://localhost:5001
+[STABLE SERVER] 🎯 All your data is ready - batches, animals, accounting, KPIs!
+GET /api/health 200 in 4ms :: {"status":"healthy","timestamp":"2025-10-13T17:00…
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Found 1 batches
+GET /api/batches 200 in 582ms :: [{"id":"6129f249-8420-4c73-ae35-272f4d3bf39f",…
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 1 animals
+GET /api/animals 200 in 161ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Fetching accounting entries...
+[STABLE SERVER] Found 1 accounting entries
+GET /api/accounting 200 in 154ms :: [{"id":"22179d96-b0e3-44fa-a8eb-06cb36235a1…
+[STABLE SERVER] Fetching performance goals...
+[STABLE SERVER] Found 1 performance goals
+GET /api/performance-goals 200 in 159ms :: [{"id":"00f006e5-c94a-48fa-86df-c7a6…
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Found 1 batches
+GET /api/batches 200 in 534ms :: [{"id":"6129f249-8420-4c73-ae35-272f4d3bf39f",…
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 1 animals
+GET /api/animals 200 in 154ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Fetching accounting entries...
+[STABLE SERVER] Found 1 accounting entries
+GET /api/accounting 200 in 154ms :: [{"id":"22179d96-b0e3-44fa-a8eb-06cb36235a1…
+[STABLE SERVER] Fetching performance goals...
+[STABLE SERVER] Found 1 performance goals
+GET /api/performance-goals 200 in 153ms :: [{"id":"00f006e5-c94a-48fa-86df-c7a6…
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Found 1 batches
+GET /api/batches 200 in 453ms :: [{"id":"6129f249-8420-4c73-ae35-272f4d3bf39f",…
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 1 animals
+GET /api/animals 200 in 476ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:05:20.568Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:10:20.677Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:15:20.677Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:20:20.678Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:25:20.673Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:30:20.676Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:35:20.676Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:40:20.674Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:45:20.675Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:50:20.675Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:55:20.691Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:00:20.714Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:05:20.716Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:10:20.718Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:15:20.776Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:20:20.780Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:25:20.786Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:30:20.792Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:35:20.797Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:40:20.803Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:45:20.806Z
+[STABLE SERVER] Fetching accounting entries...
+[STABLE SERVER] Found 1 accounting entries
+GET /api/accounting 200 in 1020ms :: [{"id":"22179d96-b0e3-44fa-a8eb-06cb36235a…
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:50:20.812Z
+[STABLE SERVER] Fetching performance goals...
+[STABLE SERVER] Found 1 performance goals
+GET /api/performance-goals 200 in 723ms :: [{"id":"00f006e5-c94a-48fa-86df-c7a6…
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:55:20.818Z
+[STABLE SERVER] SIGTERM received, shutting down gracefully
+[STABLE SERVER] Process terminated

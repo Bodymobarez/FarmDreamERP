@@ -1,0 +1,422 @@
+[dotenv@17.2.3] injecting env (18) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[STABLE SERVER] Setting up Vite for frontend...
+[STABLE SERVER] Vite setup complete!
+[STABLE SERVER] Uncaught exception: Error: listen EADDRINUSE: address already in use 0.0.0.0:5001
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at nod[STABLE SERVER] Fetching suppliers...
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:07:5[STABLE SERVER] Keep-alive ping at 2025-10-13T19:12:49.289Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T19:17:49.266Z
+ist?
+GET /api/receptions 200 in 38ms
+[STABLE SERVER] Found 0 suppliers
+GET /api/suppliers 304 in 582ms :: []
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:07:52 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 3ms
+GET /api/health 200 in 1ms :: {"status":"healthy","timestamp":"2025-10-13T19:08…
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 456ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 451ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:08:20 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/receptions 200 in 4ms
+[STABLE SERVER] Fetching suppliers...
+[STABLE SERVER] Found 0 suppliers
+GET /api/suppliers 304 in 456ms :: []
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:08:22 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 2ms
+[STABLE SERVER] Creating pen: {
+  name: 'test',
+  capacity: 50,
+  penType: 'مفتوح',
+  location: 'الجانب الشمالي',
+  notes: 'عنبر تجريبي'
+}
+[STABLE SERVER] Pen created: {
+  id: 'pen-1760382509476',
+  name: 'test',
+  capacity: 50,
+  penType: 'مفتوح',
+  location: 'الجانب الشمالي',
+  notes: 'عنبر تجريبي',
+  createdAt: '2025-10-13T19:08:29.476Z'
+}
+POST /api/pens 200 in 1ms :: {"id":"pen-1760382509476","name":"test","capacity"…
+[STABLE SERVER] Fetching suppliers...
+[STABLE SERVER] Found 0 suppliers
+GET /api/suppliers 304 in 474ms :: []
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 155ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 458ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:08:52 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 3ms
+[STABLE SERVER] Creating pen: { name: 'test', capacity: 50, penType: 'مفتوح' }
+[STABLE SERVER] Pen created: {
+  id: 'pen-1760382539753',
+  name: 'test',
+  capacity: 50,
+  penType: 'مفتوح',
+  createdAt: '2025-10-13T19:08:59.753Z'
+}
+POST /api/pens 200 in 1ms :: {"id":"pen-1760382539753","name":"test","capacity"…
+[STABLE SERVER] Fetching suppliers...
+[STABLE SERVER] Found 0 suppliers
+GET /api/suppliers 304 in 459ms :: []
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Found 2 batches
+GET /api/batches 200 in 153ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 392ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 454ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+Browserslist: browsers data (caniuse-lite) is 12 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Fetching customers...
+[STABLE SERVER] Fetching suppliers...
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Template loaded, length: 759
+Page transformed, length: 1014
+10:09:12 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 11ms
+Page transformed, length: 1014
+10:09:12 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/transactions 200 in 11ms
+[STABLE SERVER] Found 0 suppliers
+GET /api/suppliers 304 in 447ms :: []
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 465ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 471ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Found 0 customers
+GET /api/customers 304 in 476ms :: []
+[STABLE SERVER] Fetching suppliers...
+[STABLE SERVER] Found 0 suppliers
+GET /api/suppliers 304 in 451ms :: []
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:09:42 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 3ms
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 520ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 517ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Fetching suppliers...
+[STABLE SERVER] Found 0 suppliers
+GET /api/suppliers 304 in 445ms :: []
+10:10:00 PM [vite] hmr update /src/components/AddPenDialog.tsx, /src/index.css
+10:10:00 PM [vite] hmr update /src/components/AddBatchDialog.tsx, /src/index.css
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:10:12 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 3ms
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 453ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 457ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Fetching suppliers...
+[STABLE SERVER] Found 0 suppliers
+GET /api/suppliers 304 in 470ms :: []
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:10:42 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 2ms
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 467ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 467ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Fetching suppliers...
+[STABLE SERVER] Found 0 suppliers
+GET /api/suppliers 304 in 443ms :: []
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:11:12 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 3ms
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 521ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 531ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Creating pen: {
+  name: 'test',
+  capacity: 50,
+  penType: 'مفتوح',
+  batchName: null,
+  location: '',
+  notes: '',
+  status: 'نشط',
+  current: 0
+}
+[STABLE SERVER] Pen created: {
+  id: 'pen-1760382696283',
+  name: 'test',
+  capacity: 50,
+  penType: 'مفتوح',
+  batchName: null,
+  location: '',
+  notes: '',
+  status: 'نشط',
+  current: 0,
+  createdAt: '2025-10-13T19:11:36.283Z'
+}
+POST /api/pens 200 in 1ms :: {"id":"pen-1760382696283","name":"test","capacity"…
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Found 2 batches
+GET /api/batches 200 in 443ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 1 animals
+GET /api/animals 200 in 153ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Fetching accounting entries...
+[STABLE SERVER] Found 1 accounting entries
+GET /api/accounting 200 in 157ms :: [{"id":"22179d96-b0e3-44fa-a8eb-06cb36235a1…
+[STABLE SERVER] Fetching performance goals...
+[STABLE SERVER] Found 1 performance goals
+GET /api/performance-goals 200 in 148ms :: [{"id":"00f006e5-c94a-48fa-86df-c7a6…
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:11:42 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 2ms
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 443ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 440ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Creating pen: {
+  name: 'test3',
+  capacity: 100,
+  penType: 'مفتوح',
+  batchName: null,
+  location: '',
+  notes: '',
+  status: 'نشط',
+  current: 0
+}
+[STABLE SERVER] Pen created: {
+  id: 'pen-1760382719258',
+  name: 'test3',
+  capacity: 100,
+  penType: 'مفتوح',
+  batchName: null,
+  location: '',
+  notes: '',
+  status: 'نشط',
+  current: 0,
+  createdAt: '2025-10-13T19:11:59.258Z'
+}
+POST /api/pens 200 in 1ms :: {"id":"pen-1760382719258","name":"test3","capacity…
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:12:12 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 4ms
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 460ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 462ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Fetching animals...
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+[STABLE SERVER] Fetching customers...
+[STABLE SERVER] Fetching suppliers...
+Template loaded, length: 759
+Template loaded, length: 759
+Page transformed, length: 1014
+10:12:21 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 6ms
+Page transformed, length: 1014
+10:12:21 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/transactions 200 in 7ms
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 449ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 460ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Found 0 suppliers
+GET /api/suppliers 304 in 466ms :: []
+[STABLE SERVER] Found 0 customers
+GET /api/customers 304 in 468ms :: []
+[STABLE SERVER] Keep-alive ping at 2025-10-13T19:12:41.371Z
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:12:51 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 5ms
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Fetching suppliers...
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:12:52 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/receptions 200 in 2ms
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 519ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 514ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Found 0 suppliers
+GET /api/suppliers 304 in 449ms :: []
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:13:21 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 2ms
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 510ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 523ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:13:51 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 2ms
+10:13:51 PM [vite] hmr update /src/components/AddSupplierDialog.tsx, /src/index.css
+10:13:52 PM [vite] hmr update /src/components/AddSupplierDialog.tsx, /src/index.css
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 538ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 553ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:14:21 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 2ms
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 444ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 442ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:14:51 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 2ms
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 502ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 486ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:15:21 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 1ms
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 484ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 519ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:15:51 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 6ms
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 455ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 448ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:16:21 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 3ms
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 555ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 586ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Fetching suppliers...
+[STABLE SERVER] Found 0 suppliers
+GET /api/suppliers 200 in 644ms :: []
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:16:51 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 4ms
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 457ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 458ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:17:21 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 3ms
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 460ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 458ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Keep-alive ping at 2025-10-13T19:17:41.349Z
+Loading template from: /Volumes/My Drive/Dev/dream farm/FarmDreamERP/client/index.html
+Template loaded, length: 759
+Page transformed, length: 1014
+10:17:51 PM [vite] Pre-transform error: Failed to load url /api/src/main.tsx (resolved id: /api/src/main.tsx). Does the file exist?
+GET /api/inventory 200 in 2ms
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Found 2 batches
+GET /api/batches 304 in 473ms :: [{"id":"a9f2c3ed-24a7-4b07-96ae-6ffc604da73d",…
+[STABLE SERVER] Found 1 animals
+GET /api/animals 304 in 514ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
