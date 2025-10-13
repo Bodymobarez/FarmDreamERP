@@ -69,9 +69,17 @@ export default function Dashboard() {
     .filter((t: any) => t.transactionType === "sale" || t.transactionType === "receipt")
     .reduce((sum: number, t: any) => sum + parseFloat(t.amount || "0"), 0);
 
-  const totalExpenses = transactions
-    .filter((t: any) => t.transactionType === "purchase" || t.transactionType === "payment")
-    .reduce((sum: number, t: any) => sum + parseFloat(t.amount || "0"), 0);
+  // حساب التكاليف بشكل صحيح من الدفعات
+  const totalExpenses = batches.reduce((sum: number, batch: any) => {
+    const batchTotalCost = parseFloat(batch.totalCost || 0);
+    return sum + batchTotalCost;
+  }, 0);
+  
+  // حساب تكلفة الأعلاف من الدفعات
+  const feedExpenses = batches.reduce((sum: number, batch: any) => {
+    const batchFeedCost = parseFloat(batch.feedCost || 0);
+    return sum + batchFeedCost;
+  }, 0);
 
   const netProfit = totalRevenue - totalExpenses;
   const profitMargin = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0;
@@ -105,7 +113,7 @@ export default function Dashboard() {
   }, 0);
 
   // الأنشطة الأخيرة
-  const recentActivities = [];
+  const recentActivities: any[] = [];
 
   // Show loading state
   const isLoading = isLoadingAnimals || isLoadingBatches || isLoadingCustomers || isLoadingSuppliers;
