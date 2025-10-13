@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { InMemoryStorage } from '../server/storage';
+import { DbStorage } from '../server/storage';
 
-const storage = new InMemoryStorage();
+const storage = new DbStorage();
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
