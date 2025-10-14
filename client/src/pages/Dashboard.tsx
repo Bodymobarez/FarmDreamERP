@@ -1,6 +1,15 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   LayoutDashboard,
   TrendingUp,
@@ -23,10 +32,32 @@ import {
   Target,
   Zap,
   BarChart3,
+  Home,
+  Truck,
+  UserPlus,
+  Stethoscope,
+  ChevronDown,
+  Baby,
+  Wallet,
 } from "lucide-react";
+
+// Import add dialog components
+import { AddAnimalDialog } from "@/components/AddAnimalDialog";
+import { AddBatchDialog } from "@/components/AddBatchDialog";
+import { AddCustomerDialog } from "@/components/AddCustomerDialog";
+import { AddSupplierDialog } from "@/components/AddSupplierDialog";
+import { AddReceptionDialog } from "@/components/AddReceptionDialog";
+import { AddNewbornDialog } from "@/components/AddNewbornDialog";
+import { AddExpenseDialog } from "@/components/AddExpenseDialog";
+import { AddInventoryDialog } from "@/components/AddInventoryDialog";
+import { AddWeightDialog } from "@/components/AddWeightDialog";
+import { AddTreatmentDialog } from "@/components/AddTreatmentDialog";
 
 export default function Dashboard() {
   console.log('🔵 Dashboard component rendering...');
+  
+  // State for quick add dropdown
+  const [quickAddOpen, setQuickAddOpen] = useState(false);
   
   // Fetch data
   const { data: animalsData, isLoading: isLoadingAnimals } = useQuery({ queryKey: ["/api/animals"] });
@@ -152,10 +183,179 @@ export default function Dashboard() {
             <Calendar className="w-4 h-4" />
             اليوم
           </Button>
-          <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
-            <Plus className="w-4 h-4" />
-            إضافة جديد
-          </Button>
+          
+          {/* Enhanced Quick Add Dropdown */}
+          <DropdownMenu open={quickAddOpen} onOpenChange={setQuickAddOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button className="gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg">
+                <Plus className="w-4 h-4" />
+                إضافة جديد
+                <ChevronDown className="w-4 h-4 ml-1" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64 p-2">
+              <DropdownMenuLabel className="text-base font-bold text-center py-2">
+                🚀 إضافة سريعة
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              
+              {/* Animals & Batches Section */}
+              <div className="space-y-1">
+                <p className="text-xs font-semibold text-muted-foreground px-2 py-1">الحيوانات والدفعات</p>
+                <AddAnimalDialog>
+                  <DropdownMenuItem className="cursor-pointer hover:bg-emerald-50 rounded-md p-3" onSelect={(e) => e.preventDefault()}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                        <Beef className="w-4 h-4 text-emerald-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">إضافة حيوان</p>
+                        <p className="text-xs text-muted-foreground">تسجيل حيوان جديد</p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                </AddAnimalDialog>
+                
+                <AddNewbornDialog>
+                  <DropdownMenuItem className="cursor-pointer hover:bg-pink-50 rounded-md p-3" onSelect={(e) => e.preventDefault()}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center">
+                        <Baby className="w-4 h-4 text-pink-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">تسجيل مولود</p>
+                        <p className="text-xs text-muted-foreground">مولود جديد</p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                </AddNewbornDialog>
+                
+                <AddBatchDialog>
+                  <DropdownMenuItem className="cursor-pointer hover:bg-cyan-50 rounded-md p-3" onSelect={(e) => e.preventDefault()}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-cyan-100 rounded-lg flex items-center justify-center">
+                        <Package className="w-4 h-4 text-cyan-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">إضافة دفعة</p>
+                        <p className="text-xs text-muted-foreground">دفعة حيوانات جديدة</p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                </AddBatchDialog>
+                
+                <AddReceptionDialog>
+                  <DropdownMenuItem className="cursor-pointer hover:bg-orange-50 rounded-md p-3" onSelect={(e) => e.preventDefault()}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <ShoppingCart className="w-4 h-4 text-orange-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">استقبال دفعة</p>
+                        <p className="text-xs text-muted-foreground">شراء من مورد</p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                </AddReceptionDialog>
+              </div>
+              
+              <DropdownMenuSeparator className="my-2" />
+              
+              {/* People & Suppliers Section */}
+              <div className="space-y-1">
+                <p className="text-xs font-semibold text-muted-foreground px-2 py-1">العملاء والموردين</p>
+                <AddCustomerDialog>
+                  <DropdownMenuItem className="cursor-pointer hover:bg-green-50 rounded-md p-3" onSelect={(e) => e.preventDefault()}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Users className="w-4 h-4 text-green-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">إضافة عميل</p>
+                        <p className="text-xs text-muted-foreground">عميل جديد</p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                </AddCustomerDialog>
+                
+                <AddSupplierDialog>
+                  <DropdownMenuItem className="cursor-pointer hover:bg-violet-50 rounded-md p-3" onSelect={(e) => e.preventDefault()}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center">
+                        <Truck className="w-4 h-4 text-violet-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">إضافة مورد</p>
+                        <p className="text-xs text-muted-foreground">مورد جديد</p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                </AddSupplierDialog>
+              </div>
+              
+              <DropdownMenuSeparator className="my-2" />
+              
+              {/* Operations Section */}
+              <div className="space-y-1">
+                <p className="text-xs font-semibold text-muted-foreground px-2 py-1">العمليات اليومية</p>
+                <AddWeightDialog>
+                  <DropdownMenuItem className="cursor-pointer hover:bg-purple-50 rounded-md p-3" onSelect={(e) => e.preventDefault()}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <Scale className="w-4 h-4 text-purple-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">تسجيل وزن</p>
+                        <p className="text-xs text-muted-foreground">وزن حيوان</p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                </AddWeightDialog>
+                
+                <AddTreatmentDialog>
+                  <DropdownMenuItem className="cursor-pointer hover:bg-red-50 rounded-md p-3" onSelect={(e) => e.preventDefault()}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                        <Stethoscope className="w-4 h-4 text-red-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">علاج بيطري</p>
+                        <p className="text-xs text-muted-foreground">تسجيل علاج</p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                </AddTreatmentDialog>
+                
+                <AddExpenseDialog>
+                  <DropdownMenuItem className="cursor-pointer hover:bg-yellow-50 rounded-md p-3" onSelect={(e) => e.preventDefault()}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <Wallet className="w-4 h-4 text-yellow-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">إضافة مصروف</p>
+                        <p className="text-xs text-muted-foreground">مصروف جديد</p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                </AddExpenseDialog>
+                
+                <AddInventoryDialog>
+                  <DropdownMenuItem className="cursor-pointer hover:bg-indigo-50 rounded-md p-3" onSelect={(e) => e.preventDefault()}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                        <Package className="w-4 h-4 text-indigo-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">صنف مخزون</p>
+                        <p className="text-xs text-muted-foreground">إضافة للمخزون</p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                </AddInventoryDialog>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
