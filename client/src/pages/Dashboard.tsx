@@ -59,18 +59,37 @@ export default function Dashboard() {
   // State for quick add dropdown
   const [quickAddOpen, setQuickAddOpen] = useState(false);
   
-  // Fetch data
-  const { data: animalsData, isLoading: isLoadingAnimals } = useQuery({ queryKey: ["/api/animals"] });
+  // Fetch data with optimized settings
+  const { data: animalsData, isLoading: isLoadingAnimals } = useQuery({ 
+    queryKey: ["/api/animals"],
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
   const animals = (animalsData as any[]) || [];
 
-  const { data: batchesData, isLoading: isLoadingBatches } = useQuery({ queryKey: ["/api/batches"] });
+  const { data: batchesData, isLoading: isLoadingBatches } = useQuery({ 
+    queryKey: ["/api/batches"],
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
   const batches = (batchesData as any[]) || [];
 
-  const { data: customersData, isLoading: isLoadingCustomers } = useQuery({ queryKey: ["/api/customers"] });
+  const { data: customersData, isLoading: isLoadingCustomers } = useQuery({ 
+    queryKey: ["/api/customers"],
+    staleTime: 5 * 60 * 1000, // 5 minutes - customers change less frequently
+  });
   const customers = (customersData as any[]) || [];
 
-  const { data: suppliersData, isLoading: isLoadingSuppliers } = useQuery({ queryKey: ["/api/suppliers"] });
+  const { data: suppliersData, isLoading: isLoadingSuppliers } = useQuery({ 
+    queryKey: ["/api/suppliers"],
+    staleTime: 5 * 60 * 1000, // 5 minutes - suppliers change less frequently
+  });
   const suppliers = (suppliersData as any[]) || [];
+  
+  // Loading skeleton component
+  const LoadingSkeleton = ({ className = "", children }: { className?: string, children?: React.ReactNode }) => (
+    <div className={`animate-pulse ${className}`}>
+      {children || <div className="bg-gray-200 rounded-md h-4 w-full"></div>}
+    </div>
+  );
   
   console.log('📊 Dashboard data:', { 
     animals: animals.length, 
@@ -78,10 +97,16 @@ export default function Dashboard() {
     loading: isLoadingAnimals || isLoadingBatches || isLoadingCustomers || isLoadingSuppliers
   });
 
-  const { data: transactionsData } = useQuery({ queryKey: ["/api/transactions"] });
+  const { data: transactionsData, isLoading: isLoadingTransactions } = useQuery({ 
+    queryKey: ["/api/transactions"],
+    staleTime: 1 * 60 * 1000, // 1 minute - transactions are important
+  });
   const transactions = (transactionsData as any[]) || [];
 
-  const { data: inventoryData } = useQuery({ queryKey: ["/api/inventory"] });
+  const { data: inventoryData, isLoading: isLoadingInventory } = useQuery({ 
+    queryKey: ["/api/inventory"],
+    staleTime: 3 * 60 * 1000, // 3 minutes
+  });
   const inventory = (inventoryData as any[]) || [];
 
   // حساب الإحصائيات
@@ -146,15 +171,15 @@ export default function Dashboard() {
   // الأنشطة الأخيرة
   const recentActivities: any[] = [];
 
-  // Show loading state
-  const isLoading = isLoadingAnimals || isLoadingBatches || isLoadingCustomers || isLoadingSuppliers;
+  // Show progressive loading - only show main loading if ALL critical data is loading
+  const isCriticalLoading = isLoadingAnimals && isLoadingBatches;
   
-  if (isLoading) {
+  if (isCriticalLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-xl font-semibold text-gray-700">جاري تحميل لوحة التحكم...</p>
+          <p className="text-xl font-semibold text-gray-700">جاري تحميل البيانات الأساسية...</p>
           <p className="text-sm text-gray-500 mt-2">يرجى الانتظار قليلاً</p>
         </div>
       </div>
@@ -467,7 +492,11 @@ export default function Dashboard() {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">العملاء</p>
-              <p className="text-2xl font-bold text-green-600">{totalCustomers}</p>
+              {isLoadingCustomers ? (
+                <LoadingSkeleton className="h-8 w-16 bg-green-100" />
+              ) : (
+                <p className="text-2xl font-bold text-green-600">{totalCustomers}</p>
+              )}
             </div>
           </div>
         </Card>
@@ -479,7 +508,11 @@ export default function Dashboard() {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">الموردين</p>
-              <p className="text-2xl font-bold text-violet-600">{totalSuppliers}</p>
+              {isLoadingSuppliers ? (
+                <LoadingSkeleton className="h-8 w-16 bg-violet-100" />
+              ) : (
+                <p className="text-2xl font-bold text-violet-600">{totalSuppliers}</p>
+              )}
             </div>
           </div>
         </Card>

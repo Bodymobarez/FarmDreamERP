@@ -50,17 +50,18 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: getQueryFn({ on401: "throw" }),
-      refetchInterval: 30000, // تحديث كل 30 ثانية
-      refetchOnWindowFocus: true, // تحديث عند العودة للصفحة
-      staleTime: 5000, // البيانات تعتبر قديمة بعد 5 ثواني
-      retry: false,
+      refetchInterval: false, // إيقاف التحديث التلقائي
+      refetchOnWindowFocus: false, // إيقاف التحديث عند العودة للنافذة
+      staleTime: 5 * 60 * 1000, // البيانات صالحة لمدة 5 دقائق
+      cacheTime: 10 * 60 * 1000, // الاحتفاظ بالكاش لمدة 10 دقائق
+      retry: 1, // محاولة واحدة فقط عند الفشل
+      retryDelay: 1000, // تأخير ثانية واحدة بين المحاولات
     },
     mutations: {
-      retry: false,
-      onSuccess: () => {
-        // إعادة تحديث جميع الاستعلامات بعد نجاح أي mutation
-        queryClient.invalidateQueries();
-      },
+      retry: 1,
+      retryDelay: 1000,
+      // إزالة invalidateQueries التلقائي
+      onSuccess: undefined,
     },
   },
 });

@@ -861,7 +861,7 @@ export class DbStorage implements IStorage {
 
   // Animals methods
   async getAnimals(): Promise<Animal[]> {
-    return await db.select().from(animals).orderBy(desc(animals.createdAt));
+    return await db.select().from(animals).orderBy(desc(animals.createdAt)).limit(1000);
   }
 
   async getAnimalById(id: string): Promise<Animal | undefined> {
@@ -885,7 +885,7 @@ export class DbStorage implements IStorage {
 
   // Receptions methods
   async getReceptions(): Promise<Reception[]> {
-    return await db.select().from(receptions).orderBy(desc(receptions.createdAt));
+    return await db.select().from(receptions).orderBy(desc(receptions.createdAt)).limit(500);
   }
 
   async getReceptionById(id: string): Promise<Reception | undefined> {
@@ -909,7 +909,7 @@ export class DbStorage implements IStorage {
 
   // Suppliers methods
   async getSuppliers(): Promise<Supplier[]> {
-    return await db.select().from(suppliers).orderBy(asc(suppliers.name));
+    return await db.select().from(suppliers).orderBy(asc(suppliers.name)).limit(200);
   }
 
   async getSupplierById(id: string): Promise<Supplier | undefined> {
@@ -933,7 +933,7 @@ export class DbStorage implements IStorage {
 
   // Customers methods
   async getCustomers(): Promise<Customer[]> {
-    return await db.select().from(customers).orderBy(asc(customers.name));
+    return await db.select().from(customers).orderBy(asc(customers.name)).limit(200);
   }
 
   async getCustomerById(id: string): Promise<Customer | undefined> {
@@ -957,7 +957,7 @@ export class DbStorage implements IStorage {
 
   // Transactions methods
   async getTransactions(): Promise<Transaction[]> {
-    return await db.select().from(transactions).orderBy(desc(transactions.createdAt));
+    return await db.select().from(transactions).orderBy(desc(transactions.createdAt)).limit(1000);
   }
 
   async getTransactionById(id: string): Promise<Transaction | undefined> {
@@ -981,7 +981,7 @@ export class DbStorage implements IStorage {
 
   // Batches methods
   async getBatches(): Promise<Batch[]> {
-    return await db.select().from(batches).orderBy(desc(batches.createdAt));
+    return await db.select().from(batches).orderBy(desc(batches.createdAt)).limit(100);
   }
 
   async getBatchById(id: string): Promise<Batch | undefined> {
@@ -1077,7 +1077,7 @@ export class DbStorage implements IStorage {
 
   // Inventory methods
   async getInventory(): Promise<InventoryItem[]> {
-    return await db.select().from(inventoryItems).orderBy(asc(inventoryItems.itemName));
+    return await db.select().from(inventoryItems).orderBy(asc(inventoryItems.itemName)).limit(500);
   }
 
   async getInventoryItemById(id: string): Promise<InventoryItem | undefined> {
