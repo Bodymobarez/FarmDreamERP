@@ -112,6 +112,13 @@ export interface IStorage {
   getProfitLossReport(startDate: Date, endDate: Date): Promise<any>;
   getBalanceSheet(date: Date): Promise<any>;
   getCashFlowReport(startDate: Date, endDate: Date): Promise<any>;
+  
+  // Barns methods
+  getBarns(): Promise<any[]>;
+  getBarnById(id: string): Promise<any | undefined>;
+  insertBarn(barn: any): Promise<any>;
+  updateBarn(id: string, barn: any): Promise<any | undefined>;
+  deleteBarn(id: string): Promise<void>;
 }
 
 export class InMemoryStorage implements IStorage {
@@ -839,7 +846,7 @@ export class InMemoryStorage implements IStorage {
 
 // Database Storage Implementation using Drizzle ORM
 import { db } from "./db";
-import { users, animals, receptions, suppliers, customers, transactions, batches, batchExpenses, animalSales, performanceGoals, inventoryItems, inventoryTransactions, veterinaryTreatments, vouchers, accountingEntries } from "../shared/schema";
+import { users, animals, receptions, suppliers, customers, transactions, batches, batchExpenses, animalSales, performanceGoals, inventoryItems, inventoryTransactions, veterinaryTreatments, vouchers, accountingEntries, barns } from "../shared/schema";
 import { eq, and, gte, lte, desc, asc, sql } from "drizzle-orm";
 
 export class DbStorage implements IStorage {
@@ -1391,6 +1398,31 @@ export class DbStorage implements IStorage {
       console.error("❌ Error clearing data:", error);
       throw error;
     }
+  }
+
+  // Barns methods
+  async getBarns(): Promise<any[]> {
+    const result = await db.select().from(barns);
+    return result;
+  }
+
+  async getBarnById(id: string): Promise<any | undefined> {
+    const result = await db.select().from(barns).where(eq(barns.id, id));
+    return result[0];
+  }
+
+  async insertBarn(barn: any): Promise<any> {
+    const result = await db.insert(barns).values(barn).returning();
+    return result[0];
+  }
+
+  async updateBarn(id: string, barn: any): Promise<any | undefined> {
+    const result = await db.update(barns).set(barn).where(eq(barns.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteBarn(id: string): Promise<void> {
+    await db.delete(barns).where(eq(barns.id, id));
   }
 }
 

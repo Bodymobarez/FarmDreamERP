@@ -9,7 +9,7 @@ const app = express();
 app.use(cors({
   origin: [
     'https://farm.adsolutions-eg.com',
-    'http://localhost:5001',
+    'http://localhost:3000',
     'http://localhost:5173', // Vite dev server
   ],
   credentials: true,
@@ -81,7 +81,7 @@ app.use((req, res, next) => {
     return app;
   }
 
-  const port = parseInt(process.env.PORT || '5001', 10);
+  const port = parseInt(process.env.PORT || '3000', 10);
   const host = process.env.HOST || "0.0.0.0";
   server.listen(port, host, () => {
     log(`🚀 Server is running on http://${host}:${port}`);

@@ -146,6 +146,30 @@ export const insertReceptionSchema = createInsertSchema(receptions).omit({
 export type InsertReception = z.infer<typeof insertReceptionSchema>;
 export type Reception = typeof receptions.$inferSelect;
 
+// Barns table
+export const barns = pgTable("barns", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  barnNumber: varchar("barn_number", { length: 50 }).notNull().unique(),
+  barnName: varchar("barn_name", { length: 100 }).notNull(),
+  capacity: integer("capacity").notNull().default(50),
+  currentOccupancy: integer("current_occupancy").notNull().default(0),
+  barnType: varchar("barn_type", { length: 50 }).notNull().default("fattening"),
+  location: varchar("location", { length: 100 }),
+  status: varchar("status", { length: 20 }).notNull().default("active"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertBarnSchema = createInsertSchema(barns).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertBarn = z.infer<typeof insertBarnSchema>;
+export type Barn = typeof barns.$inferSelect;
+
 // Transactions table
 export const transactions = pgTable("transactions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

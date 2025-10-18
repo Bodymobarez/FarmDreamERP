@@ -22,6 +22,20 @@ import { AddReceptionDialog } from "../components/AddReceptionDialog";
 import { DistributeAnimalsDialog } from "../components/DistributeAnimalsDialog";
 import { useQuery } from "@tanstack/react-query";
 
+// دالة مساعدة لتنسيق التاريخ بشكل آمن
+const formatDate = (dateString: string | null | undefined): string => {
+  if (!dateString) return 'غير محدد';
+  try {
+    return new Date(dateString).toLocaleDateString('ar-EG', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  } catch (error) {
+    return 'تاريخ غير صحيح';
+  }
+};
+
 export default function Receptions() {
   const [filterStatus, setFilterStatus] = useState<string>("all");
 
@@ -240,11 +254,7 @@ export default function Receptions() {
                         </Badge>
                         <div className="flex items-center gap-1 text-sm text-muted-foreground">
                           <Calendar className="w-4 h-4" />
-                          {reception.receptionDate.toLocaleDateString('ar-EG', { 
-                            year: 'numeric', 
-                            month: 'long', 
-                            day: 'numeric' 
-                          })}
+                          {formatDate(reception.receptionDate)}
                         </div>
                       </div>
 

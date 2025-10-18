@@ -118,6 +118,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // إضافة كل حيوان إلى قاعدة البيانات
       const addedAnimals = [];
       for (const animalData of animals) {
+        // البحث عن الدفعة للحصول على ID
+        let batchId = null;
+        if (animalData.batchNumber) {
+          const batches = await storage.getBatches();
+          const batch = batches.find(b => b.batchNumber === animalData.batchNumber);
+          if (batch) {
+            batchId = batch.id;
+          }
+        }
+
         const animal = await storage.insertAnimal({
           earTag: animalData.earTag,
           animalType: animalData.animalType,
@@ -126,6 +136,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           currentWeight: animalData.weight,
           penNumber: animalData.penNumber,
           batchNumber: animalData.batchNumber || "",
+          batchId: batchId,
           purchaseCost: animalData.calculatedCost,
           notes: `من دفعة ${reception.receptionNumber}`,
           status: "active",
@@ -966,6 +977,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Clear all data endpoint
+  // Barns endpoints
+  app.get("/api/barns", async (req, res) => {
+    try {
+      const barns = await storage.getBarns();
+      res.json(barns);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/barns", async (req, res) => {
+    try {
+      const barn = await storage.insertBarn(req.body);
+      res.status(201).json(barn);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/barns/:id", async (req, res) => {
+    try {
+      const barn = await storage.getBarnById(req.params.id);
+      if (!barn) {
+        res.status(404).json({ message: "العنبر غير موجود" });
+        return;
+      }
+      res.json(barn);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.put("/api/barns/:id", async (req, res) => {
+    try {
+      const barn = await storage.updateBarn(req.params.id, req.body);
+      if (!barn) {
+        res.status(404).json({ message: "العنبر غير موجود" });
+        return;
+      }
+      res.json(barn);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/barns/:id", async (req, res) => {
+    try {
+      await storage.deleteBarn(req.params.id);
+      res.status(204).send();
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   app.delete("/api/clear-all-data", async (req, res) => {
     try {
       await storage.clearAllData();

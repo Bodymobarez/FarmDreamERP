@@ -73,11 +73,11 @@ export function DistributeAnimalsDialog({ reception }: Props) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch pens and batches
-  const { data: pens = [] } = useQuery({
-    queryKey: ["/api/pens"],
+  // Fetch barns and batches
+  const { data: barns = [] } = useQuery({
+    queryKey: ["/api/barns"],
     queryFn: async () => {
-      const response = await fetch("/api/pens");
+      const response = await fetch("/api/barns");
       if (!response.ok) throw new Error("فشل في جلب العنابر");
       return response.json();
     },
@@ -462,10 +462,10 @@ export function DistributeAnimalsDialog({ reception }: Props) {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {pens.length > 0 ? (
-                            pens.map((pen: any) => (
-                              <SelectItem key={pen.id} value={pen.penNumber}>
-                                {pen.penNumber} - {pen.penName}
+                          {barns.length > 0 ? (
+                            barns.map((barn: any) => (
+                              <SelectItem key={barn.id} value={barn.barnNumber}>
+                                {barn.barnNumber} - {barn.barnName}
                               </SelectItem>
                             ))
                           ) : (

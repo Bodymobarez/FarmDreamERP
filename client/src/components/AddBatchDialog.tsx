@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Package, Loader2, DollarSign, Users, Calendar, Truck, TrendingUp, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function AddBatchDialog() {
   const [open, setOpen] = useState(false);
@@ -33,6 +34,12 @@ export function AddBatchDialog() {
     notes: ""
   });
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // جلب الموردين من API
+  const { data: suppliers = [], isLoading: isLoadingSuppliers } = useQuery<any[]>({
+    queryKey: ["/api/suppliers"],
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,11 +62,8 @@ export function AddBatchDialog() {
         body: JSON.stringify({
           batchName: formData.name,
           batchNumber: `B-${Date.now()}`, // Generate batch number
-          receivedDate: formData.receivedDate,
-          count: parseInt(formData.count),
-          supplier: formData.supplier,
-          averageWeight: parseFloat(formData.averageWeight),
-          totalCost: parseFloat(formData.totalCost),
+          capacity: parseInt(formData.count) || 50, // إضافة capacity
+          batchType: "fattening", // إضافة batchType
           notes: formData.notes,
           status: "active"
         }),
@@ -71,6 +75,9 @@ export function AddBatchDialog() {
 
       const newBatch = await response.json();
       const costPerAnimal = (parseFloat(formData.totalCost) / parseInt(formData.count)).toFixed(2);
+      
+      // إعادة تحديث البيانات
+      queryClient.invalidateQueries({ queryKey: ["/api/batches"] });
       
       toast({
         title: "✅ تم إنشاء الدفعة بنجاح",
@@ -211,35 +218,31 @@ export function AddBatchDialog() {
               <Truck className="h-4 w-4 text-cyan-600" />
               المورد *
             </Label>
-            <Select value={formData.supplier} onValueChange={(value) => handleInputChange("supplier", value)}>
+            <Select 
+              value={formData.supplier} 
+              onValueChange={(value) => handleInputChange("supplier", value)}
+              disabled={isLoadingSuppliers}
+            >
               <SelectTrigger className="bg-white">
-                <SelectValue placeholder="اختر المورد..." />
+                <SelectValue placeholder={isLoadingSuppliers ? "جاري التحميل..." : "اختر المورد..."} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="المورد الأول">
-                  <div className="flex items-center gap-3">
-                    <span className="font-medium">المورد الأول</span>
-                    <span className="text-xs text-gray-500">0123456789</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="المورد الثاني">
-                  <div className="flex items-center gap-3">
-                    <span className="font-medium">المورد الثاني</span>
-                    <span className="text-xs text-gray-500">0123456790</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="المورد الثالث">
-                  <div className="flex items-center gap-3">
-                    <span className="font-medium">المورد الثالث</span>
-                    <span className="text-xs text-gray-500">0123456791</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="مورد آخر">
-                  <div className="flex items-center gap-3">
-                    <span className="font-medium">مورد آخر</span>
-                    <span className="text-xs text-gray-500">غير محدد</span>
-                  </div>
-                </SelectItem>
+                {suppliers.length > 0 ? (
+                  suppliers.map((supplier: any) => (
+                    <SelectItem key={supplier.id} value={supplier.name}>
+                      <div className="flex items-center gap-3">
+                        <span className="font-medium">{supplier.name}</span>
+                        {supplier.phone && (
+                          <span className="text-xs text-gray-500">{supplier.phone}</span>
+                        )}
+                      </div>
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="" disabled>
+                    {isLoadingSuppliers ? "جاري التحميل..." : "لا توجد موردين"}
+                  </SelectItem>
+                )}
               </SelectContent>
             </Select>
             <p className="text-xs text-gray-600">المورد الذي تم شراء الدفعة منه</p>
