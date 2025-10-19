@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Animal, type InsertAnimal, type Reception, type InsertReception, type Supplier, type InsertSupplier, type Customer, type InsertCustomer, type Transaction, type InsertTransaction, type Batch, type InsertBatch, type BatchExpense, type InsertBatchExpense, type AnimalSale, type InsertAnimalSale, type PerformanceGoal, type InsertPerformanceGoal, type InventoryItem, type InsertInventoryItem, type InventoryTransaction, type InsertInventoryTransaction, type VeterinaryTreatment, type InsertVeterinaryTreatment, type Voucher, type InsertVoucher, type AccountingEntry, type InsertAccountingEntry } from "../shared/schema";
+import { type User, type InsertUser, type Animal, type InsertAnimal, type Reception, type InsertReception, type Supplier, type InsertSupplier, type Customer, type InsertCustomer, type Transaction, type InsertTransaction, type Batch, type InsertBatch, type BatchExpense, type InsertBatchExpense, type AnimalSale, type InsertAnimalSale, type PerformanceGoal, type InsertPerformanceGoal, type InventoryItem, type InsertInventoryItem, type InventoryTransaction, type InsertInventoryTransaction, type VeterinaryTreatment, type InsertVeterinaryTreatment, type Voucher, type InsertVoucher, type AccountingEntry, type InsertAccountingEntry, type Goal, type InsertGoal } from "../shared/schema";
 import { randomUUID } from "crypto";
 
 // modify the interface with any CRUD methods
@@ -119,6 +119,13 @@ export interface IStorage {
   insertBarn(barn: any): Promise<any>;
   updateBarn(id: string, barn: any): Promise<any | undefined>;
   deleteBarn(id: string): Promise<void>;
+
+  // Goals methods
+  getGoals(): Promise<any[]>;
+  getGoalById(id: string): Promise<any | undefined>;
+  insertGoal(goal: any): Promise<any>;
+  updateGoal(id: string, goal: any): Promise<any | undefined>;
+  deleteGoal(id: string): Promise<void>;
 }
 
 export class InMemoryStorage implements IStorage {
@@ -841,12 +848,47 @@ export class InMemoryStorage implements IStorage {
     this.vouchers.delete(id);
   }
 
+  // Goals methods
+  async getGoals(): Promise<Goal[]> {
+    return [];
+  }
+
+  async getGoalById(id: string): Promise<Goal | undefined> {
+    return undefined;
+  }
+
+  async insertGoal(goal: InsertGoal): Promise<Goal> {
+    const newGoal: Goal = {
+      id: randomUUID(),
+      goalName: goal.goalName,
+      goalType: goal.goalType,
+      targetValue: goal.targetValue,
+      currentValue: goal.currentValue || "0",
+      unit: goal.unit || null,
+      batchId: goal.batchId || null,
+      startDate: goal.startDate ? new Date(goal.startDate) : null,
+      endDate: goal.endDate ? new Date(goal.endDate) : null,
+      status: goal.status || "active",
+      notes: goal.notes || null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    return newGoal;
+  }
+
+  async updateGoal(id: string, goal: Partial<InsertGoal>): Promise<Goal | undefined> {
+    return undefined;
+  }
+
+  async deleteGoal(id: string): Promise<void> {
+    return;
+  }
 
 }
 
 // Database Storage Implementation using Drizzle ORM
 import { db } from "./db";
-import { users, animals, receptions, suppliers, customers, transactions, batches, batchExpenses, animalSales, performanceGoals, inventoryItems, inventoryTransactions, veterinaryTreatments, vouchers, accountingEntries, barns } from "../shared/schema";
+import { users, animals, receptions, suppliers, customers, transactions, batches, batchExpenses, animalSales, performanceGoals, inventoryItems, inventoryTransactions, veterinaryTreatments, vouchers, accountingEntries, barns, goals } from "../shared/schema";
 import { eq, and, gte, lte, desc, asc, sql } from "drizzle-orm";
 
 export class DbStorage implements IStorage {
@@ -1423,6 +1465,31 @@ export class DbStorage implements IStorage {
 
   async deleteBarn(id: string): Promise<void> {
     await db.delete(barns).where(eq(barns.id, id));
+  }
+
+  // Goals methods
+  async getGoals(): Promise<Goal[]> {
+    const result = await db.select().from(goals);
+    return result;
+  }
+
+  async getGoalById(id: string): Promise<Goal | undefined> {
+    const result = await db.select().from(goals).where(eq(goals.id, id));
+    return result[0];
+  }
+
+  async insertGoal(goal: InsertGoal): Promise<Goal> {
+    const result = await db.insert(goals).values(goal).returning();
+    return result[0];
+  }
+
+  async updateGoal(id: string, goal: Partial<InsertGoal>): Promise<Goal | undefined> {
+    const result = await db.update(goals).set({ ...goal, updatedAt: new Date() }).where(eq(goals.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteGoal(id: string): Promise<void> {
+    await db.delete(goals).where(eq(goals.id, id));
   }
 }
 

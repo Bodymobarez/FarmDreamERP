@@ -1040,6 +1040,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Goals endpoints
+  app.get("/api/goals", async (req, res) => {
+    try {
+      const goals = await storage.getGoals();
+      res.json(goals);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/goals", async (req, res) => {
+    try {
+      const goal = await storage.insertGoal(req.body);
+      res.status(201).json(goal);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.put("/api/goals/:id", async (req, res) => {
+    try {
+      const goal = await storage.updateGoal(req.params.id, req.body);
+      res.json(goal);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/goals/:id", async (req, res) => {
+    try {
+      await storage.deleteGoal(req.params.id);
+      res.json({ message: "تم حذف الهدف بنجاح" });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

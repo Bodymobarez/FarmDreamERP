@@ -32,14 +32,42 @@ export const animals = pgTable("animals", {
   penNumber: varchar("pen_number", { length: 50 }),
   batchNumber: varchar("batch_number", { length: 50 }),
   batchId: varchar("batch_id", { length: 255 }),
+  receptionId: varchar("reception_id", { length: 255 }),
+  purchaseCost: decimal("purchase_cost", { precision: 10, scale: 2 }),
+  accumulatedFeedCost: decimal("accumulated_feed_cost", { precision: 10, scale: 2 }).default(sql`0`),
+  accumulatedTreatmentCost: decimal("accumulated_treatment_cost", { precision: 10, scale: 2 }).default(sql`0`),
+  accumulatedOtherCost: decimal("accumulated_other_cost", { precision: 10, scale: 2 }).default(sql`0`),
+  totalCost: decimal("total_cost", { precision: 10, scale: 2 }).default(sql`0`),
+  status: varchar("status", { length: 20 }).notNull().default("active"),
+  saleId: varchar("sale_id", { length: 255 }),
+  notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertAnimalSchema = createInsertSchema(animals).omit({
+export const insertAnimalSchema = createInsertSchema(animals, {
+  earTag: z.string().min(1, "رقم الأذن مطلوب"),
+  animalType: z.string().min(1, "نوع الحيوان مطلوب"),
+  sex: z.enum(["ذكر", "أنثى"], { errorMap: () => ({ message: "الجنس يجب أن يكون ذكر أو أنثى" }) }),
+  entryWeight: z.string().min(1, "وزن الدخول مطلوب"),
+  currentWeight: z.string().optional(),
+  penNumber: z.string().optional(),
+  batchNumber: z.string().optional(),
+  batchId: z.string().optional(),
+  receptionId: z.string().optional(),
+  purchaseCost: z.string().optional(),
+  status: z.enum(["active", "sold", "deceased"]).default("active"),
+  notes: z.string().optional(),
+}).omit({
   id: true,
+  entryDate: true,
   createdAt: true,
   updatedAt: true,
+  accumulatedFeedCost: true,
+  accumulatedTreatmentCost: true,
+  accumulatedOtherCost: true,
+  totalCost: true,
+  saleId: true,
 });
 
 export type InsertAnimal = z.infer<typeof insertAnimalSchema>;
@@ -392,3 +420,29 @@ export const insertVeterinaryTreatmentSchema = createInsertSchema(veterinaryTrea
 
 export type InsertVeterinaryTreatment = z.infer<typeof insertVeterinaryTreatmentSchema>;
 export type VeterinaryTreatment = typeof veterinaryTreatments.$inferSelect;
+
+// Goals table
+export const goals = pgTable("goals", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  goalName: varchar("goal_name", { length: 255 }).notNull(),
+  goalType: varchar("goal_type", { length: 50 }).notNull(),
+  targetValue: decimal("target_value", { precision: 10, scale: 2 }).notNull(),
+  currentValue: decimal("current_value", { precision: 10, scale: 2 }).default(sql`0`),
+  unit: varchar("unit", { length: 50 }),
+  batchId: varchar("batch_id", { length: 255 }),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  status: varchar("status", { length: 20 }).notNull().default("active"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertGoalSchema = createInsertSchema(goals).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertGoal = z.infer<typeof insertGoalSchema>;
+export type Goal = typeof goals.$inferSelect;

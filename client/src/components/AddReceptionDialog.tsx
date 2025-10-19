@@ -246,35 +246,22 @@ export function AddReceptionDialog() {
 
   // نظام تصنيف الحيوانات الشامل - النوع والسلالة
   const animalCategories = {
-    "أبقار": {
+    "عجول": {
       icon: "🐄",
       breeds: [
-        "بقر بلدي",
-        "بقر فريزيان",
-        "بقر هولشتاين",
-        "بقر سيمنتال",
-        "بقر براون سويس",
-        "بقر جيرسي",
-        "بقر مونتبليارد",
-        "بقر ليموزين",
-        "بقر شارولية",
-        "بقر أنجس",
-        "بقر هيريفورد",
-        "بقر خليط (هجين)"
+        "عجل بلدي",
+        "عجل فريزيان",
+        "عجل هولشتاين",
+        "عجل سيمنتال",
+        "عجل براون سويس",
+        "عجل ليموزين",
+        "عجل شارولية",
+        "عجل أنجس",
+        "عجل هيريفورد",
+        "عجل خليط (هجين)"
       ]
     },
-    "جواميس": {
-      icon: "🐃",
-      breeds: [
-        "جاموس بلدي مصري",
-        "جاموس مراح (هندي)",
-        "جاموس نيلي رافي",
-        "جاموس سورتي",
-        "جاموس جافارابادي",
-        "جاموس خليط"
-      ]
-    },
-    "أغنام": {
+    "خراف": {
       icon: "🐑",
       breeds: [
         "غنم برقي",
@@ -289,34 +276,6 @@ export function AddReceptionDialog() {
         "غنم فلاحي",
         "غنم أسترالي (ميرينو)",
         "غنم خليط"
-      ]
-    },
-    "ماعز": {
-      icon: "🐐",
-      breeds: [
-        "ماعز بلدي",
-        "ماعز زرايبي",
-        "ماعز برقي",
-        "ماعز دمشقي (شامي)",
-        "ماعز نجدي",
-        "ماعز بور",
-        "ماعز سانن",
-        "ماعز ألباين",
-        "ماعز نوبي",
-        "ماعز خليط"
-      ]
-    },
-    "جمال": {
-      icon: "🐫",
-      breeds: [
-        "جمل مغربي",
-        "جمل سوداني",
-        "جمل سوري (شامي)",
-        "جمل عربي",
-        "جمل بختيان (سنامين)",
-        "جمل بركاوي",
-        "جمل مصري بلدي",
-        "جمل خليط"
       ]
     }
   };
@@ -421,24 +380,102 @@ export function AddReceptionDialog() {
 
   const mutation = useMutation({
     mutationFn: async (data: InsertReception) => {
-      const response = await fetch("/api/receptions", {
+      // 1. Create Reception
+      const receptionResponse = await fetch("/api/receptions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        const error = await response.json();
+      if (!receptionResponse.ok) {
+        const error = await receptionResponse.json();
         throw new Error(error.message || "فشل في إضافة الاستقبال");
       }
 
-      return response.json();
+      const reception = await receptionResponse.json();
+
+      // 2. Create Batch automatically
+      const batchData = {
+        batchNumber: `BATCH-${Date.now()}`,
+        batchName: `دفعة ${data.animalType} - ${new Date().toLocaleDateString("ar-EG")}`,
+        animalType: data.animalType,
+        totalAnimals: data.animalCount,
+        activeAnimals: data.animalCount,
+        targetWeight: data.animalType === "عجول" ? 450 : 45, // Default target weight
+        startDate: data.receptionDate,
+        status: "active",
+        notes: `تم الإنشاء تلقائياً من الاستقبال ${reception.id}`,
+      };
+
+      const batchResponse = await fetch("/api/batches", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(batchData),
+      });
+
+      if (batchResponse.ok) {
+        const batch = await batchResponse.json();
+        
+        // 3. Create Goals automatically for this batch
+        const targetWeight = data.animalType === "عجول" ? 450 : 45;
+        const targetADG = data.animalType === "عجول" ? 1.2 : 0.25;
+        const targetFCR = data.animalType === "عجول" ? 6.5 : 5.0;
+
+        const goals = [
+          {
+            goalName: `الوصول للوزن المستهدف - ${data.animalType}`,
+            goalType: "weight_gain",
+            targetValue: targetWeight.toString(),
+            currentValue: (parseFloat(data.averageWeight) || 0).toString(),
+            unit: "كجم",
+            batchId: batch.id,
+            startDate: data.receptionDate,
+            status: "active",
+            notes: `الهدف: الوصول لوزن ${targetWeight} كجم`,
+          },
+          {
+            goalName: `معدل النمو اليومي - ${data.animalType}`,
+            goalType: "adg",
+            targetValue: targetADG.toString(),
+            currentValue: "0",
+            unit: "كجم/يوم",
+            batchId: batch.id,
+            startDate: data.receptionDate,
+            status: "active",
+            notes: `الهدف: تحقيق معدل نمو ${targetADG} كجم/يوم`,
+          },
+          {
+            goalName: `معامل التحويل الغذائي - ${data.animalType}`,
+            goalType: "fcr",
+            targetValue: targetFCR.toString(),
+            currentValue: "0",
+            unit: "كجم علف/كجم نمو",
+            batchId: batch.id,
+            startDate: data.receptionDate,
+            status: "active",
+            notes: `الهدف: تحقيق معامل تحويل ${targetFCR}`,
+          },
+        ];
+
+        // Create all goals
+        for (const goal of goals) {
+          await fetch("/api/goals", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(goal),
+          });
+        }
+      }
+
+      return reception;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/receptions"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/batches"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/goals"] });
       toast({
-        title: "تم بنجاح",
-        description: "تم إضافة دفعة الاستقبال بنجاح",
+        title: "✅ تم بنجاح",
+        description: "تم إضافة الاستقبال والدفعة والأهداف بنجاح",
       });
       form.reset();
       setOpen(false);

@@ -99,19 +99,80 @@ export function AddWeightDialog() {
 
   const onSubmit = async (data: WeightFormData) => {
     try {
+      const animal = activeAnimals.find((a: any) => a.id === data.animalId);
+      
       // Update animal's current weight
       await updateAnimalMutation.mutateAsync({
         id: data.animalId,
         currentWeight: data.weight,
       });
 
-      const animal = activeAnimals.find((a: any) => a.id === data.animalId);
+      // Update goals for the animal's batch
+      if (animal && animal.batchNumber) {
+        const batchesResponse = await fetch("/api/batches");
+        if (batchesResponse.ok) {
+          const batches = await batchesResponse.json();
+          const batch = batches.find((b: any) => b.batchNumber === animal.batchNumber);
+          
+          if (batch) {
+            // Get all animals in the batch
+            const batchAnimals = activeAnimals.filter((a: any) => a.batchNumber === batch.batchNumber);
+            
+            // Calculate average weight for batch
+            const totalWeight = batchAnimals.reduce((sum: number, a: any) => {
+              if (a.id === data.animalId) {
+                return sum + parseFloat(data.weight);
+              }
+              return sum + parseFloat(a.currentWeight || a.entryWeight || "0");
+            }, 0);
+            const avgWeight = totalWeight / batchAnimals.length;
+            
+            // Calculate ADG (Average Daily Gain)
+            const daysSinceEntry = Math.max(1, Math.floor((new Date().getTime() - new Date(animal.entryDate || batch.startDate).getTime()) / (1000 * 60 * 60 * 24)));
+            const totalWeightGain = parseFloat(data.weight) - parseFloat(animal.entryWeight || "0");
+            const adg = totalWeightGain / daysSinceEntry;
+            
+            // Update goals
+            const goalsResponse = await fetch("/api/goals");
+            if (goalsResponse.ok) {
+              const goals = await goalsResponse.json();
+              const batchGoals = goals.filter((g: any) => g.batchId === batch.id);
+              
+              for (const goal of batchGoals) {
+                if (goal.goalType === "weight_gain") {
+                  await fetch(`/api/goals/${goal.id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      currentValue: avgWeight.toFixed(2),
+                      status: avgWeight >= parseFloat(goal.targetValue) ? "achieved" : "active",
+                    }),
+                  });
+                } else if (goal.goalType === "adg") {
+                  await fetch(`/api/goals/${goal.id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      currentValue: adg.toFixed(3),
+                      status: adg >= parseFloat(goal.targetValue) ? "achieved" : "active",
+                    }),
+                  });
+                }
+              }
+              
+              // Invalidate goals query to refresh
+              queryClient.invalidateQueries({ queryKey: ["/api/goals"] });
+            }
+          }
+        }
+      }
+
       const weightGain = animal
         ? parseFloat(data.weight) - parseFloat(animal.entryWeight || "0")
         : 0;
 
       toast({
-        title: "✅ تم تسجيل الوزن بنجاح",
+        title: "✅ تم تسجيل الوزن وتحديث الأهداف",
         description: (
           <div className="space-y-1">
             <p>الحيوان: {animal?.earTag}</p>
@@ -179,7 +240,7 @@ export function AddWeightDialog() {
       <DialogTrigger asChild>
         <Button
           size="lg"
-          className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700"
+          className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 w-full sm:w-auto h-12 sm:h-11"
         >
           <Scale className="w-5 h-5 ml-2" />
           تسجيل وزن جديد

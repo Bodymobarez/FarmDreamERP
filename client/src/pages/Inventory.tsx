@@ -1,417 +1,239 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Package2, 
-  Boxes, 
-  Pill,
+import {
+  Package,
   AlertTriangle,
   TrendingUp,
-  DollarSign,
-  Calendar,
-  Activity,
+  Box,
   Search,
   Plus,
-  Download,
-  Upload,
-  History,
-  ArrowRight,
-  BarChart3
+  DollarSign
 } from "lucide-react";
-import { useState } from "react";
-import { useLocation } from "wouter";
-import { useToast } from "@/hooks/use-toast";
 import { AddInventoryItemDialog } from "@/components/AddInventoryItemDialog";
-import { DispenseInventoryDialog } from "@/components/DispenseInventoryDialog";
-import { ReorderInventoryDialog } from "@/components/ReorderInventoryDialog";
-import { InventoryCard } from "@/components/InventoryCard";
 
 export default function Inventory() {
-  const [activeTab, setActiveTab] = useState("feeds");
   const [searchTerm, setSearchTerm] = useState("");
-  const [, setLocation] = useLocation();
-  const { toast } = useToast();
 
-  // Fetch inventory items
-  const { data: inventoryItems = [], isLoading } = useQuery<any[]>({
+  // Fetch inventory
+  const { data: inventory = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/inventory"],
   });
 
-  // Filter items by type and search
-  const filteredFeeds = inventoryItems.filter(
-    (item: any) =>
-      item.itemType === "feed" &&
-      (item.itemName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.itemCode.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-
-  const filteredMedicines = inventoryItems.filter(
-    (item: any) =>
-      item.itemType === "medicine" &&
-      (item.itemName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.itemCode.toLowerCase().includes(searchTerm.toLowerCase()))
+  // Filter inventory
+  const filteredInventory = inventory.filter((item: any) =>
+    item.itemName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.category?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Calculate statistics
-  const totalItems = inventoryItems.length;
-  const totalFeeds = filteredFeeds.length;
-  const totalMedicines = filteredMedicines.length;
-  const lowStockItems = inventoryItems.filter(
-    (item: any) => parseFloat(item.currentStock) <= parseFloat(item.reorderPoint)
-  ).length;
-  const totalValue = inventoryItems.reduce(
-    (sum: number, item: any) => sum + parseFloat(item.totalValue || "0"),
-    0
-  );
-  const averageValue = totalItems > 0 ? totalValue / totalItems : 0;
-  const expiringSoon = inventoryItems.filter(
-    (item: any) => item.expiryDate && new Date(item.expiryDate) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-  ).length;
-  
-  // جلب معاملات المخزون الحقيقية
-  const { data: inventoryTransactions = [] } = useQuery<any[]>({
-    queryKey: ["/api/inventory-transactions"],
-  });
-  
-  const recentTransactions = inventoryTransactions.length;
-
-  // Export to CSV
-  const handleExport = () => {
-    const csvData = inventoryItems.map((item: any) => ({
-      'كود الصنف': item.itemCode,
-      'اسم الصنف': item.itemName,
-      'النوع': item.itemType === 'feed' ? 'علف' : 'دواء',
-      'الكمية الحالية': item.currentStock,
-      'الوحدة': item.unit,
-      'نقطة إعادة الطلب': item.reorderPoint,
-      'التكلفة للوحدة': item.unitCost,
-      'القيمة الإجمالية': item.totalValue,
-    }));
-
-    const headers = Object.keys(csvData[0] || {}).join(',');
-    const rows = csvData.map(row => Object.values(row).join(',')).join('\\n');
-    const csv = `${headers}\\n${rows}`;
-    
-    const blob = new Blob(['\\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `inventory_${new Date().toISOString().split('T')[0]}.csv`;
-    link.click();
-
-    toast({
-      title: "✅ تم التصدير بنجاح",
-      description: `تم تصدير ${inventoryItems.length} صنف إلى ملف CSV`,
-    });
+  const stats = {
+    total: inventory.length,
+    lowStock: inventory.filter((item: any) => 
+      parseFloat(item.currentStock || item.quantity || "0") <= parseFloat(item.minStock || item.minQuantity || "0")
+    ).length,
+    totalValue: inventory.reduce((sum: number, item: any) => 
+      sum + (parseFloat(item.currentStock || item.quantity || "0") * parseFloat(item.unitPrice || "0")), 0
+    ),
+    categories: Array.from(new Set(inventory.map((item: any) => item.category))).length,
+    totalItems: inventory.reduce((sum: number, item: any) => 
+      sum + parseFloat(item.currentStock || item.quantity || "0"), 0
+    ),
   };
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">جاري تحميل البيانات...</p>
+          <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">جاري التحميل...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <div className="p-3 rounded-xl bg-gradient-to-br from-emerald-100 to-green-100">
-          <Package2 className="h-8 w-8 text-emerald-600" />
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50/30 via-white to-green-50/30 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
+              <Package className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">إدارة المخزون</h1>
+              <p className="text-gray-600 mt-1">متابعة المخزون والأصناف</p>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-3">
+            <AddInventoryItemDialog />
+          </div>
         </div>
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">إدارة المخزون</h1>
-          <p className="text-gray-600 mt-1">
-            متابعة شاملة للأعلاف والأدوية مع إدارة المخزون
-          </p>
+
+        {/* Statistics Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          {/* Total Items */}
+          <Card className="border-2 border-blue-200 bg-white hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex flex-col items-center text-center">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-3 shadow-md">
+                  <Package className="w-7 h-7 text-white" />
+                </div>
+                <p className="text-sm text-gray-600 mb-1">إجمالي الأصناف</p>
+                <p className="text-3xl font-bold text-gray-900">{stats.total}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Low Stock */}
+          <Card className="border-2 border-red-200 bg-white hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex flex-col items-center text-center">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center mb-3 shadow-md">
+                  <AlertTriangle className="w-7 h-7 text-white" />
+                </div>
+                <p className="text-sm text-gray-600 mb-1">مخزون منخفض</p>
+                <p className="text-3xl font-bold text-red-600">{stats.lowStock}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Total Value */}
+          <Card className="border-2 border-emerald-200 bg-white hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex flex-col items-center text-center">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center mb-3 shadow-md">
+                  <DollarSign className="w-7 h-7 text-white" />
+                </div>
+                <p className="text-sm text-gray-600 mb-1">قيمة المخزون</p>
+                <p className="text-2xl font-bold text-emerald-600">{stats.totalValue.toFixed(0)}</p>
+                <p className="text-xs text-gray-500">ج.م</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Categories */}
+          <Card className="border-2 border-purple-200 bg-white hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex flex-col items-center text-center">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-3 shadow-md">
+                  <Box className="w-7 h-7 text-white" />
+                </div>
+                <p className="text-sm text-gray-600 mb-1">الفئات</p>
+                <p className="text-3xl font-bold text-purple-600">{stats.categories}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Total Quantity */}
+          <Card className="border-2 border-teal-200 bg-white hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex flex-col items-center text-center">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center mb-3 shadow-md">
+                  <TrendingUp className="w-7 h-7 text-white" />
+                </div>
+                <p className="text-sm text-gray-600 mb-1">إجمالي الكمية</p>
+                <p className="text-3xl font-bold text-teal-600">{stats.totalItems.toFixed(0)}</p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </div>
 
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="border-2 border-emerald-200 bg-gradient-to-br from-emerald-50/50 to-transparent">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-emerald-600 mb-1">إجمالي الأصناف</p>
-                <p className="text-3xl font-bold text-gray-900">{totalItems}</p>
-                <p className="text-xs text-gray-600 mt-1">
-                  أعلاف: {totalFeeds} | أدوية: {totalMedicines}
-                </p>
-              </div>
-              <div className="p-3 bg-emerald-100 rounded-full">
-                <Boxes className="h-6 w-6 text-emerald-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2 border-red-200 bg-gradient-to-br from-red-50/50 to-transparent">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-red-600 mb-1">مخزون منخفض</p>
-                <p className="text-3xl font-bold text-gray-900">{lowStockItems}</p>
-                <p className="text-xs text-gray-600 mt-1">
-                  يحتاج إعادة طلب
-                </p>
-              </div>
-              <div className="p-3 bg-red-100 rounded-full">
-                <AlertTriangle className="h-6 w-6 text-red-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50/50 to-transparent">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-blue-600 mb-1">قيمة المخزون</p>
-                <p className="text-3xl font-bold text-gray-900">{totalValue.toLocaleString()}</p>
-                <p className="text-xs text-gray-600 mt-1">
-                  جنيه مصري
-                </p>
-              </div>
-              <div className="p-3 bg-blue-100 rounded-full">
-                <DollarSign className="h-6 w-6 text-blue-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2 border-orange-200 bg-gradient-to-br from-orange-50/50 to-transparent">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-orange-600 mb-1">متوسط قيمة الصنف</p>
-                <p className="text-3xl font-bold text-gray-900">{averageValue.toLocaleString()}</p>
-                <p className="text-xs text-gray-600 mt-1">
-                  جنيه
-                </p>
-              </div>
-              <div className="p-3 bg-orange-100 rounded-full">
-                <BarChart3 className="h-6 w-6 text-orange-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2 border-yellow-200 bg-gradient-to-br from-yellow-50/50 to-transparent">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-yellow-600 mb-1">ينتهي قريباً</p>
-                <p className="text-3xl font-bold text-gray-900">{expiringSoon}</p>
-                <p className="text-xs text-gray-600 mt-1">
-                  خلال 30 يوم
-                </p>
-              </div>
-              <div className="p-3 bg-yellow-100 rounded-full">
-                <Calendar className="h-6 w-6 text-yellow-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50/50 to-transparent">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-purple-600 mb-1">الحركات الأخيرة</p>
-                <p className="text-3xl font-bold text-gray-900">{recentTransactions}</p>
-                <p className="text-xs text-gray-600 mt-1">
-                  هذا الشهر
-                </p>
-              </div>
-              <div className="p-3 bg-purple-100 rounded-full">
-                <Activity className="h-6 w-6 text-purple-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2 border-green-200 bg-gradient-to-br from-green-50/50 to-transparent">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-green-600 mb-1">نمو المخزون</p>
-                <p className="text-3xl font-bold text-gray-900">0%</p>
-                <p className="text-xs text-gray-600 mt-1">
-                  عن الشهر الماضي
-                </p>
-              </div>
-              <div className="p-3 bg-green-100 rounded-full">
-                <TrendingUp className="h-6 w-6 text-green-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2 border-indigo-200 bg-gradient-to-br from-indigo-50/50 to-transparent">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-indigo-600 mb-1">أصناف الأعلاف</p>
-                <p className="text-3xl font-bold text-gray-900">{totalFeeds}</p>
-                <p className="text-xs text-gray-600 mt-1">
-                  صنف علف
-                </p>
-              </div>
-              <div className="p-3 bg-indigo-100 rounded-full">
-                <Package2 className="h-6 w-6 text-indigo-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex flex-wrap items-center gap-3">
-        <AddInventoryItemDialog />
-        <DispenseInventoryDialog />
-        <ReorderInventoryDialog />
-        
-        <Button
-          variant="outline"
-          size="lg"
-          onClick={() => setLocation("/inventory-transactions")}
-          className="bg-white hover:bg-gray-50"
-        >
-          <History className="h-5 w-5 ml-2" />
-          سجل الحركات
-          <ArrowRight className="h-5 w-5 mr-2" />
-        </Button>
-        
-        <Button 
-          variant="outline"
-          size="lg"
-          onClick={handleExport}
-          disabled={inventoryItems.length === 0}
-          className="bg-white hover:bg-gray-50"
-        >
-          <Download className="h-5 w-5 ml-2" />
-          تصدير CSV
-        </Button>
-        
-        <Button 
-          variant="outline" 
-          size="lg"
-          onClick={() => {
-            toast({
-              title: "قريباً",
-              description: "سيتم إضافة وظيفة الاستيراد قريباً",
-              variant: "destructive",
-            });
-          }}
-          className="bg-white hover:bg-gray-50"
-        >
-          <Upload className="h-5 w-5 ml-2" />
-          استيراد CSV
-        </Button>
-      </div>
-
-      {/* Search */}
-      <Card className="border-2 border-gray-200 bg-gradient-to-br from-gray-50/50 to-transparent">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-3">
-            <Search className="h-5 w-5 text-gray-600" />
-            <div className="flex-1">
-              <Label htmlFor="search" className="text-gray-700 font-medium">البحث في المخزون</Label>
+        {/* Search Bar */}
+        <Card className="border-2 border-emerald-200 bg-white">
+          <CardContent className="p-4">
+            <div className="relative">
+              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <Input
-                id="search"
-                placeholder="ابحث بالاسم أو الكود أو النوع..."
+                type="text"
+                placeholder="ابحث باسم الصنف أو الفئة..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="mt-2 bg-white"
+                className="pr-10 h-12 text-lg border-emerald-200 focus:border-emerald-500"
               />
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-2 h-12">
-          <TabsTrigger value="feeds" className="flex items-center gap-2 text-sm">
-            <Package2 className="h-4 w-4" />
-            الأعلاف ({totalFeeds})
-          </TabsTrigger>
-          <TabsTrigger value="medicines" className="flex items-center gap-2 text-sm">
-            <Pill className="h-4 w-4" />
-            الأدوية ({totalMedicines})
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="feeds" className="space-y-6 mt-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-lg bg-gradient-to-br from-green-100 to-emerald-100">
-              <Package2 className="h-6 w-6 text-green-600" />
+        {/* Inventory Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {filteredInventory.length === 0 ? (
+            <div className="col-span-full">
+              <Card className="border-2 border-gray-200 bg-white">
+                <CardContent className="p-12 text-center">
+                  <Package className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                  <p className="text-gray-600 text-lg">لا توجد أصناف</p>
+                  <p className="text-gray-400 text-sm mt-2">ابدأ بإضافة صنف جديد</p>
+                </CardContent>
+              </Card>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900">أصناف الأعلاف</h2>
-          </div>
-          
-          {filteredFeeds.length === 0 ? (
-            <Card className="border-2 border-dashed border-green-200 bg-gradient-to-br from-green-50/30 to-transparent">
-              <CardContent className="p-12 text-center">
-                <Package2 className="w-16 h-16 mx-auto text-green-400 mb-4" />
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">لا توجد أعلاف مسجلة</h3>
-                <p className="text-gray-500 mb-4">ابدأ بإضافة أول صنف علف</p>
-                <AddInventoryItemDialog />
-              </CardContent>
-            </Card>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {filteredFeeds.map((item: any) => (
-                <div key={item.id} className="relative">
-                  <InventoryCard
-                    item={item}
-                    supplier={item.supplierId}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-        </TabsContent>
+            filteredInventory.map((item: any) => {
+              const currentStock = parseFloat(item.currentStock || item.quantity || "0");
+              const minStock = parseFloat(item.minStock || item.minQuantity || "0");
+              const isLowStock = currentStock <= minStock;
+              
+              return (
+                <Card
+                  key={item.id}
+                  className={`border-2 ${isLowStock ? 'border-red-200' : 'border-blue-200'} bg-white hover:shadow-xl hover:border-${isLowStock ? 'red' : 'blue'}-400 transition-all duration-300`}
+                >
+                  <CardContent className="p-5">
+                    {/* Header */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${isLowStock ? 'from-red-500 to-red-600' : 'from-blue-500 to-blue-600'} flex items-center justify-center shadow-md`}>
+                          <Package className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-bold text-lg text-gray-900 line-clamp-1">{item.itemName}</p>
+                          <p className="text-xs text-gray-500">{item.category || "عام"}</p>
+                        </div>
+                      </div>
+                      {isLowStock && (
+                        <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0" />
+                      )}
+                    </div>
 
-        <TabsContent value="medicines" className="space-y-6 mt-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-lg bg-gradient-to-br from-purple-100 to-pink-100">
-              <Pill className="h-6 w-6 text-purple-600" />
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900">أصناف الأدوية</h2>
-          </div>
-          
-          {filteredMedicines.length === 0 ? (
-            <Card className="border-2 border-dashed border-purple-200 bg-gradient-to-br from-purple-50/30 to-transparent">
-              <CardContent className="p-12 text-center">
-                <Pill className="w-16 h-16 mx-auto text-purple-400 mb-4" />
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">لا توجد أدوية مسجلة</h3>
-                <p className="text-gray-500 mb-4">ابدأ بإضافة أول صنف دواء</p>
-                <AddInventoryItemDialog />
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {filteredMedicines.map((item: any) => (
-                <div key={item.id} className="relative">
-                  <InventoryCard
-                    item={item}
-                    supplier={item.supplierId}
-                  />
-                </div>
-              ))}
-            </div>
+                    {/* Info */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-600">الكمية:</span>
+                        <span className={`font-bold ${isLowStock ? 'text-red-600' : 'text-blue-600'}`}>
+                          {currentStock.toFixed(1)} {item.unit}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-600">السعر:</span>
+                        <span className="font-medium text-emerald-600">{parseFloat(item.unitPrice || "0").toFixed(2)} ج.م</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-600">القيمة:</span>
+                        <span className="font-medium text-amber-600">
+                          {(currentStock * parseFloat(item.unitPrice || "0")).toFixed(0)} ج.م
+                        </span>
+                      </div>
+                    </div>
+
+                    {isLowStock && (
+                      <div className="mt-3 p-2 bg-red-50 border border-red-200 rounded-lg">
+                        <p className="text-xs text-red-700 text-center font-medium">
+                          ⚠️ يحتاج إعادة طلب
+                        </p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })
           )}
-        </TabsContent>
-      </Tabs>
+        </div>
+      </div>
     </div>
   );
 }

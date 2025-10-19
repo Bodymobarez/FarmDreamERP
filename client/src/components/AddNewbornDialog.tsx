@@ -145,9 +145,10 @@ export function AddNewbornDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="lg" className="gap-2 bg-gradient-to-r from-pink-600 to-pink-500 hover:from-pink-700 hover:to-pink-600">
+        <Button size="lg" className="gap-2 bg-gradient-to-r from-pink-600 to-pink-500 hover:from-pink-700 hover:to-pink-600 w-full sm:w-auto h-12 sm:h-11 text-sm sm:text-base">
           <Baby className="w-5 h-5" />
-          تسجيل مولود جديد 🐄
+          <span className="hidden sm:inline">تسجيل مولود جديد 🐄</span>
+          <span className="sm:hidden">مولود جديد</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-3xl max-h-[92vh] overflow-y-auto">

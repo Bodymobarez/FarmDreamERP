@@ -50,18 +50,35 @@ export function FilterBar({
       </div>
 
       {showTypeFilter && (
-        <Select onValueChange={onTypeChange}>
-          <SelectTrigger className="w-[180px]" data-testid="select-type">
-            <SelectValue placeholder="جميع الأصناف" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">جميع الأصناف</SelectItem>
-            <SelectItem value="بقر">بقر</SelectItem>
-            <SelectItem value="جاموس">جاموس</SelectItem>
-            <SelectItem value="أغنام">أغنام</SelectItem>
-            <SelectItem value="ماعز">ماعز</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onTypeChange?.("all")}
+            className="border-2 border-gray-300 hover:bg-gray-50"
+            data-testid="button-type-all"
+          >
+            الكل
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onTypeChange?.("عجول")}
+            className="border-2 border-blue-300 hover:bg-blue-50 text-blue-700"
+            data-testid="button-type-cow"
+          >
+            🐄 عجول
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onTypeChange?.("خراف")}
+            className="border-2 border-emerald-300 hover:bg-emerald-50 text-emerald-700"
+            data-testid="button-type-sheep"
+          >
+            🐑 خراف
+          </Button>
+        </div>
       )}
 
       {showPenFilter && (
