@@ -888,7 +888,6 @@ export class InMemoryStorage implements IStorage {
 }
 
 // Database Storage Implementation using Drizzle ORM
-import { db } from "./db";
 import { users, animals, receptions, suppliers, customers, transactions, batches, batchExpenses, animalSales, performanceGoals, inventoryItems, inventoryTransactions, veterinaryTreatments, vouchers, accountingEntries, barns, goals } from "../shared/schema";
 import { eq, and, gte, lte, desc, asc, sql } from "drizzle-orm";
 

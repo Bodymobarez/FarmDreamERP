@@ -6,12 +6,17 @@ import * as schema from "../shared/schema";
 import { config } from 'dotenv';
 config();
 
+let sql: any = null;
+let db: any = null;
+
 if (!process.env.DATABASE_URL) {
   console.warn("DATABASE_URL is not set. Using mock data for development.");
   // For development/testing, we'll use mock data
-  export const sql = null;
-  export const db = null;
+  sql = null;
+  db = null;
 } else {
-  export const sql = neon(process.env.DATABASE_URL);
-  export const db = drizzle(sql, { schema });
+  sql = neon(process.env.DATABASE_URL);
+  db = drizzle(sql, { schema });
 }
+
+export { sql, db };
