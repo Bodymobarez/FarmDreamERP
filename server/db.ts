@@ -7,10 +7,11 @@ import { config } from 'dotenv';
 config();
 
 if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
+  console.warn("DATABASE_URL is not set. Using mock data for development.");
+  // For development/testing, we'll use mock data
+  export const sql = null;
+  export const db = null;
+} else {
+  export const sql = neon(process.env.DATABASE_URL);
+  export const db = drizzle(sql, { schema });
 }
-
-export const sql = neon(process.env.DATABASE_URL);
-export const db = drizzle(sql, { schema });

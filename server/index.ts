@@ -48,8 +48,14 @@ app.use((req, res, next) => {
   next();
 });
 
-(async () => {
-  const server = await registerRoutes(app);
+// Initialize the app
+let server: any;
+let isInitialized = false;
+
+async function initializeApp() {
+  if (isInitialized) return;
+  
+  server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
@@ -78,6 +84,7 @@ app.use((req, res, next) => {
   // For Vercel deployment, export the app instead of starting the server
   if (process.env.VERCEL) {
     // Export app for Vercel
+    isInitialized = true;
     return app;
   }
 
@@ -88,8 +95,12 @@ app.use((req, res, next) => {
     log(`📱 Open your browser to http://localhost:${port}`);
   });
   
+  isInitialized = true;
   return app;
-})();
+}
+
+// Initialize app
+initializeApp();
 
 // Export for Vercel
 export default app;

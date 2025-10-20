@@ -1,5 +1,6 @@
 import { type User, type InsertUser, type Animal, type InsertAnimal, type Reception, type InsertReception, type Supplier, type InsertSupplier, type Customer, type InsertCustomer, type Transaction, type InsertTransaction, type Batch, type InsertBatch, type BatchExpense, type InsertBatchExpense, type AnimalSale, type InsertAnimalSale, type PerformanceGoal, type InsertPerformanceGoal, type InventoryItem, type InsertInventoryItem, type InventoryTransaction, type InsertInventoryTransaction, type VeterinaryTreatment, type InsertVeterinaryTreatment, type Voucher, type InsertVoucher, type AccountingEntry, type InsertAccountingEntry, type Goal, type InsertGoal } from "../shared/schema";
 import { randomUUID } from "crypto";
+import { db } from "./db";
 
 // modify the interface with any CRUD methods
 // you might need
@@ -892,8 +893,15 @@ import { users, animals, receptions, suppliers, customers, transactions, batches
 import { eq, and, gte, lte, desc, asc, sql } from "drizzle-orm";
 
 export class DbStorage implements IStorage {
+  private checkDatabase() {
+    if (!db) {
+      throw new Error("Database not initialized. Please set DATABASE_URL environment variable.");
+    }
+  }
+
   // Users methods
   async getUser(id: string): Promise<User | undefined> {
+    this.checkDatabase();
     const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
     return result[0];
   }
