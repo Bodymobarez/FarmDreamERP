@@ -1,6 +1,3 @@
-const fs = require('fs');
-const path = require('path');
-
 module.exports = (req, res) => {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -19,13 +16,14 @@ module.exports = (req, res) => {
       status: 'ok', 
       timestamp: new Date().toISOString(),
       environment: process.env.NODE_ENV || 'production',
-      database: process.env.DATABASE_URL ? 'connected' : 'not configured'
+      database: process.env.DATABASE_URL ? 'connected' : 'not configured',
+      vercel: true
     });
     return;
   }
 
   // Mock API responses for all endpoints
-  if (req.url.startsWith('/api/')) {
+  if (req.url && req.url.startsWith('/api/')) {
     const endpoint = req.url.split('/')[2]?.split('?')[0];
     
     // Return empty arrays for all API endpoints
@@ -44,7 +42,7 @@ module.exports = (req, res) => {
       'expenses': []
     };
     
-    if (mockResponses.hasOwnProperty(endpoint)) {
+    if (endpoint && mockResponses.hasOwnProperty(endpoint)) {
       res.status(200).json(mockResponses[endpoint]);
       return;
     }
@@ -56,22 +54,6 @@ module.exports = (req, res) => {
       method: req.method 
     });
     return;
-  }
-
-  // Serve static files from dist/public
-  const distPath = path.join(process.cwd(), 'dist', 'public');
-  
-  // Try to serve index.html
-  try {
-    const indexPath = path.join(distPath, 'index.html');
-    if (fs.existsSync(indexPath)) {
-      const html = fs.readFileSync(indexPath, 'utf-8');
-      res.setHeader('Content-Type', 'text/html');
-      res.status(200).send(html);
-      return;
-    }
-  } catch (error) {
-    console.error('Error reading index.html:', error);
   }
 
   // Fallback response
