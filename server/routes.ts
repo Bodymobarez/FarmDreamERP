@@ -575,6 +575,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const transactionNumber = `OUT-${new Date().getFullYear()}-${String(transactionCount + 1).padStart(3, "0")}`;
 
       // Create transaction
+      const unitCost = parseFloat(item.unitCost || "0");
       const transaction = await storage.insertInventoryTransaction({
         transactionNumber,
         transactionDate: new Date(),
@@ -582,41 +583,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         itemId,
         quantity: quantity.toString(),
         unitCost: item.unitCost,
-        totalCost: (quantity * parseFloat(item.unitCost)).toFixed(2),
-        penNumber,
-        batchId,
-        animalId,
-        supplierId: null,
-        purchaseOrderNumber: null,
-        invoiceNumber: null,
+        totalCost: (quantity * unitCost).toFixed(2),
         referenceType: batchId ? "batch_expense" : animalId ? "treatment" : null,
         referenceId: null,
-        performedBy: "النظام",
-        description,
         notes,
       });
-
-      // Update batch expense if applicable
-      if (batchId) {
-        const batch = await storage.getBatchById(batchId);
-        if (batch) {
-          const expenseType = item.itemType === "feed" ? "feed" : "medicine";
-          const currentCost = parseFloat(
-            expenseType === "feed" ? batch.totalFeedCost : batch.totalTreatmentCost
-          );
-          const newCost = currentCost + parseFloat(transaction.totalCost);
-          
-          await storage.updateBatch(batchId, {
-            [expenseType === "feed" ? "totalFeedCost" : "totalTreatmentCost"]: newCost.toString(),
-          });
-        }
-      }
 
       // Update animal cost if applicable
       if (animalId) {
         const animal = await storage.getAnimalById(animalId);
         if (animal) {
-          const expenseType = item.itemType === "feed" ? "Feed" : "Treatment";
+          const categoryLower = item.category.toLowerCase();
+          const expenseType = (categoryLower.includes("feed") || categoryLower.includes("علف")) ? "Feed" : "Treatment";
           const currentCost = parseFloat(animal[`accumulated${expenseType}Cost`] || "0");
           const newCost = currentCost + parseFloat(transaction.totalCost);
           
@@ -662,33 +640,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("📋 Creating veterinary treatment:", req.body);
       
-      // Parse the data from the request
+      // Parse the data from the request (align with schema)
       const treatmentData = {
         animalId: req.body.animalId,
         veterinarian: req.body.veterinarian,
         treatmentDate: req.body.treatmentDate ? new Date(req.body.treatmentDate) : new Date(),
         treatmentType: req.body.treatmentType,
-        temperature: req.body.temperature || null,
-        heartRate: req.body.heartRate || null,
-        respiratoryRate: req.body.respiratoryRate || null,
-        appetite: req.body.appetite || null,
-        behavior: req.body.behavior || null,
-        mobility: req.body.mobility || null,
-        symptoms: req.body.symptoms ? JSON.stringify(req.body.symptoms) : null,
-        diagnosisCategory: req.body.diagnosisCategory || null,
-        diagnosisDescription: req.body.diagnosisDescription,
-        severity: req.body.severity,
-        medications: req.body.medications ? JSON.stringify(req.body.medications) : null,
-        isolation: req.body.isolation || null,
-        dietRecommendations: req.body.dietRecommendations || null,
-        followUpDate: req.body.followUpDate ? new Date(req.body.followUpDate) : null,
-        specialInstructions: req.body.specialInstructions || null,
-        vetNotes: req.body.vetNotes || null,
-        estimatedCost: req.body.estimatedCost?.toString() || "0",
-        actualCost: req.body.actualCost?.toString() || "0",
+        medication: req.body.medication || null,
+        dosage: req.body.dosage || null,
+        diagnosis: req.body.diagnosis || null,
+        treatment: req.body.treatment || null,
+        cost: req.body.cost?.toString() || null,
         status: req.body.status || "ongoing",
-        completedDate: req.body.completedDate ? new Date(req.body.completedDate) : null,
-        outcome: req.body.outcome || null,
+        notes: req.body.notes || null,
       };
 
       const treatment = await storage.insertVeterinaryTreatment(treatmentData);
@@ -703,12 +667,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/treatments/:id", async (req, res) => {
     try {
       const updateData = {
-        ...req.body,
         treatmentDate: req.body.treatmentDate ? new Date(req.body.treatmentDate) : undefined,
-        followUpDate: req.body.followUpDate ? new Date(req.body.followUpDate) : undefined,
-        completedDate: req.body.completedDate ? new Date(req.body.completedDate) : undefined,
-        symptoms: req.body.symptoms ? JSON.stringify(req.body.symptoms) : undefined,
-        medications: req.body.medications ? JSON.stringify(req.body.medications) : undefined,
+        treatmentType: req.body.treatmentType,
+        veterinarian: req.body.veterinarian,
+        medication: req.body.medication,
+        dosage: req.body.dosage,
+        diagnosis: req.body.diagnosis,
+        treatment: req.body.treatment,
+        cost: req.body.cost?.toString(),
+        status: req.body.status,
+        notes: req.body.notes,
       };
 
       const treatment = await storage.updateVeterinaryTreatment(req.params.id, updateData);
@@ -897,28 +865,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Debit: Animals Asset
       await storage.insertAccountingEntry({
         entryNumber: entryNumber + "-1",
-        entryType: "purchase",
         relatedType: "animal",
         relatedId: animalId,
         accountCode: "1200",
         accountName: "الحيوانات",
-        debit: amount.toString(),
-        credit: "0",
+        debitAmount: amount.toString(),
+        creditAmount: "0",
         description: `شراء حيوان - ${description}`
-      });
+      } as any);
       
       // Credit: Accounts Payable or Cash
       await storage.insertAccountingEntry({
         entryNumber: entryNumber + "-2", 
-        entryType: "purchase",
         relatedType: "supplier",
         relatedId: supplierId,
         accountCode: "2100",
         accountName: "الموردين",
-        debit: "0",
-        credit: amount.toString(),
+        debitAmount: "0",
+        creditAmount: amount.toString(),
         description: `شراء حيوان - ${description}`
-      });
+      } as any);
       
       res.json({ message: "تم إنشاء القيود المحاسبية بنجاح", entryNumber });
     } catch (error: any) {
@@ -935,54 +901,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Debit: Cash/Customers
       await storage.insertAccountingEntry({
         entryNumber: entryNumber + "-1",
-        entryType: "sale",
         relatedType: "customer",
         relatedId: customerId,
         accountCode: "1010",
         accountName: "النقدية",
-        debit: saleAmount.toString(),
-        credit: "0",
+        debitAmount: saleAmount.toString(),
+        creditAmount: "0",
         description: `بيع حيوان - ${description}`
-      });
+      } as any);
       
       // Credit: Sales Revenue
       await storage.insertAccountingEntry({
         entryNumber: entryNumber + "-2",
-        entryType: "sale", 
         relatedType: "animal",
         relatedId: animalId,
         accountCode: "4100",
         accountName: "إيرادات المبيعات",
-        debit: "0",
-        credit: saleAmount.toString(),
+        debitAmount: "0",
+        creditAmount: saleAmount.toString(),
         description: `بيع حيوان - ${description}`
-      });
+      } as any);
       
       // Debit: Cost of Goods Sold
       await storage.insertAccountingEntry({
         entryNumber: entryNumber + "-3",
-        entryType: "sale",
         relatedType: "animal", 
         relatedId: animalId,
         accountCode: "5100",
         accountName: "تكلفة البضاعة المباعة",
-        debit: costAmount.toString(),
-        credit: "0",
+        debitAmount: costAmount.toString(),
+        creditAmount: "0",
         description: `تكلفة حيوان مباع - ${description}`
-      });
+      } as any);
       
       // Credit: Animals Asset
       await storage.insertAccountingEntry({
         entryNumber: entryNumber + "-4",
-        entryType: "sale",
         relatedType: "animal",
         relatedId: animalId, 
         accountCode: "1200",
         accountName: "الحيوانات",
-        debit: "0",
-        credit: costAmount.toString(),
+        debitAmount: "0",
+        creditAmount: costAmount.toString(),
         description: `تكلفة حيوان مباع - ${description}`
-      });
+      } as any);
       
       res.json({ message: "تم إنشاء قيود البيع بنجاح", entryNumber });
     } catch (error: any) {

@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Animal, type InsertAnimal, type Reception, type InsertReception, type Supplier, type InsertSupplier, type Customer, type InsertCustomer, type Transaction, type InsertTransaction, type Batch, type InsertBatch, type BatchExpense, type InsertBatchExpense, type AnimalSale, type InsertAnimalSale, type PerformanceGoal, type InsertPerformanceGoal, type InventoryItem, type InsertInventoryItem, type InventoryTransaction, type InsertInventoryTransaction, type VeterinaryTreatment, type InsertVeterinaryTreatment, type Voucher, type InsertVoucher, type AccountingEntry, type InsertAccountingEntry, type Goal, type InsertGoal } from "../shared/schema";
+import { type User, type InsertUser, type Animal, type InsertAnimal, type Reception, type InsertReception, type Supplier, type InsertSupplier, type Customer, type InsertCustomer, type Transaction, type InsertTransaction, type Batch, type InsertBatch, type BatchExpense, type InsertBatchExpense, type AnimalSale, type InsertAnimalSale, type PerformanceGoal, type InsertPerformanceGoal, type InventoryItem, type InsertInventoryItem, type InventoryTransaction, type InsertInventoryTransaction, type VeterinaryTreatment, type InsertVeterinaryTreatment, type Voucher, type InsertVoucher, type AccountingEntry, type InsertAccountingEntry, type Goal, type InsertGoal, type Barn, type InsertBarn } from "../shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
 
@@ -24,8 +24,8 @@ export interface IStorage {
   upsertBatchByNumber(data: InsertBatch): Promise<{ action: "insert" | "update"; record: Batch }>;
   getReceptionByNumber(receptionNumber: string): Promise<Reception | undefined>;
   upsertReceptionByNumber(data: InsertReception): Promise<{ action: "insert" | "update"; record: Reception }>;
-  getBarnByNumber(barnNumber: string): Promise<any | undefined>;
-  upsertBarnByNumber(data: any): Promise<{ action: "insert" | "update"; record: any }>;
+  getBarnByNumber(barnNumber: string): Promise<Barn | undefined>;
+  upsertBarnByNumber(data: InsertBarn): Promise<{ action: "insert" | "update"; record: Barn }>;
   
   // Animals methods
   getAnimals(): Promise<Animal[]>;
@@ -132,18 +132,21 @@ export interface IStorage {
   getCashFlowReport(startDate: Date, endDate: Date): Promise<any>;
   
   // Barns methods
-  getBarns(): Promise<any[]>;
-  getBarnById(id: string): Promise<any | undefined>;
-  insertBarn(barn: any): Promise<any>;
-  updateBarn(id: string, barn: any): Promise<any | undefined>;
+  getBarns(): Promise<Barn[]>;
+  getBarnById(id: string): Promise<Barn | undefined>;
+  insertBarn(barn: InsertBarn): Promise<Barn>;
+  updateBarn(id: string, barn: Partial<InsertBarn>): Promise<Barn | undefined>;
   deleteBarn(id: string): Promise<void>;
 
   // Goals methods
-  getGoals(): Promise<any[]>;
-  getGoalById(id: string): Promise<any | undefined>;
-  insertGoal(goal: any): Promise<any>;
-  updateGoal(id: string, goal: any): Promise<any | undefined>;
+  getGoals(): Promise<Goal[]>;
+  getGoalById(id: string): Promise<Goal | undefined>;
+  insertGoal(goal: InsertGoal): Promise<Goal>;
+  updateGoal(id: string, goal: Partial<InsertGoal>): Promise<Goal | undefined>;
   deleteGoal(id: string): Promise<void>;
+
+  // Utilities
+  clearAllData(): Promise<void>;
 }
 
 export class InMemoryStorage implements IStorage {
@@ -161,6 +164,8 @@ export class InMemoryStorage implements IStorage {
   private inventoryTransactions = new Map<string, InventoryTransaction>();
   private veterinaryTreatments = new Map<string, VeterinaryTreatment>();
   private vouchers = new Map<string, Voucher>();
+  private barns = new Map<string, Barn>();
+  private accounting = new Map<string, AccountingEntry>();
 
   constructor() {
     // Initialize with some mock data
@@ -258,15 +263,14 @@ export class InMemoryStorage implements IStorage {
     const inserted = await this.insertReception(data);
     return { action: "insert", record: inserted };
   }
-  async getBarnByNumber(barnNumber: string): Promise<any | undefined> {
-    return Array.from(this.batches.values() as any).find((b: any) => b.barnNumber === barnNumber) as any;
+  async getBarnByNumber(barnNumber: string): Promise<Barn | undefined> {
+    return Array.from(this.barns.values()).find((b) => b.barnNumber === barnNumber);
   }
-  async upsertBarnByNumber(data: any) {
+  async upsertBarnByNumber(data: InsertBarn) {
     const existing = await this.getBarnByNumber(data.barnNumber);
     if (existing) {
-      const updated = { ...existing, ...data, updatedAt: new Date() } as any;
-      // barns are not stored in a map here; implement a simple set through get/insert pattern
-      await this.updateBarn(existing.id, data);
+      const updated: Barn = { ...existing, ...data, updatedAt: new Date() } as Barn;
+      this.barns.set(updated.id, updated);
       return { action: "update", record: updated };
     }
     const inserted = await this.insertBarn(data);
@@ -282,79 +286,31 @@ export class InMemoryStorage implements IStorage {
     };
     this.users.set(mockUser.id, mockUser);
 
-    // Add mock batches with correct cost data
+    // Add minimal mock batches per current schema
     const batch1: Batch = {
       id: "batch-1",
       batchNumber: "B-2025-001",
       batchName: "دفعة يناير 2025",
-      startDate: new Date("2025-01-15"),
-      closeDate: null,
-      totalAnimals: "5",
-      soldAnimals: "0",
-      deceasedAnimals: "0",
-      purchaseCost: "125000",
-      feedCost: "45000",
-      treatmentCost: "8500",
-      otherExpenses: "0",
-      totalCost: "178500",
-      totalRevenue: "0",
-      profit: "-178500",
-      profitPercentage: "0",
+      capacity: 50,
+      batchType: "open",
       status: "active",
       notes: "دفعة تسمين - يناير 2025",
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    
     const batch2: Batch = {
       id: "batch-2",
       batchNumber: "B-2024-012",
       batchName: "دفعة ديسمبر 2024",
-      startDate: new Date("2024-12-01"),
-      closeDate: new Date("2025-03-15"),
-      totalAnimals: "3",
-      soldAnimals: "3",
-      deceasedAnimals: "0",
-      purchaseCost: "75000",
-      feedCost: "32000",
-      treatmentCost: "5000",
-      otherExpenses: "0",
-      totalCost: "112000",
-      totalRevenue: "145000",
-      profit: "33000",
-      profitPercentage: "29.46",
-      status: "completed",
-      notes: "دفعة مكتملة - ربح جيد",
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    
-    const batch3: Batch = {
-      id: "batch-3",
-      batchNumber: "B-2025-002",
-      batchName: "دفعة فبراير 2025",
-      startDate: new Date("2025-02-01"),
-      closeDate: null,
-      totalAnimals: "8",
-      soldAnimals: "1",
-      deceasedAnimals: "0",
-      purchaseCost: "180000",
-      feedCost: "52000",
-      treatmentCost: "12000",
-      otherExpenses: "0",
-      totalCost: "244000",
-      totalRevenue: "45000",
-      profit: "-199000",
-      profitPercentage: "-81.56",
+      capacity: 40,
+      batchType: "open",
       status: "active",
-      notes: "دفعة كبيرة - خليط من الأبقار والجاموس",
+      notes: "دفعة قيد التشغيل",
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    
     this.batches.set(batch1.id, batch1);
     this.batches.set(batch2.id, batch2);
-    this.batches.set(batch3.id, batch3);
 
     // Add minimal mock data for other entities
     const animals: Animal[] = [];
@@ -409,25 +365,15 @@ export class InMemoryStorage implements IStorage {
   async insertBatch(batch: InsertBatch): Promise<Batch> {
     const id = randomUUID();
     const newBatch: Batch = { 
-      ...batch, 
-      id, 
+      ...batch,
+      id,
       notes: batch.notes || null,
-      purchaseCost: batch.purchaseCost || "0",
-      feedCost: batch.feedCost || "0",
-      treatmentCost: batch.treatmentCost || "0",
-      otherExpenses: batch.otherExpenses || "0",
-      totalCost: batch.totalCost || "0",
-      totalRevenue: batch.totalRevenue || "0",
-      profit: batch.profit || "0",
-      profitPercentage: batch.profitPercentage || "0",
-      soldAnimals: batch.soldAnimals || "0",
-      deceasedAnimals: batch.deceasedAnimals || "0",
-      startDate: batch.startDate || new Date(),
-      closeDate: batch.closeDate || null,
-      totalAnimals: batch.totalAnimals || "0",
-      createdAt: new Date(), 
-      updatedAt: new Date() 
-    };
+      batchType: batch.batchType || "open",
+      status: batch.status || "active",
+      capacity: typeof (batch as any).capacity === "number" ? (batch as any).capacity : 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as Batch;
     this.batches.set(id, newBatch);
     return newBatch;
   }
@@ -588,10 +534,8 @@ export class InMemoryStorage implements IStorage {
       id, 
       relatedType: transaction.relatedType || null,
       relatedId: transaction.relatedId || null,
-      paymentMethod: transaction.paymentMethod || null,
       description: transaction.description || null,
-      notes: transaction.notes || null,
-      referenceNumber: transaction.referenceNumber || null,
+      status: (transaction as any).status || "completed",
       transactionDate: transaction.transactionDate || new Date(),
       createdAt: new Date(), 
       updatedAt: new Date() 
@@ -624,25 +568,18 @@ export class InMemoryStorage implements IStorage {
 
   async insertInventoryItem(item: InsertInventoryItem): Promise<InventoryItem> {
     const id = randomUUID();
-    const newItem: InventoryItem = { 
-      ...item, 
-      id, 
-      description: item.description || null,
-      notes: item.notes || null,
-      category: item.category || null,
-      supplierId: item.supplierId || null,
-      location: item.location || null,
-      expiryDate: item.expiryDate || null,
-      batchNumber: item.batchNumber || null,
+    const newItem: InventoryItem = {
+      ...item,
+      id,
       currentStock: item.currentStock || "0",
-      minStock: item.minStock || "0",
+      minimumStock: (item as any).minimumStock || "0",
       totalValue: item.totalValue || "0",
-      reorderPoint: item.reorderPoint || "0",
-      unitCost: item.unitCost || "0",
-      maxStock: item.maxStock || null,
-      createdAt: new Date(), 
-      updatedAt: new Date() 
-    };
+      unitCost: item.unitCost || null,
+      notes: (item as any).notes || null,
+      status: (item as any).status || "active",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as InventoryItem;
     this.inventory.set(id, newItem);
     return newItem;
   }
@@ -711,18 +648,12 @@ export class InMemoryStorage implements IStorage {
   async insertBatchExpense(batchExpense: InsertBatchExpense): Promise<BatchExpense> {
     const id = randomUUID();
     const newExpense: BatchExpense = { 
-      ...batchExpense, 
-      id, 
-      paymentMethod: batchExpense.paymentMethod || null,
-      notes: batchExpense.notes || null,
-      supplierId: batchExpense.supplierId || null,
-      quantity: batchExpense.quantity || null,
-      unitPrice: batchExpense.unitPrice || null,
-      referenceNumber: batchExpense.referenceNumber || null,
-      expenseCategory: batchExpense.expenseCategory || null,
+      ...batchExpense,
+      id,
+      description: (batchExpense as any).description || null,
       expenseDate: batchExpense.expenseDate || new Date(),
-      createdAt: new Date(), 
-      updatedAt: new Date() 
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.batchExpenses.set(id, newExpense);
     return newExpense;
@@ -744,7 +675,8 @@ export class InMemoryStorage implements IStorage {
   // Animal Sales methods
   async getAnimalSales(batchId?: string): Promise<AnimalSale[]> {
     const allSales = Array.from(this.animalSales.values());
-    return batchId ? allSales.filter(s => s.batchId === batchId) : allSales;
+    // Current schema has no batchId on sales; return all for now
+    return allSales;
   }
 
   async getAnimalSaleById(id: string): Promise<AnimalSale | undefined> {
@@ -754,17 +686,14 @@ export class InMemoryStorage implements IStorage {
   async insertAnimalSale(animalSale: InsertAnimalSale): Promise<AnimalSale> {
     const id = randomUUID();
     const newSale: AnimalSale = { 
-      ...animalSale, 
-      id, 
-      paymentMethod: animalSale.paymentMethod || null,
-      notes: animalSale.notes || null,
-      profitPercentage: animalSale.profitPercentage || null,
-      customerId: animalSale.customerId || null,
-      paidAmount: animalSale.paidAmount || "0",
-      remainingAmount: animalSale.remainingAmount || "0",
+      ...animalSale,
+      id,
       saleDate: animalSale.saleDate || new Date(),
-      createdAt: new Date(), 
-      updatedAt: new Date() 
+      notes: (animalSale as any).notes || null,
+      paymentMethod: (animalSale as any).paymentMethod || "cash",
+      status: (animalSale as any).status || "completed",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.animalSales.set(id, newSale);
     return newSale;
@@ -795,20 +724,14 @@ export class InMemoryStorage implements IStorage {
   async insertPerformanceGoal(goal: InsertPerformanceGoal): Promise<PerformanceGoal> {
     const id = randomUUID();
     const newGoal: PerformanceGoal = { 
-      ...goal, 
-      id, 
-      description: goal.description || null,
-      notes: goal.notes || null,
-      unit: goal.unit || null,
-      batchId: goal.batchId || null,
-      achievedDate: goal.achievedDate || null,
-      startDate: goal.startDate || new Date(),
-      endDate: goal.endDate || new Date(),
+      ...goal,
+      id,
+      targetDate: (goal as any).targetDate || null,
+      description: (goal as any).description || null,
       currentValue: goal.currentValue || "0",
-      targetValue: goal.targetValue || "0",
-      priority: goal.priority || "medium",
-      createdAt: new Date(), 
-      updatedAt: new Date() 
+      status: (goal as any).status || "active",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.performanceGoals.set(id, newGoal);
     return newGoal;
@@ -838,23 +761,18 @@ export class InMemoryStorage implements IStorage {
 
   async insertInventoryTransaction(transaction: InsertInventoryTransaction): Promise<InventoryTransaction> {
     const id = randomUUID();
-    const newTransaction: InventoryTransaction = { 
-      ...transaction, 
-      id, 
+    const newTransaction: InventoryTransaction = {
+      ...transaction,
+      id,
       transactionDate: transaction.transactionDate || new Date(),
-      animalId: transaction.animalId || null,
-      description: transaction.description || null,
-      notes: transaction.notes || null,
-      supplierId: transaction.supplierId || null,
-      penNumber: transaction.penNumber || null,
-      performedBy: transaction.performedBy || null,
-      batchId: transaction.batchId || null,
-      referenceId: transaction.referenceId || null,
-      purchaseOrderNumber: transaction.purchaseOrderNumber || null,
+      unitCost: transaction.unitCost || null,
+      totalCost: transaction.totalCost || null,
       referenceType: transaction.referenceType || null,
-      invoiceNumber: transaction.invoiceNumber || null,
-      createdAt: new Date() 
-    };
+      referenceId: transaction.referenceId || null,
+      notes: (transaction as any).notes || null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as InventoryTransaction;
     this.inventoryTransactions.set(id, newTransaction);
     return newTransaction;
   }
@@ -883,31 +801,20 @@ export class InMemoryStorage implements IStorage {
 
   async insertTreatment(treatment: InsertVeterinaryTreatment): Promise<VeterinaryTreatment> {
     const id = randomUUID();
-    const newTreatment: VeterinaryTreatment = { 
-      ...treatment, 
-      id, 
-      behavior: treatment.behavior || null,
-      temperature: treatment.temperature || null,
-      heartRate: treatment.heartRate || null,
-      respiratoryRate: treatment.respiratoryRate || null,
-      appetite: treatment.appetite || null,
-      mobility: treatment.mobility || null,
-      followUpDate: treatment.followUpDate || null,
-      outcome: treatment.outcome || null,
+    const newTreatment: VeterinaryTreatment = {
+      ...treatment,
+      id,
       treatmentDate: treatment.treatmentDate || new Date(),
-      medications: treatment.medications || null,
-      symptoms: treatment.symptoms || null,
-      completedDate: treatment.completedDate || null,
-      diagnosisCategory: treatment.diagnosisCategory || null,
-      actualCost: treatment.actualCost || "0",
-      isolation: treatment.isolation || null,
-      estimatedCost: treatment.estimatedCost || "0",
-      dietRecommendations: treatment.dietRecommendations || null,
-      vetNotes: treatment.vetNotes || null,
-      specialInstructions: treatment.specialInstructions || null,
-      createdAt: new Date(), 
-      updatedAt: new Date() 
-    };
+      medication: (treatment as any).medication || null,
+      dosage: (treatment as any).dosage || null,
+      diagnosis: (treatment as any).diagnosis || null,
+      treatment: (treatment as any).treatment || null,
+      cost: (treatment as any).cost || null,
+      notes: (treatment as any).notes || null,
+      status: (treatment as any).status || "ongoing",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as VeterinaryTreatment;
     this.veterinaryTreatments.set(id, newTreatment);
     return newTreatment;
   }
@@ -961,25 +868,20 @@ export class InMemoryStorage implements IStorage {
 
   async insertVoucher(voucher: InsertVoucher): Promise<Voucher> {
     const id = randomUUID();
-    const newVoucher: Voucher = { 
-      ...voucher, 
-      id, 
-      transactionId: voucher.transactionId || null,
-      approvedBy: voucher.approvedBy || null,
-      approvedAt: voucher.approvedAt || null,
-      notes: voucher.notes || null,
+    const newVoucher: Voucher = {
+      ...voucher,
+      id,
       voucherDate: voucher.voucherDate || new Date(),
+      amountInWords: voucher.amountInWords || null,
       relatedType: voucher.relatedType || null,
       relatedId: voucher.relatedId || null,
-      description: voucher.description || "",
-      amountInWords: voucher.amountInWords || null,
-      checkNumber: voucher.checkNumber || null,
-      bankName: voucher.bankName || null,
-      createdBy: voucher.createdBy || null,
-      checkDate: voucher.checkDate || null,
-      createdAt: new Date(), 
-      updatedAt: new Date() 
-    };
+      description: (voucher as any).description || null,
+      status: (voucher as any).status || "approved",
+      paymentMethod: (voucher as any).paymentMethod || "cash",
+      receivedFrom: (voucher as any).receivedFrom || null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as Voucher;
     this.vouchers.set(id, newVoucher);
     return newVoucher;
   }
@@ -999,20 +901,18 @@ export class InMemoryStorage implements IStorage {
 
   // Goals methods
   async getGoals(): Promise<Goal[]> {
-    return [];
+    return Array.from(this.goals.values());
   }
 
   async getGoalById(id: string): Promise<Goal | undefined> {
-    return undefined;
+    return this.goals.get(id);
   }
 
   async insertGoal(goal: InsertGoal): Promise<Goal> {
+    const id = randomUUID();
     const newGoal: Goal = {
-      id: randomUUID(),
-      goalName: goal.goalName,
-      goalType: goal.goalType,
-      targetValue: goal.targetValue,
-      currentValue: goal.currentValue || "0",
+      ...goal,
+      id,
       unit: goal.unit || null,
       batchId: goal.batchId || null,
       startDate: goal.startDate ? new Date(goal.startDate) : null,
@@ -1021,16 +921,192 @@ export class InMemoryStorage implements IStorage {
       notes: goal.notes || null,
       createdAt: new Date(),
       updatedAt: new Date(),
-    };
+    } as Goal;
+    this.goals.set(id, newGoal);
     return newGoal;
   }
 
   async updateGoal(id: string, goal: Partial<InsertGoal>): Promise<Goal | undefined> {
-    return undefined;
+    const existing = this.goals.get(id);
+    if (!existing) return undefined;
+    const updated: Goal = { ...existing, ...goal, updatedAt: new Date() } as Goal;
+    this.goals.set(id, updated);
+    return updated;
   }
 
   async deleteGoal(id: string): Promise<void> {
-    return;
+    this.goals.delete(id);
+  }
+
+  // Barns methods (in-memory)
+  async getBarns(): Promise<Barn[]> {
+    return Array.from(this.barns.values());
+  }
+
+  async getBarnById(id: string): Promise<Barn | undefined> {
+    return this.barns.get(id);
+  }
+
+  async insertBarn(barn: InsertBarn): Promise<Barn> {
+    const id = randomUUID();
+    const newBarn: Barn = {
+      ...barn,
+      id,
+      location: (barn as any).location || null,
+      notes: (barn as any).notes || null,
+      currentOccupancy: (barn as any).currentOccupancy ?? 0,
+      status: (barn as any).status || "active",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as Barn;
+    this.barns.set(id, newBarn);
+    return newBarn;
+  }
+
+  async updateBarn(id: string, barn: Partial<InsertBarn>): Promise<Barn | undefined> {
+    const existing = this.barns.get(id);
+    if (!existing) return undefined;
+    const updated: Barn = { ...existing, ...barn, updatedAt: new Date() } as Barn;
+    this.barns.set(id, updated);
+    return updated;
+  }
+
+  async deleteBarn(id: string): Promise<void> {
+    this.barns.delete(id);
+  }
+
+  // Accounting entries (in-memory)
+  async getAccountingEntries(): Promise<AccountingEntry[]> {
+    return Array.from(this.accounting.values());
+  }
+
+  async getAccountingEntryById(id: string): Promise<AccountingEntry | undefined> {
+    return this.accounting.get(id);
+  }
+
+  async insertAccountingEntry(entry: InsertAccountingEntry): Promise<AccountingEntry> {
+    const id = randomUUID();
+    const ensuredEntryNumber = (entry as any).entryNumber || `JE-${new Date().getFullYear()}-${String(this.accounting.size + 1).padStart(4, "0")}`;
+    const record: AccountingEntry = {
+      ...entry,
+      id,
+      entryNumber: ensuredEntryNumber,
+      debitAmount: (entry as any).debitAmount || "0",
+      creditAmount: (entry as any).creditAmount || "0",
+      description: (entry as any).description || null,
+      referenceType: (entry as any).referenceType || null,
+      referenceId: (entry as any).referenceId || null,
+      status: (entry as any).status || "approved",
+      entryDate: entry.entryDate || new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as AccountingEntry;
+    this.accounting.set(id, record);
+    return record;
+  }
+
+  async updateAccountingEntry(id: string, entry: Partial<InsertAccountingEntry>): Promise<AccountingEntry | undefined> {
+    const existing = this.accounting.get(id);
+    if (!existing) return undefined;
+    const updated: AccountingEntry = { ...existing, ...entry, updatedAt: new Date() } as AccountingEntry;
+    this.accounting.set(id, updated);
+    return updated;
+  }
+
+  async deleteAccountingEntry(id: string): Promise<void> {
+    this.accounting.delete(id);
+  }
+
+  async getTrialBalance(): Promise<any[]> {
+    const accounts = new Map<string, any>();
+    for (const entry of this.accounting.values()) {
+      const key = `${entry.accountCode}-${entry.accountName}`;
+      if (!accounts.has(key)) {
+        accounts.set(key, {
+          accountCode: entry.accountCode,
+          accountName: entry.accountName,
+          totalDebit: 0,
+          totalCredit: 0,
+          balance: 0,
+        });
+      }
+      const acc = accounts.get(key);
+      acc.totalDebit += parseFloat(entry.debitAmount || "0");
+      acc.totalCredit += parseFloat(entry.creditAmount || "0");
+      acc.balance = acc.totalDebit - acc.totalCredit;
+    }
+    return Array.from(accounts.values());
+  }
+
+  async getProfitLossReport(startDate: Date, endDate: Date): Promise<any> {
+    const entries = Array.from(this.accounting.values()).filter(e => {
+      const d = new Date(e.entryDate || new Date());
+      return d >= startDate && d <= endDate;
+    });
+    let revenue = 0;
+    let expenses = 0;
+    for (const e of entries) {
+      if (e.accountCode.startsWith("4")) {
+        revenue += parseFloat(e.creditAmount || "0") - parseFloat(e.debitAmount || "0");
+      } else if (e.accountCode.startsWith("5")) {
+        expenses += parseFloat(e.debitAmount || "0") - parseFloat(e.creditAmount || "0");
+      }
+    }
+    return {
+      period: { startDate, endDate },
+      revenue,
+      expenses,
+      profit: revenue - expenses,
+      profitMargin: revenue > 0 ? ((revenue - expenses) / revenue) * 100 : 0,
+    };
+  }
+
+  async getBalanceSheet(date: Date): Promise<any> {
+    const entries = Array.from(this.accounting.values()).filter(e => new Date(e.entryDate || new Date()) <= date);
+    let assets = 0;
+    let liabilities = 0;
+    let equity = 0;
+    for (const e of entries) {
+      const balance = parseFloat(e.debitAmount || "0") - parseFloat(e.creditAmount || "0");
+      if (e.accountCode.startsWith("1")) assets += balance;
+      else if (e.accountCode.startsWith("2")) liabilities += -balance;
+      else if (e.accountCode.startsWith("3")) equity += -balance;
+    }
+    return { date, assets, liabilities, equity, totalLiabilitiesAndEquity: liabilities + equity };
+  }
+
+  async getCashFlowReport(startDate: Date, endDate: Date): Promise<any> {
+    const entries = Array.from(this.accounting.values()).filter(e => {
+      const d = new Date(e.entryDate || new Date());
+      return d >= startDate && d <= endDate && e.accountCode === "1010";
+    });
+    let inflow = 0;
+    let outflow = 0;
+    for (const e of entries) {
+      const debit = parseFloat(e.debitAmount || "0");
+      const credit = parseFloat(e.creditAmount || "0");
+      if (debit > credit) inflow += debit - credit; else outflow += credit - debit;
+    }
+    return { period: { startDate, endDate }, inflow, outflow, netFlow: inflow - outflow };
+  }
+
+  async clearAllData(): Promise<void> {
+    this.users.clear();
+    this.animals.clear();
+    this.receptions.clear();
+    this.suppliers.clear();
+    this.customers.clear();
+    this.transactions.clear();
+    this.batches.clear();
+    this.batchExpenses.clear();
+    this.animalSales.clear();
+    this.performanceGoals.clear();
+    this.inventory.clear();
+    this.inventoryTransactions.clear();
+    this.veterinaryTreatments.clear();
+    this.vouchers.clear();
+    this.barns.clear();
+    this.accounting.clear();
   }
 
 }
@@ -1156,11 +1232,11 @@ export class DbStorage implements IStorage {
     return { action: "insert", record: inserted };
   }
 
-  async getBarnByNumber(barnNumber: string): Promise<any | undefined> {
+  async getBarnByNumber(barnNumber: string): Promise<Barn | undefined> {
     const result = await db.select().from(barns).where(eq(barns.barnNumber, barnNumber)).limit(1);
     return result[0];
   }
-  async upsertBarnByNumber(data: any) {
+  async upsertBarnByNumber(data: InsertBarn) {
     const existing = await this.getBarnByNumber(data.barnNumber);
     if (existing) {
       const updated = await this.updateBarn(existing.id, data);
@@ -1562,8 +1638,8 @@ export class DbStorage implements IStorage {
     const entries = await db.select({
       accountCode: accountingEntries.accountCode,
       accountName: accountingEntries.accountName,
-      debit: accountingEntries.debit,
-      credit: accountingEntries.credit,
+      debitAmount: accountingEntries.debitAmount,
+      creditAmount: accountingEntries.creditAmount,
     }).from(accountingEntries);
 
     // Group by account and sum debits/credits
@@ -1582,8 +1658,8 @@ export class DbStorage implements IStorage {
       }
       
       const account = accounts.get(key);
-      account.totalDebit += parseFloat(entry.debit);
-      account.totalCredit += parseFloat(entry.credit);
+      account.totalDebit += parseFloat(entry.debitAmount);
+      account.totalCredit += parseFloat(entry.creditAmount);
       account.balance = account.totalDebit - account.totalCredit;
     });
 
@@ -1603,11 +1679,11 @@ export class DbStorage implements IStorage {
     entries.forEach(entry => {
       // Revenue accounts (4xxxx)
       if (entry.accountCode.startsWith('4')) {
-        revenue += parseFloat(entry.credit) - parseFloat(entry.debit);
+        revenue += parseFloat((entry as any).creditAmount) - parseFloat((entry as any).debitAmount);
       }
       // Expense accounts (5xxxx)
       else if (entry.accountCode.startsWith('5')) {
-        expenses += parseFloat(entry.debit) - parseFloat(entry.credit);
+        expenses += parseFloat((entry as any).debitAmount) - parseFloat((entry as any).creditAmount);
       }
     });
 
@@ -1629,7 +1705,7 @@ export class DbStorage implements IStorage {
     let equity = 0;
     
     entries.forEach(entry => {
-      const balance = parseFloat(entry.debit) - parseFloat(entry.credit);
+      const balance = parseFloat((entry as any).debitAmount) - parseFloat((entry as any).creditAmount);
       
       // Assets (1xxxx)
       if (entry.accountCode.startsWith('1')) {
@@ -1666,8 +1742,8 @@ export class DbStorage implements IStorage {
     let outflow = 0;
     
     entries.forEach(entry => {
-      const debit = parseFloat(entry.debit);
-      const credit = parseFloat(entry.credit);
+      const debit = parseFloat((entry as any).debitAmount);
+      const credit = parseFloat((entry as any).creditAmount);
       
       if (debit > credit) {
         inflow += debit - credit;
@@ -1710,22 +1786,22 @@ export class DbStorage implements IStorage {
   }
 
   // Barns methods
-  async getBarns(): Promise<any[]> {
+  async getBarns(): Promise<Barn[]> {
     const result = await db.select().from(barns);
     return result;
   }
 
-  async getBarnById(id: string): Promise<any | undefined> {
+  async getBarnById(id: string): Promise<Barn | undefined> {
     const result = await db.select().from(barns).where(eq(barns.id, id));
     return result[0];
   }
 
-  async insertBarn(barn: any): Promise<any> {
+  async insertBarn(barn: InsertBarn): Promise<Barn> {
     const result = await db.insert(barns).values(barn).returning();
     return result[0];
   }
 
-  async updateBarn(id: string, barn: any): Promise<any | undefined> {
+  async updateBarn(id: string, barn: Partial<InsertBarn>): Promise<Barn | undefined> {
     const result = await db.update(barns).set(barn).where(eq(barns.id, id)).returning();
     return result[0];
   }

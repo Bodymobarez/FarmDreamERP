@@ -79,7 +79,13 @@ async function initializeApp() {
     await setupVite(app, server);
     console.log("Vite setup complete!");
   } else {
-    serveStatic(app);
+    // In Vercel, static assets are served by the platform's static build.
+    // Do NOT try to serve the client from the serverless function bundle.
+    if (!process.env.VERCEL) {
+      serveStatic(app);
+    } else {
+      console.log("Vercel environment detected: skipping serveStatic in serverless function");
+    }
   }
 
   // ALWAYS serve the app on the port specified in the environment variable PORT
