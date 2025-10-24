@@ -1,0 +1,66 @@
+[dotenv@17.2.3] injecting env (19) from .env -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+[STABLE SERVER] 🚀 Server is running on http://0.0.0.0:5001
+[STABLE SERVER] 📱 Open your browser to http://localhost:5001
+[STABLE SERVER] 🎯 All your data is ready - batches, animals, accounting, KPIs!
+GET /api/health 200 in 4ms :: {"status":"healthy","timestamp":"2025-10-13T17:00…
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Found 1 batches
+GET /api/batches 200 in 582ms :: [{"id":"6129f249-8420-4c73-ae35-272f4d3bf39f",…
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 1 animals
+GET /api/animals 200 in 161ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Fetching accounting entries...
+[STABLE SERVER] Found 1 accounting entries
+GET /api/accounting 200 in 154ms :: [{"id":"22179d96-b0e3-44fa-a8eb-06cb36235a1…
+[STABLE SERVER] Fetching performance goals...
+[STABLE SERVER] Found 1 performance goals
+GET /api/performance-goals 200 in 159ms :: [{"id":"00f006e5-c94a-48fa-86df-c7a6…
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Found 1 batches
+GET /api/batches 200 in 534ms :: [{"id":"6129f249-8420-4c73-ae35-272f4d3bf39f",…
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 1 animals
+GET /api/animals 200 in 154ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Fetching accounting entries...
+[STABLE SERVER] Found 1 accounting entries
+GET /api/accounting 200 in 154ms :: [{"id":"22179d96-b0e3-44fa-a8eb-06cb36235a1…
+[STABLE SERVER] Fetching performance goals...
+[STABLE SERVER] Found 1 performance goals
+GET /api/performance-goals 200 in 153ms :: [{"id":"00f006e5-c94a-48fa-86df-c7a6…
+[STABLE SERVER] Fetching batches...
+[STABLE SERVER] Found 1 batches
+GET /api/batches 200 in 453ms :: [{"id":"6129f249-8420-4c73-ae35-272f4d3bf39f",…
+[STABLE SERVER] Fetching animals...
+[STABLE SERVER] Found 1 animals
+GET /api/animals 200 in 476ms :: [{"id":"7a847b55-751a-49e3-b26a-48cf9ceab121",…
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:05:20.568Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:10:20.677Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:15:20.677Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:20:20.678Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:25:20.673Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:30:20.676Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:35:20.676Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:40:20.674Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:45:20.675Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:50:20.675Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T17:55:20.691Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:00:20.714Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:05:20.716Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:10:20.718Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:15:20.776Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:20:20.780Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:25:20.786Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:30:20.792Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:35:20.797Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:40:20.803Z
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:45:20.806Z
+[STABLE SERVER] Fetching accounting entries...
+[STABLE SERVER] Found 1 accounting entries
+GET /api/accounting 200 in 1020ms :: [{"id":"22179d96-b0e3-44fa-a8eb-06cb36235a…
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:50:20.812Z
+[STABLE SERVER] Fetching performance goals...
+[STABLE SERVER] Found 1 performance goals
+GET /api/performance-goals 200 in 723ms :: [{"id":"00f006e5-c94a-48fa-86df-c7a6…
+[STABLE SERVER] Keep-alive ping at 2025-10-13T18:55:20.818Z
+[STABLE SERVER] SIGTERM received, shutting down gracefully
+[STABLE SERVER] Process terminated

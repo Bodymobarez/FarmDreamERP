@@ -1,0 +1,326 @@
+) ملخص سريع عن الملف (فحص آلي)
+
+اسم الشيت: Sheet1 (صف واحد، محتوى مركب).
+
+عدد السجلات (حيوانات/أسطر): 100 صف (بعد تصحيح رؤوس الأعمدة).
+
+أعمدة مهمة مكتشفة (مقترحة من الملف):
+
+العنبر (Pen) — توزيع: عنبر 5 = 50, عنبر3 = 42, عنبر 1 = 6.
+
+الدفعة (Batch) — توزيع: الدفعة الثالثة = 50، الثانية = 42، الأولى = 6.
+
+النوع (Sex): ذكر = 97, انثى = 1.
+
+الرقم (Ear tag / ID) — 98 قيمة مميزة (يوجد صفان لهما نفس الرقم 98 → تكرار/تعارض).
+
+تاريخ الشراء — نطاق التواريخ الموجود بين 2025-05-07 و 2025-08-10 (بعض القيم مفقودة).
+
+وزن الدخول — المتوسط ≈ 24.81 كجم.
+
+أعمدة قياس الوزن على تواريخ متعددة: تم العثور على ~17 عمود تاريخي لقياسات الأوزان (مثال: 18/9/2025 يحتوي على 98 قياسًا بمتوسط ≈ 39.10 كجم).
+
+يوجد مجموعة أعمدة رقمية في نهاية الجدول (أسماءها فقدت أثناء القراءة: ظهرت كـ Unnamed أو كقيم رقمية في رؤوس الأعمدة). هذه تبدو مثل إجماليات/تكاليف (مصروفات تغذية، علاجات، نفقات أخرى، سعر الرأس... إلخ) — معظمها له 98 صف غير فارغ، يبدو أنها حسابات/تكاليف لكل رأس.
+
+2) المشكلات والاختلالات الملحوظة (تحتاج تنظيف قبل الاستيراد)
+
+خلايا رؤوس متعددة الصفوف ومندمجة — أدى ذلك لتحويل بعض رؤوس الأعمدة إلى قيم غريبة (مثل أرقام أو Unnamed).
+
+قيم نصية “؟” أو نصوص غير معيارية داخل أعمدة رقمية → تحتاج استبدالَها بـ NaN وتحويل الأعمدة للأرقام.
+
+تواريخ بأشكال مختلفة (e.g. dd/mm/yyyy, yyyy-mm-dd, بعض الخلايا كـ datetime، وبعضها كـ نص) — توحيد مطلوب.
+
+أعمدة قياسات عرضية (wide) — قياسات الوزن موزعة عبر أعمدة تواريخ متعددة؛ يجب تحويلها إلى جدول طولي (melt) حيث كل سطر = قياس وزن واحد (animal_id, date, weight).
+
+تكرار أرقام التعريف: حالة/حالتان لرقم 98 → يلزم تدقيق (هل نفس الحيوان أم خطأ إدخال؟).
+
+أعمدة حسابية بلا أسماء مفهومة (الأعمدة الرقمية في النهاية) — نحتاج تأكيد مالك/مصمم الملف عن معنى كل عمود أو اشتقاقها من الصيغ الأصلية.
+
+عمود واحد (2025-03-10) يحتوي على متوسط غير منطقي (≈141 كجم) — على الأرجح إدخال خاطئ أو وحدة مختلفة.
+
+3) اقتراح خريطة الحقول (Mapping) من الإكسل إلى نموذج ERP (مقترح)
+
+animals (animal):
+
+animal_id (من عمود الرقم)
+
+pen_id (من العنبر)
+
+batch_id (من الدفعة)
+
+sex (من النوع)
+
+breed (from الفصيل)
+
+purchase_date (من تاريخ الشراء)
+
+entry_weight_kg (من وزن الدخول)
+
+status (active / sold / dead) — أضفنا هذا للحركة المستقبلية
+
+weights (animal_weights) [طولي]:
+
+id, animal_id, weight_kg, weigh_date, source (manual/import), note
+
+يتم توليد هذه السجلات عن طريق تحويل أعمدة التواريخ (wide→long)
+
+pens (housing)
+
+id, name, capacity, location, notes
+
+batches
+
+id, name, received_date, origin, notes
+
+feed_movements / feed_consumption:
+
+id, animal_id or pen_id, date, feed_item_id, qty_kg, cost, batch_no
+
+treatments (veterinary):
+
+id, animal_id, date, treatment_type, medicine_id, dose, cost, vet_name, notes
+
+expenses / accounting entries:
+
+id, date, category (feed, labor, meds, utilities,...), amount, animal_id?pen_id?, invoice_ref, notes
+
+inventory (feed / medicines):
+
+item_id, name, uom, stock_qty, reorder_point, cost_per_uom, supplier_id
+
+suppliers / purchases / sales (if applicable)
+
+users / roles / permissions (Admin, Farm Manager, Vet, Stock Keeper, Accountant, ReadOnly)
+
+4) جداول SQL مقترحة (نماذج قصيرة — استخدم PostgreSQL)
+CREATE TABLE pens (
+  id SERIAL PRIMARY KEY,
+  name TEXT UNIQUE,
+  capacity INTEGER,
+  notes TEXT
+);
+
+CREATE TABLE batches (
+  id SERIAL PRIMARY KEY,
+  name TEXT,
+  origin TEXT,
+  received_date DATE,
+  notes TEXT
+);
+
+CREATE TABLE animals (
+  id SERIAL PRIMARY KEY,
+  ear_tag VARCHAR(50) UNIQUE, -- عمود 'الرقم'
+  pen_id INTEGER REFERENCES pens(id),
+  batch_id INTEGER REFERENCES batches(id),
+  sex VARCHAR(10),
+  breed TEXT,
+  purchase_date DATE,
+  entry_weight_kg NUMERIC,
+  status VARCHAR(20) DEFAULT 'active',
+  created_at TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE animal_weights (
+  id SERIAL PRIMARY KEY,
+  animal_id INTEGER REFERENCES animals(id),
+  weigh_date DATE,
+  weight_kg NUMERIC,
+  source VARCHAR(30),
+  note TEXT,
+  UNIQUE(animal_id,weigh_date)
+);
+
+CREATE TABLE feed_transactions (
+  id SERIAL PRIMARY KEY,
+  date DATE,
+  pen_id INTEGER REFERENCES pens(id),
+  animal_id INTEGER REFERENCES animals(id),
+  feed_item_id INTEGER,
+  qty_kg NUMERIC,
+  cost NUMERIC,
+  note TEXT
+);
+
+CREATE TABLE treatments (
+  id SERIAL PRIMARY KEY,
+  animal_id INTEGER REFERENCES animals(id),
+  date DATE,
+  treatment TEXT,
+  medicine TEXT,
+  dose TEXT,
+  cost NUMERIC,
+  vet TEXT,
+  note TEXT
+);
+
+CREATE TABLE expenses (
+  id SERIAL PRIMARY KEY,
+  date DATE,
+  category TEXT,
+  amount NUMERIC,
+  animal_id INTEGER,
+  pen_id INTEGER,
+  note TEXT
+);
+
+5) خريطة تحويل البيانات (خطوات عملية لاستيراد الإكسل)
+
+اقرأ الملف مع header=None ثم حدِّد صف الرأس الصحيح (في حالتك يبدو أن صف الرأس المفيد هو الصف 3 — index 2).
+
+استبدل ? و- والقيم الغريبة بـ NaN.
+
+حول تاريخ الشراء وأسماء أعمدة التواريخ إلى datetime بتنسيق موحَّد.
+
+حدِّد أعمدة التواريخ (regex على أسماء الأعمدة أو تحويل أسماء الأعمدة إلى datetimes).
+
+melt الأعمدة التاريخية إلى جدول animal_weights (keep id, pen, batch, date, weight).
+
+حاول تسمية الأعمدة الرقمية النهائية (مثال: feed_cost_total, treatment_cost_total, other_expenses, price_per_head) بناءً على القيم/نطاقاتها — إن لم تكن واضحة، احتفظ بها كـ raw_cost_col_1..n واطلب من صاحب الملف تفسيرًا لاحقًا.
+
+تحقق من التكرارات في ear_tag واطلب قواعد دمج (هل الرقم مكرر = نفس الحيوان؟).
+
+أقدّم لك سكربت بايثون تجريبي (pandas) لتنظيف وتحويل الملف — أدرجه لاحقًا إن رغبت.
+
+6) مؤشرات أداء (KPIs) مهمة يجب أن يوفرها الـERP للمزرعة
+
+متوسط الزيادة اليومية لكل رأس (ADG = (current_weight - entry_weight) / days_on_farm).
+
+معدل تحويل العلف (FCR = total_feed_kg / total_weight_gain_kg) لكل دفعة/عنبر.
+
+تكلفة التغذية لكل كجم زيادة (feed_cost_per_kg_gain).
+
+التكلفة الإجمالية لكل رأس (sum of feed + meds + labor + other) وسعر الرأس المقترح/ الهامش.
+
+معدلات النفوق/البيع / العمر عند البيع.
+
+المخزون المتبقي من الأعلاف والأدوية وتنبيهات إعادة الطلب.
+
+7) واجهات ومكونات رئيسية في الـERP (UX)
+
+لوحة تحكّم (Dashboard): KPIs (ADG, FCR, إجمالي التكلفة، أرباح مفترضة)، رسوم بيانية زمنية.
+
+شاشة إدارة الحيوانات: بحث/فلترة (عنبر، دفعة، عمر، رقم أذن)، سجل الحيوان، رسوم بيانية للوزن عبر الزمن.
+
+شاشة إدارة الأوزان: استيراد دفعي من Excel، إضافة قياس يدوي، تصحيح قياسات.
+
+إدارة الأعلاف والمخزون: إضافة دخول مخزون، استهلاك، تقارير مخزون.
+
+إدارة العلاجات والطوارئ: سجل علاجات، جرعات، تكلفة.
+
+إدارة المصروفات والحسابات: إدخال مصروف، تقارير حسابية (ربط بمحاسبة).
+
+استيراد/تصدير: import Excel (تعيينات الأعمدة)، export CSV/PDF لتقارير.
+
+صلاحيات المستخدمين: Admin / Manager / Vet / Stock / Accountant / Viewer.
+
+8) API & Endpoints (مقترح مختصر)
+
+POST /api/import/excel — payload: file + mapping JSON → يقوم بتنظيف + تحويل + إدخال.
+
+GET /api/animals — فلترة (pen,batch,sex,status).
+
+GET /api/animals/:id/weights — إرجاع سلسلة الأوزان.
+
+POST /api/animals/:id/weights — إضافة قياس وزن جديد.
+
+GET /api/kpis?from=&to=&group_by=pen|batch — يحسب ADG, FCR, cost-per-kg.
+
+GET /api/reports/financial?from=&to= — مصروفات/تكاليف تفصيلية.
+
+9) قواعد حسابية أساسية (مثال)
+
+days_on_farm = (today أو weigh_date) - purchase_date
+
+ADG (g/day) = (last_weight_kg - entry_weight_kg) / days_on_farm
+
+FCR = total_feed_consumed_kg / total_weight_gain_kg
+
+cost_per_head = feed_cost + treatment_cost + labor_allocated + other_allocated
+
+10) توصيات تقنية (اقتراح)
+
+Backend: Node.js + TypeScript (NestJS أو Express) أو Python FastAPI.
+
+DB: PostgreSQL + Prisma أو TypeORM.
+
+Frontend: React (Next.js) مع دعم RTL وi18n (العربية/الإنجليزية). استخدم Tailwind CSS.
+
+Auth: JWT + Role-based access. (يمكن إضافة 2FA/OTP عند الحاجة).
+
+Deploy: Docker Compose / Kubernetes. CI: GitHub Actions.
+
+استيراد البيانات: سكربت Python (pandas) + endpoint لاستيراد لواجهات المستخدم.
+
+11) ما الذي أعدّه لك الآن (قابل للنسخ)
+(أ) كود بايثون مقترح لتنظيف وتحويل (مقتطف — يُشغّل محليًا)
+import pandas as pd
+import numpy as np
+import re
+path = "ALLLLLLLLLLLLLLLL.xlsx"
+
+# اقرأ مع header صف 3 (index 2) إن كان ذلك مناسبًا
+df = pd.read_excel(path, header=2)
+
+# تنظيف أولي
+df = df.replace('?', np.nan).replace('-', np.nan)
+df['تاريخ الشراء'] = pd.to_datetime(df['تاريخ الشراء'], errors='coerce')
+
+# حدد أعمدة تواريخ الوزن (بحث بالاسم إذا كان تاريخيا أو convertible to datetime)
+date_cols = []
+for c in df.columns:
+    try:
+        # إذا اسم العمود قابل للتحويل لتاريخ أو يحتوي على / في الاسم
+        if isinstance(c, pd.Timestamp) or re.search(r'\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}', str(c)):
+            date_cols.append(c)
+    except:
+        pass
+
+# melt الوزن من wide إلى long
+weights = df.melt(id_vars=[col for col in df.columns if col not in date_cols],
+                  value_vars=date_cols,
+                  var_name='weigh_date', value_name='weight')
+
+# تنظيف نتيجه الوزن
+weights['weight'] = pd.to_numeric(weights['weight'], errors='coerce')
+weights['weigh_date'] = pd.to_datetime(weights['weigh_date'], errors='coerce')
+
+# مثال: حفظ الجداول للمعاينة
+df.to_csv("animals_cleaned_main.csv", index=False)
+weights.dropna(subset=['weight']).to_csv("animal_weights_long.csv", index=False)
+
+
+ملاحظة: السكربت أعلاه مقترح عام — يلزم تعديل mapping للأعمدة الرقمية النهائية بعد مراجعة صاحب الملف لمعرفة معانيها.
+
+(ب) برومبت جاهز (انسخه كما هو — بالعربي)
+أنت مهندس برمجيات/مهندس GPT مُكلَّف لبناء نظام ERP متكامل لمزرعة (إدارة حيوانات، أعلاف، علاجات، مصروفات، تقارير مالية وKPI). اعمل نسخة إنتاجية جاهزة للنشر (backend + database + frontend). كل شيء يجب أن يدعم العربية RTL وEnglish. استلم ملف إكسل اسمه "ALLLLLLLLLLLLLLLL.xlsx" ويحتوي على بيانات الحيوانات كما جاء. المهمة تشمل:
+
+المتطلبات الوظيفية:
+1. استيراد وإسناد بيانات الإكسل: تنفيذ endpoint وآلية واجهة تسمح بربط أعمدة الإكسل بالحقول في قاعدة البيانات، مع تنظيف تلقائي (إزالة '?'، توحيد التواريخ، تحويل الأعمدة التاريخية لقياسات الوزن إلى سجلات طوليّة).
+2. جداول رئيسية: animals, animal_weights, pens, batches, feed_transactions, treatments, expenses, inventory, users, roles.
+3. حسابات وKPI: ADG, FCR, cost_per_kg_gain, total_cost_per_head، مع endpoint لكل KPI وقيمة مجمعة على مستوى دفعة/عنبر/مزرعة.
+4. تقارير: تصدير PDF/CSV لتقارير الوزن، تقارير التكاليف، رصيد المخزون، سجل العلاجات.
+5. واجهات: Dashboard، Animal list/detail + weight chart، Import page (mapping)، Feed management، Treatments، Expenses، Users/Roles.
+6. صلاحيات: Admin, FarmManager, Vet, StockKeeper, Accountant, Viewer.
+
+المتطلبات التقنية:
+- Backend: Node.js + TypeScript مع REST API (اقترح NestJS) أو FastAPI (Python) إن كانت أسرع للتنفيذ.
+- DB: PostgreSQL مع ORM (Prisma/TypeORM) + migrations.
+- Frontend: Next.js (React) مع Tailwind CSS + RTL support وi18n.
+- Auth: JWT + role-based access. Optional: 2FA.
+- Containerization: Dockerfile و docker-compose.
+- Endpoint خاص لاستيراد الملف: POST /api/import/excel -> يقوم بتحليل الملف، يعرض mapping للأعمدة المقترحة، يسمح بتعديل mapping قبل الإدخال النهائي.
+
+المخرجات المتوقعة (deliverables):
+- مستودع GitHub مع كل الأكواد + README يشرح كيفية التشغيل محليًا.
+- سكربت import يعمل على تحويل الملف المُرفَق وإدخاله في DB.
+- مجموعة اختبارات وحدات (unit tests) للعمليات الحرجة (import, KPI calculations).
+- وثيقة ERD (PNG أو PDF) و API spec (OpenAPI/Swagger).
+- واجهة ادارة بسيطة قابلة للتجريب (موضوعة في build أو docker-compose).
+
+تعامل مع ملف "ALLLLLLLLLLLLLLLL.xlsx" كما يلي:
+- استخدم header row index 2 (إن ظهر معطى) كخط افتراضي لكن افحص وجود رؤوس مدمجة.
+- كل عمود تاريخي يمثل قياس وزن: حوِّله إلى animal_weights.
+- أعمدة التكلفة الأخيرة ضعها كـ expense fields أو cost_breakdown (إذا لم تكن مسماة، خزّنها مؤقتًا مع اسم raw_cost_col_X وانتظر توضيح المعاني).
+
+قبِل التنفيذ إذا استطعت: أنشئ الـ repo، أضِف endpoints، نفِّذ import، أدرج واجهة بسيطة لاختبار الاستيراد وDashboard يعرض ADG وFCR لدفعات العينة.

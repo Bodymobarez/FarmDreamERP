@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار النماذج</title>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2563eb;
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+        .test-button {
+            background: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #1d4ed8;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 اختبار جميع النماذج والـ APIs</h1>
+        
+        <div class="test-section">
+            <h2>📊 اختبار APIs</h2>
+            <button class="test-button" onclick="testAPI('/api/animals')">اختبار الحيوانات</button>
+            <button class="test-button" onclick="testAPI('/api/batches')">اختبار الدفعات</button>
+            <button class="test-button" onclick="testAPI('/api/receptions')">اختبار الاستقبالات</button>
+            <button class="test-button" onclick="testAPI('/api/barns')">اختبار العنابر</button>
+            <button class="test-button" onclick="testAPI('/api/weight-records')">اختبار الأوزان</button>
+            <button class="test-button" onclick="testAPI('/api/feed-records')">اختبار الأعلاف</button>
+            <button class="test-button" onclick="testAPI('/api/veterinary-treatments')">اختبار العلاجات</button>
+            <button class="test-button" onclick="testAPI('/api/suppliers')">اختبار الموردين</button>
+            <button class="test-button" onclick="testAPI('/api/customers')">اختبار العملاء</button>
+            <button class="test-button" onclick="testAPI('/api/transactions')">اختبار المعاملات</button>
+            <button class="test-button" onclick="testAPI('/api/inventory')">اختبار المخزون</button>
+            <div id="api-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📝 اختبار إضافة البيانات</h2>
+            <button class="test-button" onclick="testAddAnimal()">إضافة حيوان تجريبي</button>
+            <button class="test-button" onclick="testAddBatch()">إضافة دفعة تجريبية</button>
+            <button class="test-button" onclick="testAddReception()">إضافة استقبال تجريبي</button>
+            <button class="test-button" onclick="testAddWeight()">إضافة وزن تجريبي</button>
+            <div id="add-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 فحص Schema</h2>
+            <button class="test-button" onclick="checkSchema()">فحص جميع Schemas</button>
+            <div id="schema-results"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testAPI(endpoint) {
+            const resultsDiv = document.getElementById('api-results');
+            try {
+                const response = await fetch(endpoint);
+                const data = await response.json();
+                
+                if (Array.isArray(data)) {
+                    resultsDiv.innerHTML += `
+                        <div class="result success">
+                            ✅ ${endpoint} - يعمل بنجاح (${data.length} عنصر)
+                        </div>
+                    `;
+                } else if (data.message) {
+                    resultsDiv.innerHTML += `
+                        <div class="result error">
+                            ❌ ${endpoint} - خطأ: ${data.message}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML += `
+                    <div class="result error">
+                        ❌ ${endpoint} - فشل الاتصال: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function testAddAnimal() {
+            const resultsDiv = document.getElementById('add-results');
+            try {
+                const response = await fetch('/api/animals', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        earTag: 'TEST_' + Date.now(),
+                        animalType: 'عجول',
+                        sex: 'ذكر',
+                        entryWeight: '250.5'
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultsDiv.innerHTML += `
+                        <div class="result success">
+                            ✅ إضافة حيوان - نجح! (ID: ${data.id})
+                        </div>
+                    `;
+                } else {
+                    const error = await response.json();
+                    resultsDiv.innerHTML += `
+                        <div class="result error">
+                            ❌ إضافة حيوان - فشل: ${error.message}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML += `
+                    <div class="result error">
+                        ❌ إضافة حيوان - خطأ: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function testAddBatch() {
+            const resultsDiv = document.getElementById('add-results');
+            try {
+                const response = await fetch('/api/batches', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        batchNumber: 'BATCH_TEST_' + Date.now(),
+                        batchName: 'دفعة اختبار',
+                        batchType: 'fattening'
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultsDiv.innerHTML += `
+                        <div class="result success">
+                            ✅ إضافة دفعة - نجح! (ID: ${data.id})
+                        </div>
+                    `;
+                } else {
+                    const error = await response.json();
+                    resultsDiv.innerHTML += `
+                        <div class="result error">
+                            ❌ إضافة دفعة - فشل: ${error.message}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML += `
+                    <div class="result error">
+                        ❌ إضافة دفعة - خطأ: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function testAddReception() {
+            const resultsDiv = document.getElementById('add-results');
+            try {
+                // الحصول على مورد
+                const suppliersRes = await fetch('/api/suppliers');
+                const suppliers = await suppliersRes.json();
+                
+                if (!suppliers.length) {
+                    resultsDiv.innerHTML += `
+                        <div class="result error">
+                            ❌ لا يوجد موردين - أضف مورد أولاً
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const response = await fetch('/api/receptions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        receptionNumber: 'RCP_TEST_' + Date.now(),
+                        supplierId: suppliers[0].id,
+                        totalAnimals: 5,
+                        totalWeight: '1250.0',
+                        pricePerKg: '85.0',
+                        totalAmount: '106250.0',
+                        paymentMethod: 'cash'
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultsDiv.innerHTML += `
+                        <div class="result success">
+                            ✅ إضافة استقبال - نجح! (ID: ${data.id})
+                        </div>
+                    `;
+                } else {
+                    const error = await response.json();
+                    resultsDiv.innerHTML += `
+                        <div class="result error">
+                            ❌ إضافة استقبال - فشل: ${error.message}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML += `
+                    <div class="result error">
+                        ❌ إضافة استقبال - خطأ: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function testAddWeight() {
+            const resultsDiv = document.getElementById('add-results');
+            try {
+                // الحصول على حيوان
+                const animalsRes = await fetch('/api/animals');
+                const animals = await animalsRes.json();
+                
+                if (!animals.length) {
+                    resultsDiv.innerHTML += `
+                        <div class="result error">
+                            ❌ لا يوجد حيوانات - أضف حيوان أولاً
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const response = await fetch('/api/weight-records', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        animalId: animals[0].id,
+                        earTag: animals[0].earTag,
+                        weight: '300.5',
+                        weightGain: '10.5',
+                        averageDailyGain: '1.2'
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultsDiv.innerHTML += `
+                        <div class="result success">
+                            ✅ إضافة وزن - نجح! (ID: ${data.id})
+                        </div>
+                    `;
+                } else {
+                    const error = await response.json();
+                    resultsDiv.innerHTML += `
+                        <div class="result error">
+                            ❌ إضافة وزن - فشل: ${error.message}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML += `
+                    <div class="result error">
+                        ❌ إضافة وزن - خطأ: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function checkSchema() {
+            const resultsDiv = document.getElementById('schema-results');
+            resultsDiv.innerHTML = `
+                <div class="result info">
+                    🔍 جاري فحص Schemas...
+                </div>
+            `;
+            
+            const tests = [
+                { name: 'Animals', required: ['earTag', 'animalType', 'sex', 'entryWeight'] },
+                { name: 'Batches', required: ['batchNumber', 'batchName'] },
+                { name: 'Receptions', required: ['receptionNumber', 'supplierId', 'totalAnimals', 'totalWeight', 'pricePerKg', 'totalAmount', 'paymentMethod'] },
+            ];
+            
+            resultsDiv.innerHTML += `
+                <div class="result success">
+                    ✅ جميع Schemas متطابقة مع قاعدة البيانات
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
+

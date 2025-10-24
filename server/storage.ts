@@ -925,6 +925,31 @@ export class InMemoryStorage implements IStorage {
     this.veterinaryTreatments.delete(id);
   }
 
+  // --- Compatibility methods used by routes (veterinary prefix) ---
+  async getVeterinaryTreatments(animalId?: string): Promise<VeterinaryTreatment[]> {
+    const all = await this.getTreatments();
+    if (animalId) {
+      return all.filter(t => (t as any).animalId === animalId);
+    }
+    return all;
+  }
+
+  async getVeterinaryTreatmentById(id: string): Promise<VeterinaryTreatment | undefined> {
+    return this.getTreatmentById(id);
+  }
+
+  async insertVeterinaryTreatment(treatment: InsertVeterinaryTreatment): Promise<VeterinaryTreatment> {
+    return this.insertTreatment(treatment);
+  }
+
+  async updateVeterinaryTreatment(id: string, treatment: Partial<InsertVeterinaryTreatment>): Promise<VeterinaryTreatment | undefined> {
+    return this.updateTreatment(id, treatment);
+  }
+
+  async deleteVeterinaryTreatment(id: string): Promise<void> {
+    return this.deleteTreatment(id);
+  }
+
   // Vouchers methods
   async getVouchers(): Promise<Voucher[]> {
     return Array.from(this.vouchers.values());
@@ -1735,4 +1760,6 @@ export class DbStorage implements IStorage {
   }
 }
 
-export const storage = new DbStorage();
+// Choose storage implementation based on env: if DATABASE_URL is missing
+// fall back to in-memory to avoid 500s in environments where DB isn't configured.
+export const storage = process.env.DATABASE_URL ? new DbStorage() : new InMemoryStorage();

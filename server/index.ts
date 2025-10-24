@@ -5,13 +5,18 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
-// Enable CORS for production deployment
+// Enable CORS
+// In Vercel/production, reflect the request origin dynamically to support the deployed domain(s)
+const corsOrigins = process.env.VERCEL
+  ? true
+  : [
+      'https://farm.adsolutions-eg.com',
+      'http://localhost:3000',
+      'http://localhost:5173', // Vite dev server
+    ];
+
 app.use(cors({
-  origin: [
-    'https://farm.adsolutions-eg.com',
-    'http://localhost:3000',
-    'http://localhost:5173', // Vite dev server
-  ],
+  origin: corsOrigins,
   credentials: true,
 }));
 
@@ -51,6 +56,7 @@ app.use((req, res, next) => {
 // Initialize the app
 let server: any;
 let isInitialized = false;
+let initPromise: Promise<any> | null = null;
 
 async function initializeApp() {
   if (isInitialized) return;
@@ -62,7 +68,6 @@ async function initializeApp() {
     const message = err.message || "Internal Server Error";
 
     res.status(status).json({ message });
-    throw err;
   });
 
   // importantly only setup vite in development and after
@@ -100,7 +105,21 @@ async function initializeApp() {
 }
 
 // Initialize app
-initializeApp();
+initPromise = initializeApp().catch((e) => {
+  console.error("App initialization failed:", e);
+});
+
+// Ensure initialization before handling any request (defensive for serverless cold starts)
+app.use(async (_req, _res, next) => {
+  try {
+    if (!isInitialized && initPromise) {
+      await initPromise;
+    }
+  } catch (e) {
+    // Already logged
+  }
+  next();
+});
 
 // Export for Vercel
 export default app;

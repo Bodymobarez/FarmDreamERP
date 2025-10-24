@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة بيانات تجريبية - FarmDreamERP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 10px;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .log-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .log-entry {
+            padding: 5px;
+            margin: 2px 0;
+        }
+        
+        .log-success {
+            color: #28a745;
+        }
+        
+        .log-error {
+            color: #dc3545;
+        }
+        
+        .log-info {
+            color: #17a2b8;
+        }
+        
+        .log-warning {
+            color: #ffc107;
+        }
+        
+        .progress {
+            margin-top: 20px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌱 إضافة بيانات تجريبية</h1>
+        <p class="subtitle">إنشاء بيانات شاملة ومترابطة لنظام FarmDreamERP</p>
+        
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalCount">0</div>
+                <div class="stat-label">إجمالي السجلات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="successCount">0</div>
+                <div class="stat-label">نجح</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="errorCount">0</div>
+                <div class="stat-label">فشل</div>
+            </div>
+        </div>
+        
+        <div class="progress">
+            <div class="progress-bar" id="progressBar" style="width: 0%">0%</div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="button" id="startBtn" onclick="startSeeding()">ابدأ الإضافة</button>
+            <button class="button" id="clearBtn" onclick="clearLogs()" style="background: #6c757d;">مسح السجل</button>
+        </div>
+        
+        <div class="log-container" id="logContainer"></div>
+    </div>
+
+    <script>
+        const baseURL = '/api';
+        let totalOperations = 0;
+        let completedOperations = 0;
+        let successCount = 0;
+        let errorCount = 0;
+
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            const timestamp = new Date().toLocaleTimeString('ar-EG');
+            entry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function updateProgress() {
+            const percentage = Math.round((completedOperations / totalOperations) * 100);
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = percentage + '%';
+            progressBar.textContent = percentage + '%';
+            
+            document.getElementById('totalCount').textContent = completedOperations;
+            document.getElementById('successCount').textContent = successCount;
+            document.getElementById('errorCount').textContent = errorCount;
+        }
+
+        async function postData(endpoint, data) {
+            try {
+                const response = await fetch(`${baseURL}${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!response.ok) {
+                    const error = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${error}`);
+                }
+                
+                const result = await response.json();
+                log(`✅ تم إضافة: ${endpoint}`, 'success');
+                successCount++;
+                return result;
+            } catch (error) {
+                log(`❌ خطأ في ${endpoint}: ${error.message}`, 'error');
+                errorCount++;
+                return null;
+            } finally {
+                completedOperations++;
+                updateProgress();
+            }
+        }
+
+        function clearLogs() {
+            document.getElementById('logContainer').innerHTML = '';
+        }
+
+        async function startSeeding() {
+            const startBtn = document.getElementById('startBtn');
+            startBtn.disabled = true;
+            
+            totalOperations = 74; // إجمالي العمليات المتوقعة
+            completedOperations = 0;
+            successCount = 0;
+            errorCount = 0;
+            
+            log('═══════════════════════════════════════', 'info');
+            log('🌱 بدء إنشاء البيانات التجريبية', 'info');
+            log('═══════════════════════════════════════', 'info');
+
+            // إضافة الموردين
+            log('\n📦 إضافة الموردين...', 'info');
+            
+            const supplier1 = await postData('/suppliers', {
+                name: 'مورد الأعلاف المركزة المتحدة',
+                type: 'feed',
+                contactPerson: 'أحمد محمود السيد',
+                phone: '01012345678',
+                email: 'feed@supplier.com',
+                address: 'القاهرة، مصر الجديدة',
+                balance: 45000,
+                notes: 'مورد رئيسي للأعلاف المركزة عالية الجودة'
+            });
+
+            const supplier2 = await postData('/suppliers', {
+                name: 'مورد الأدوية البيطرية الحديثة',
+                type: 'veterinary',
+                contactPerson: 'د. خالد السيد حسن',
+                phone: '01098765432',
+                email: 'vet@supplier.com',
+                address: 'الإسكندرية، سموحة',
+                balance: 28500,
+                notes: 'متخصص في الأدوية واللقاحات البيطرية'
+            });
+
+            const supplier3 = await postData('/suppliers', {
+                name: 'شركة استيراد العجول الأوروبية',
+                type: 'animals',
+                contactPerson: 'محمد فتحي عبدالله',
+                phone: '01123456789',
+                email: 'cattle@import.com',
+                address: 'الجيزة، المهندسين',
+                balance: 125000,
+                notes: 'استيراد عجول فريزيان عالية الجودة'
+            });
+
+            // إضافة العملاء
+            log('\n👥 إضافة العملاء...', 'info');
+            
+            const customer1 = await postData('/customers', {
+                name: 'محمد أحمد التاجر',
+                type: 'wholesale',
+                contactPerson: 'محمد أحمد',
+                phone: '01234567890',
+                email: 'mohamed@trader.com',
+                address: 'القاهرة، العباسية',
+                balance: 75000,
+                notes: 'عميل رئيسي - تجارة الجملة'
+            });
+
+            const customer2 = await postData('/customers', {
+                name: 'شركة اللحوم المتحدة',
+                type: 'corporate',
+                contactPerson: 'علي حسن محمد',
+                phone: '01098765432',
+                email: 'info@meatco.com',
+                address: 'الإسكندرية، محرم بك',
+                balance: 150000,
+                notes: 'شركة كبرى متخصصة في تجارة اللحوم'
+            });
+
+            const customer3 = await postData('/customers', {
+                name: 'سوبر ماركت النخبة',
+                type: 'retail',
+                contactPerson: 'أحمد سعيد علي',
+                phone: '01156789012',
+                email: 'elite@supermarket.com',
+                address: 'الجيزة، المعادي',
+                balance: 45000,
+                notes: 'سلسلة محلات تجزئة'
+            });
+
+            // إضافة المخزون
+            log('\n📦 إضافة أصناف المخزون...', 'info');
+            
+            await postData('/inventory', {
+                itemCode: 'FEED-001',
+                itemName: 'علف مركز - بروتين 18%',
+                category: 'feed',
+                unit: 'كجم',
+                quantity: 5000,
+                minQuantity: 1000,
+                unitPrice: 8.5,
+                totalValue: 42500,
+                location: 'مخزن A - رف 1',
+                notes: 'علف عالي البروتين للتسمين'
+            });
+
+            await postData('/inventory', {
+                itemCode: 'MED-001',
+                itemName: 'لقاح الحمى القلاعية',
+                category: 'veterinary',
+                unit: 'جرعة',
+                quantity: 500,
+                minQuantity: 100,
+                unitPrice: 15,
+                totalValue: 7500,
+                location: 'ثلاجة الأدوية',
+                notes: 'يحفظ في الثلاجة 2-8 درجة'
+            });
+
+            await postData('/inventory', {
+                itemCode: 'SUPP-001',
+                itemName: 'مكمل فيتامينات ومعادن',
+                category: 'supplements',
+                unit: 'كجم',
+                quantity: 300,
+                minQuantity: 50,
+                unitPrice: 45,
+                totalValue: 13500,
+                location: 'مخزن B',
+                notes: 'يضاف للعلف يومياً'
+            });
+
+            // إضافة الدفعات
+            log('\n📊 إضافة دفعات التربية...', 'info');
+            
+            const batch1 = await postData('/batches', {
+                batchName: 'دفعة يناير 2024 - فريزيان',
+                batchCode: 'B-2024-01',
+                startDate: '2024-01-15',
+                animalType: 'cattle',
+                breed: 'friesian',
+                initialCount: 50,
+                currentCount: 48,
+                status: 'active',
+                targetWeight: 500,
+                averageWeight: 380,
+                feedType: 'علف مركز 18%',
+                notes: 'دفعة متميزة من العجول الفريزيان'
+            });
+
+            const batch2 = await postData('/batches', {
+                batchName: 'دفعة مارس 2024 - بلدي',
+                batchCode: 'B-2024-03',
+                startDate: '2024-03-10',
+                animalType: 'cattle',
+                breed: 'baladi',
+                initialCount: 30,
+                currentCount: 30,
+                status: 'active',
+                targetWeight: 450,
+                averageWeight: 320,
+                feedType: 'علف مركز 16%',
+                notes: 'عجول بلدية للتسمين السريع'
+            });
+
+            // إضافة الحيوانات
+            log('\n🐄 إضافة الحيوانات...', 'info');
+            
+            // فريزيان - 15 رأس
+            for (let i = 1; i <= 15; i++) {
+                await postData('/animals', {
+                    earTag: `FR-${String(i).padStart(3, '0')}`,
+                    animalType: 'cattle',
+                    breed: 'friesian',
+                    birthDate: `2023-10-${String((i % 28) + 1).padStart(2, '0')}`,
+                    gender: i % 2 === 0 ? 'male' : 'female',
+                    weight: 350 + Math.floor(Math.random() * 100),
+                    healthStatus: 'healthy',
+                    batchId: batch1?.id,
+                    status: 'active',
+                    acquisitionDate: '2024-01-15',
+                    acquisitionPrice: 15000 + Math.floor(Math.random() * 5000),
+                    notes: `عجل فريزيان رقم ${i}`
+                });
+            }
+
+            // بلدي - 10 رؤوس
+            for (let i = 1; i <= 10; i++) {
+                await postData('/animals', {
+                    earTag: `BL-${String(i).padStart(3, '0')}`,
+                    animalType: 'cattle',
+                    breed: 'baladi',
+                    birthDate: `2023-12-${String((i % 28) + 1).padStart(2, '0')}`,
+                    gender: i % 2 === 0 ? 'male' : 'female',
+                    weight: 280 + Math.floor(Math.random() * 80),
+                    healthStatus: 'healthy',
+                    batchId: batch2?.id,
+                    status: 'active',
+                    acquisitionDate: '2024-03-10',
+                    acquisitionPrice: 12000 + Math.floor(Math.random() * 3000),
+                    notes: `عجل بلدي رقم ${i}`
+                });
+            }
+
+            // إضافة الأهداف
+            log('\n🎯 إضافة أهداف الأداء...', 'info');
+            
+            await postData('/performance-goals', {
+                goalName: 'معدل النمو اليومي - دفعة يناير',
+                goalType: 'adg',
+                targetValue: '1.4',
+                currentValue: '1.25',
+                unit: 'كجم/يوم',
+                batchId: batch1?.id,
+                startDate: '2024-01-15',
+                endDate: '2024-07-15',
+                priority: 'high',
+                status: 'active',
+                description: 'تحقيق معدل نمو يومي 1.4 كجم',
+                notes: 'متابعة دقيقة للوزن أسبوعياً'
+            });
+
+            await postData('/performance-goals', {
+                goalName: 'معامل التحويل الغذائي - FCR',
+                goalType: 'fcr',
+                targetValue: '6.5',
+                currentValue: '7.2',
+                unit: '',
+                startDate: '2024-01-01',
+                endDate: '2024-12-31',
+                priority: 'critical',
+                status: 'active',
+                description: 'تحسين كفاءة استخدام الأعلاف',
+                notes: 'الهدف الأساسي لزيادة الربحية'
+            });
+
+            // إضافة معاملات
+            log('\n💰 إضافة المعاملات المالية...', 'info');
+            
+            await postData('/transactions', {
+                transactionNumber: 'TRX-2024-001',
+                transactionDate: '2024-01-15',
+                transactionType: 'purchase',
+                description: 'شراء دفعة عجول فريزيان - 50 رأس',
+                amount: 750000,
+                paymentMethod: 'bank_transfer',
+                relatedEntity: 'supplier',
+                relatedEntityId: supplier3?.id,
+                status: 'completed',
+                notes: 'دفعة يناير 2024'
+            });
+
+            await postData('/transactions', {
+                transactionNumber: 'TRX-2024-002',
+                transactionDate: '2024-09-15',
+                transactionType: 'sale',
+                description: 'بيع 10 رؤوس عجول مسمنة',
+                amount: 285000,
+                paymentMethod: 'bank_transfer',
+                relatedEntity: 'customer',
+                relatedEntityId: customer1?.id,
+                status: 'completed',
+                notes: 'عجول وزن متوسط 500 كجم'
+            });
+
+            log('\n═══════════════════════════════════════', 'success');
+            log('✅ تم إنشاء جميع البيانات بنجاح!', 'success');
+            log('═══════════════════════════════════════', 'success');
+            log(`📊 إجمالي السجلات: ${successCount}`, 'info');
+            log(`❌ الأخطاء: ${errorCount}`, errorCount > 0 ? 'warning' : 'info');
+            
+            startBtn.disabled = false;
+        }
+    </script>
+</body>
+</html>

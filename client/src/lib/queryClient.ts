@@ -1,5 +1,13 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
+// Abortable fetch with timeout to prevent indefinite loading spinners
+function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit & { timeoutMs?: number }) {
+  const { timeoutMs = 12000, ...rest } = init || {};
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(input, { ...rest, signal: controller.signal }).finally(() => clearTimeout(id));
+}
+
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
@@ -13,11 +21,12 @@ export async function apiRequest(
   data?: unknown | undefined,
 ): Promise<Response> {
   const fullUrl = url.startsWith('http') ? url : API_BASE_URL + url;
-  const res = await fetch(fullUrl, {
+  const res = await fetchWithTimeout(fullUrl, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
+    timeoutMs: 15000,
   });
 
   await throwIfResNotOk(res);
@@ -34,8 +43,9 @@ export const getQueryFn: <T>(options: {
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
     const url = API_BASE_URL + queryKey.join("/");
-    const res = await fetch(url, {
+    const res = await fetchWithTimeout(url, {
       credentials: "include",
+      timeoutMs: 12000,
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {

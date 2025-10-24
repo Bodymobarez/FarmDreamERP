@@ -1,0 +1,3 @@
+# Client-side routing redirects for React SPA
+/api/*  /api/:splat  200
+/*      /index.html  200
