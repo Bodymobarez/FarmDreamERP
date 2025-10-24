@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
-import { insertAnimalSchema, insertReceptionSchema, insertSupplierSchema, insertCustomerSchema, insertTransactionSchema, insertVoucherSchema } from "../shared/schema";
+import { storage } from "./storage.js";
+import { insertAnimalSchema, insertReceptionSchema, insertSupplierSchema, insertCustomerSchema, insertTransactionSchema, insertVoucherSchema } from "../shared/schema.js";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Health endpoint
@@ -133,7 +133,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const addedAnimals = [];
       for (const animalData of animals) {
         // البحث عن الدفعة للحصول على ID
-        let batchId = null;
+        let batchId: string | null = null;
         if (animalData.batchNumber) {
           const batches = await storage.getBatches();
           const batch = batches.find(b => b.batchNumber === animalData.batchNumber);
@@ -150,7 +150,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           currentWeight: animalData.weight,
           penNumber: animalData.penNumber,
           batchNumber: animalData.batchNumber || "",
-          batchId: batchId,
+          batchId: batchId ?? undefined,
           purchaseCost: animalData.calculatedCost,
           notes: `من دفعة ${reception.receptionNumber}`,
           status: "active",
@@ -548,8 +548,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log("🔵 Dispense request received:", { itemId, quantity, batchId, animalId, penNumber, description });
       
+      // Validate input
+      if (!itemId || typeof itemId !== "string") {
+        res.status(400).json({ message: "itemId is required" });
+        return;
+      }
+      if (quantity == null || isNaN(Number(quantity))) {
+        res.status(400).json({ message: "quantity is required" });
+        return;
+      }
+      const qtyNum = Number(quantity);
+
       // Validate item exists
-      const item = await storage.getInventoryItemById(itemId);
+      const item = await storage.getInventoryItemById(itemId as string);
       if (!item) {
         console.log("❌ Item not found:", itemId);
         res.status(404).json({ message: "الصنف غير موجود" });
@@ -560,7 +571,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check stock availability
       const currentStock = parseFloat(item.currentStock);
-      if (currentStock < quantity) {
+      if (currentStock < qtyNum) {
         console.log("❌ Insufficient stock. Available:", currentStock, "Requested:", quantity);
         res.status(400).json({ 
           message: `المخزون غير كافٍ. المتاح: ${currentStock} ${item.unit}` 
@@ -581,22 +592,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         transactionDate: new Date(),
         transactionType: "out",
         itemId,
-        quantity: quantity.toString(),
-        unitCost: item.unitCost,
-        totalCost: (quantity * unitCost).toFixed(2),
-        referenceType: batchId ? "batch_expense" : animalId ? "treatment" : null,
-        referenceId: null,
+        quantity: qtyNum.toString(),
+        unitCost: item.unitCost ?? undefined,
+        totalCost: (qtyNum * unitCost).toFixed(2),
+        referenceType: batchId ? "batch_expense" : animalId ? "treatment" : undefined,
+        referenceId: undefined,
         notes,
       });
 
       // Update animal cost if applicable
-      if (animalId) {
+      if (typeof animalId === "string" && animalId.length > 0) {
         const animal = await storage.getAnimalById(animalId);
         if (animal) {
           const categoryLower = item.category.toLowerCase();
           const expenseType = (categoryLower.includes("feed") || categoryLower.includes("علف")) ? "Feed" : "Treatment";
           const currentCost = parseFloat(animal[`accumulated${expenseType}Cost`] || "0");
-          const newCost = currentCost + parseFloat(transaction.totalCost);
+          const newCost = currentCost + parseFloat(transaction.totalCost || "0");
           
           await storage.updateAnimal(animalId, {
             [`accumulated${expenseType}Cost`]: newCost.toString(),

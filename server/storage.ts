@@ -1,6 +1,6 @@
 import { type User, type InsertUser, type Animal, type InsertAnimal, type Reception, type InsertReception, type Supplier, type InsertSupplier, type Customer, type InsertCustomer, type Transaction, type InsertTransaction, type Batch, type InsertBatch, type BatchExpense, type InsertBatchExpense, type AnimalSale, type InsertAnimalSale, type PerformanceGoal, type InsertPerformanceGoal, type InventoryItem, type InsertInventoryItem, type InventoryTransaction, type InsertInventoryTransaction, type VeterinaryTreatment, type InsertVeterinaryTreatment, type Voucher, type InsertVoucher, type AccountingEntry, type InsertAccountingEntry, type Goal, type InsertGoal, type Barn, type InsertBarn } from "../shared/schema";
 import { randomUUID } from "crypto";
-import { db } from "./db";
+import { db } from "./db.js";
 
 // modify the interface with any CRUD methods
 // you might need
@@ -165,6 +165,7 @@ export class InMemoryStorage implements IStorage {
   private veterinaryTreatments = new Map<string, VeterinaryTreatment>();
   private vouchers = new Map<string, Voucher>();
   private barns = new Map<string, Barn>();
+  private goals = new Map<string, Goal>();
   private accounting = new Map<string, AccountingEntry>();
 
   constructor() {
@@ -180,10 +181,10 @@ export class InMemoryStorage implements IStorage {
     if (existing) {
       const updated = { ...existing, ...data, updatedAt: new Date() } as Animal;
       this.animals.set(updated.id, updated);
-      return { action: "update", record: updated };
+      return { action: "update" as const, record: updated };
     }
     const inserted = await this.insertAnimal(data);
-    return { action: "insert", record: inserted };
+    return { action: "insert" as const, record: inserted };
   }
   async getSupplierByNumber(supplierNumber: string): Promise<Supplier | undefined> {
     return Array.from(this.suppliers.values()).find(s => s.supplierNumber === supplierNumber);
@@ -193,10 +194,10 @@ export class InMemoryStorage implements IStorage {
     if (existing) {
       const updated = { ...existing, ...data, updatedAt: new Date() } as Supplier;
       this.suppliers.set(updated.id, updated);
-      return { action: "update", record: updated };
+      return { action: "update" as const, record: updated };
     }
     const inserted = await this.insertSupplier(data);
-    return { action: "insert", record: inserted };
+    return { action: "insert" as const, record: inserted };
   }
   async getCustomerByNumber(customerNumber: string): Promise<Customer | undefined> {
     return Array.from(this.customers.values()).find(c => c.customerNumber === customerNumber);
@@ -206,10 +207,10 @@ export class InMemoryStorage implements IStorage {
     if (existing) {
       const updated = { ...existing, ...data, updatedAt: new Date() } as Customer;
       this.customers.set(updated.id, updated);
-      return { action: "update", record: updated };
+      return { action: "update" as const, record: updated };
     }
     const inserted = await this.insertCustomer(data);
-    return { action: "insert", record: inserted };
+    return { action: "insert" as const, record: inserted };
   }
   async getInventoryItemByCode(itemCode: string): Promise<InventoryItem | undefined> {
     return Array.from(this.inventory.values()).find(i => i.itemCode === itemCode);
@@ -219,10 +220,10 @@ export class InMemoryStorage implements IStorage {
     if (existing) {
       const updated = { ...existing, ...data, updatedAt: new Date() } as InventoryItem;
       this.inventory.set(updated.id, updated);
-      return { action: "update", record: updated };
+      return { action: "update" as const, record: updated };
     }
     const inserted = await this.insertInventoryItem(data);
-    return { action: "insert", record: inserted };
+    return { action: "insert" as const, record: inserted };
   }
   async getTransactionByNumber(transactionNumber: string): Promise<Transaction | undefined> {
     return Array.from(this.transactions.values()).find(t => t.transactionNumber === transactionNumber);
@@ -232,10 +233,10 @@ export class InMemoryStorage implements IStorage {
     if (existing) {
       const updated = { ...existing, ...data, updatedAt: new Date() } as Transaction;
       this.transactions.set(updated.id, updated);
-      return { action: "update", record: updated };
+      return { action: "update" as const, record: updated };
     }
     const inserted = await this.insertTransaction(data);
-    return { action: "insert", record: inserted };
+    return { action: "insert" as const, record: inserted };
   }
   async getBatchByNumber(batchNumber: string): Promise<Batch | undefined> {
     return Array.from(this.batches.values()).find(b => b.batchNumber === batchNumber);
@@ -245,10 +246,10 @@ export class InMemoryStorage implements IStorage {
     if (existing) {
       const updated = { ...existing, ...data, updatedAt: new Date() } as Batch;
       this.batches.set(updated.id, updated);
-      return { action: "update", record: updated };
+      return { action: "update" as const, record: updated };
     }
     const inserted = await this.insertBatch(data);
-    return { action: "insert", record: inserted };
+    return { action: "insert" as const, record: inserted };
   }
   async getReceptionByNumber(receptionNumber: string): Promise<Reception | undefined> {
     return Array.from(this.receptions.values()).find(r => r.receptionNumber === receptionNumber);
@@ -258,10 +259,10 @@ export class InMemoryStorage implements IStorage {
     if (existing) {
       const updated = { ...existing, ...data, updatedAt: new Date() } as Reception;
       this.receptions.set(updated.id, updated);
-      return { action: "update", record: updated };
+      return { action: "update" as const, record: updated };
     }
     const inserted = await this.insertReception(data);
-    return { action: "insert", record: inserted };
+    return { action: "insert" as const, record: inserted };
   }
   async getBarnByNumber(barnNumber: string): Promise<Barn | undefined> {
     return Array.from(this.barns.values()).find((b) => b.barnNumber === barnNumber);
@@ -271,10 +272,10 @@ export class InMemoryStorage implements IStorage {
     if (existing) {
       const updated: Barn = { ...existing, ...data, updatedAt: new Date() } as Barn;
       this.barns.set(updated.id, updated);
-      return { action: "update", record: updated };
+      return { action: "update" as const, record: updated };
     }
     const inserted = await this.insertBarn(data);
-    return { action: "insert", record: inserted };
+    return { action: "insert" as const, record: inserted };
   }
 
   private initializeMockData() {
@@ -282,7 +283,9 @@ export class InMemoryStorage implements IStorage {
     const mockUser: User = {
       id: "1",
       username: "admin",
-      password: "admin123"
+      password: "admin123",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.users.set(mockUser.id, mockUser);
 
@@ -348,7 +351,7 @@ export class InMemoryStorage implements IStorage {
 
   async createUser(user: InsertUser): Promise<User> {
     const id = randomUUID();
-    const newUser: User = { ...user, id };
+    const newUser: User = { ...user, id, createdAt: new Date(), updatedAt: new Date() } as User;
     this.users.set(id, newUser);
     return newUser;
   }
@@ -411,13 +414,13 @@ export class InMemoryStorage implements IStorage {
       penNumber: animal.penNumber || null,
       currentWeight: animal.currentWeight || null,
       purchaseCost: animal.purchaseCost || "0",
-      accumulatedFeedCost: animal.accumulatedFeedCost || "0",
-      accumulatedTreatmentCost: animal.accumulatedTreatmentCost || "0",
-      accumulatedOtherCost: animal.accumulatedOtherCost || "0",
-      totalCost: animal.totalCost || "0",
+      accumulatedFeedCost: (animal as any).accumulatedFeedCost || "0",
+      accumulatedTreatmentCost: (animal as any).accumulatedTreatmentCost || "0",
+      accumulatedOtherCost: (animal as any).accumulatedOtherCost || "0",
+      totalCost: (animal as any).totalCost || "0",
       receptionId: animal.receptionId || null,
-      saleId: animal.saleId || null,
-      entryDate: animal.entryDate || new Date(),
+      saleId: (animal as any).saleId || null,
+      entryDate: (animal as any).entryDate || new Date(),
       createdAt: new Date(), 
       updatedAt: new Date() 
     };
@@ -449,17 +452,25 @@ export class InMemoryStorage implements IStorage {
 
   async insertSupplier(supplier: InsertSupplier): Promise<Supplier> {
     const id = randomUUID();
-    const newSupplier: Supplier = { 
-      ...supplier, 
-      id, 
-      address: supplier.address || null,
-      notes: supplier.notes || null,
+    const currentBalanceVal = (supplier as any).currentBalance;
+    const creditLimitVal = (supplier as any).creditLimit;
+    const statusVal = (supplier as any).status;
+    const bankAccountVal = (supplier as any).bankAccount;
+    const newSupplier: Supplier = {
+      id,
+      supplierNumber: supplier.supplierNumber,
+      name: supplier.name,
       phone: supplier.phone || null,
+      address: supplier.address || null,
       email: supplier.email || null,
       taxNumber: supplier.taxNumber || null,
-      balance: supplier.balance || "0",
-      createdAt: new Date(), 
-      updatedAt: new Date() 
+      bankAccount: typeof bankAccountVal === "string" ? bankAccountVal : null,
+      creditLimit: typeof creditLimitVal === "string" ? creditLimitVal : "0",
+      currentBalance: typeof currentBalanceVal === "string" ? currentBalanceVal : "0",
+      status: typeof statusVal === "string" ? statusVal : "active",
+      notes: supplier.notes || null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.suppliers.set(id, newSupplier);
     return newSupplier;
@@ -489,17 +500,23 @@ export class InMemoryStorage implements IStorage {
 
   async insertCustomer(customer: InsertCustomer): Promise<Customer> {
     const id = randomUUID();
-    const newCustomer: Customer = { 
-      ...customer, 
-      id, 
-      address: customer.address || null,
-      notes: customer.notes || null,
+    const currentBalanceVal = (customer as any).currentBalance;
+    const creditLimitVal = (customer as any).creditLimit;
+    const statusVal = (customer as any).status;
+    const newCustomer: Customer = {
+      id,
+      customerNumber: customer.customerNumber,
+      name: customer.name,
       phone: customer.phone || null,
+      address: customer.address || null,
       email: customer.email || null,
       taxNumber: customer.taxNumber || null,
-      balance: customer.balance || "0",
-      createdAt: new Date(), 
-      updatedAt: new Date() 
+      creditLimit: typeof creditLimitVal === "string" ? creditLimitVal : "0",
+      currentBalance: typeof currentBalanceVal === "string" ? currentBalanceVal : "0",
+      status: typeof statusVal === "string" ? statusVal : "active",
+      notes: customer.notes || null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.customers.set(id, newCustomer);
     return newCustomer;
@@ -608,12 +625,14 @@ export class InMemoryStorage implements IStorage {
 
   async insertReception(reception: InsertReception): Promise<Reception> {
     const id = randomUUID();
+    const paymentMethodVal = (reception as any).paymentMethod;
+    const statusVal = (reception as any).status;
     const newReception: Reception = { 
       ...reception, 
       id, 
-      animalBreed: reception.animalBreed || null,
       notes: reception.notes || null,
-      supplier: reception.supplier || null,
+      status: typeof statusVal === "string" ? statusVal : "completed",
+      paymentMethod: typeof paymentMethodVal === "string" ? paymentMethodVal : "cash",
       receptionDate: reception.receptionDate || new Date(),
       createdAt: new Date(), 
       updatedAt: new Date() 
@@ -1112,7 +1131,7 @@ export class InMemoryStorage implements IStorage {
 }
 
 // Database Storage Implementation using Drizzle ORM
-import { users, animals, receptions, suppliers, customers, transactions, batches, batchExpenses, animalSales, performanceGoals, inventoryItems, inventoryTransactions, veterinaryTreatments, vouchers, accountingEntries, barns, goals } from "../shared/schema";
+import { users, animals, receptions, suppliers, customers, transactions, batches, batchExpenses, animalSales, performanceGoals, inventoryItems, inventoryTransactions, veterinaryTreatments, vouchers, accountingEntries, barns, goals } from "../shared/schema.js";
 import { eq, and, gte, lte, desc, asc, sql } from "drizzle-orm";
 
 export class DbStorage implements IStorage {
@@ -1142,10 +1161,10 @@ export class DbStorage implements IStorage {
     const existing = await this.getAnimalByEarTag(data.earTag);
     if (existing) {
       const updated = await this.updateAnimal(existing.id, data);
-      return { action: "update", record: updated! };
+      return { action: "update" as const, record: updated! };
     }
     const inserted = await this.insertAnimal(data);
-    return { action: "insert", record: inserted };
+    return { action: "insert" as const, record: inserted };
   }
 
   async getSupplierByNumber(supplierNumber: string): Promise<Supplier | undefined> {
@@ -1156,10 +1175,10 @@ export class DbStorage implements IStorage {
     const existing = await this.getSupplierByNumber(data.supplierNumber);
     if (existing) {
       const updated = await this.updateSupplier(existing.id, data);
-      return { action: "update", record: updated! };
+      return { action: "update" as const, record: updated! };
     }
     const inserted = await this.insertSupplier(data);
-    return { action: "insert", record: inserted };
+    return { action: "insert" as const, record: inserted };
   }
 
   async getCustomerByNumber(customerNumber: string): Promise<Customer | undefined> {
@@ -1170,10 +1189,10 @@ export class DbStorage implements IStorage {
     const existing = await this.getCustomerByNumber(data.customerNumber);
     if (existing) {
       const updated = await this.updateCustomer(existing.id, data);
-      return { action: "update", record: updated! };
+      return { action: "update" as const, record: updated! };
     }
     const inserted = await this.insertCustomer(data);
-    return { action: "insert", record: inserted };
+    return { action: "insert" as const, record: inserted };
   }
 
   async getInventoryItemByCode(itemCode: string): Promise<InventoryItem | undefined> {
@@ -1184,10 +1203,10 @@ export class DbStorage implements IStorage {
     const existing = await this.getInventoryItemByCode(data.itemCode);
     if (existing) {
       const updated = await this.updateInventoryItem(existing.id, data);
-      return { action: "update", record: updated! };
+      return { action: "update" as const, record: updated! };
     }
     const inserted = await this.insertInventoryItem(data);
-    return { action: "insert", record: inserted };
+    return { action: "insert" as const, record: inserted };
   }
 
   async getTransactionByNumber(transactionNumber: string): Promise<Transaction | undefined> {
@@ -1198,10 +1217,10 @@ export class DbStorage implements IStorage {
     const existing = await this.getTransactionByNumber(data.transactionNumber);
     if (existing) {
       const updated = await this.updateTransaction(existing.id, data);
-      return { action: "update", record: updated! };
+      return { action: "update" as const, record: updated! };
     }
     const inserted = await this.insertTransaction(data);
-    return { action: "insert", record: inserted };
+    return { action: "insert" as const, record: inserted };
   }
 
   async getBatchByNumber(batchNumber: string): Promise<Batch | undefined> {
@@ -1212,10 +1231,10 @@ export class DbStorage implements IStorage {
     const existing = await this.getBatchByNumber(data.batchNumber);
     if (existing) {
       const updated = await this.updateBatch(existing.id, data);
-      return { action: "update", record: updated! };
+      return { action: "update" as const, record: updated! };
     }
     const inserted = await this.insertBatch(data);
-    return { action: "insert", record: inserted };
+    return { action: "insert" as const, record: inserted };
   }
 
   async getReceptionByNumber(receptionNumber: string): Promise<Reception | undefined> {
@@ -1226,10 +1245,10 @@ export class DbStorage implements IStorage {
     const existing = await this.getReceptionByNumber(data.receptionNumber);
     if (existing) {
       const updated = await this.updateReception(existing.id, data);
-      return { action: "update", record: updated! };
+      return { action: "update" as const, record: updated! };
     }
     const inserted = await this.insertReception(data);
-    return { action: "insert", record: inserted };
+    return { action: "insert" as const, record: inserted };
   }
 
   async getBarnByNumber(barnNumber: string): Promise<Barn | undefined> {
@@ -1240,10 +1259,10 @@ export class DbStorage implements IStorage {
     const existing = await this.getBarnByNumber(data.barnNumber);
     if (existing) {
       const updated = await this.updateBarn(existing.id, data);
-      return { action: "update", record: updated! };
+      return { action: "update" as const, record: updated! };
     }
     const inserted = await this.insertBarn(data);
-    return { action: "insert", record: inserted };
+    return { action: "insert" as const, record: inserted };
   }
 
   async createUser(user: InsertUser): Promise<User> {
@@ -1505,17 +1524,19 @@ export class DbStorage implements IStorage {
     const result = await db.insert(inventoryTransactions).values(transaction).returning();
     
     // Update inventory item stock
-    const item = await this.getInventoryItemById(transaction.itemId);
-    if (item) {
-      const currentStock = parseFloat(item.currentStock);
-      const transactionQty = parseFloat(transaction.quantity);
-      const newStock = transaction.transactionType === "in" 
-        ? currentStock + transactionQty 
-        : currentStock - transactionQty;
-      
-      await this.updateInventoryItem(transaction.itemId, {
-        currentStock: newStock.toString()
-      });
+    if (transaction.itemId) {
+      const item = await this.getInventoryItemById(transaction.itemId as string);
+      if (item) {
+        const currentStock = parseFloat(item.currentStock);
+        const transactionQty = parseFloat(transaction.quantity);
+        const newStock = transaction.transactionType === "in" 
+          ? currentStock + transactionQty 
+          : currentStock - transactionQty;
+        
+        await this.updateInventoryItem(transaction.itemId as string, {
+          currentStock: newStock.toString()
+        });
+      }
     }
     
     return result[0];
@@ -1645,7 +1666,7 @@ export class DbStorage implements IStorage {
     // Group by account and sum debits/credits
     const accounts = new Map<string, any>();
     
-    entries.forEach(entry => {
+    entries.forEach((entry: any) => {
       const key = `${entry.accountCode}-${entry.accountName}`;
       if (!accounts.has(key)) {
         accounts.set(key, {
@@ -1658,8 +1679,8 @@ export class DbStorage implements IStorage {
       }
       
       const account = accounts.get(key);
-      account.totalDebit += parseFloat(entry.debitAmount);
-      account.totalCredit += parseFloat(entry.creditAmount);
+      account.totalDebit += parseFloat(String(entry.debitAmount));
+      account.totalCredit += parseFloat(String(entry.creditAmount));
       account.balance = account.totalDebit - account.totalCredit;
     });
 
@@ -1676,7 +1697,7 @@ export class DbStorage implements IStorage {
     let revenue = 0;
     let expenses = 0;
     
-    entries.forEach(entry => {
+    entries.forEach((entry: any) => {
       // Revenue accounts (4xxxx)
       if (entry.accountCode.startsWith('4')) {
         revenue += parseFloat((entry as any).creditAmount) - parseFloat((entry as any).debitAmount);
@@ -1704,7 +1725,7 @@ export class DbStorage implements IStorage {
     let liabilities = 0;
     let equity = 0;
     
-    entries.forEach(entry => {
+    entries.forEach((entry: any) => {
       const balance = parseFloat((entry as any).debitAmount) - parseFloat((entry as any).creditAmount);
       
       // Assets (1xxxx)
@@ -1741,7 +1762,7 @@ export class DbStorage implements IStorage {
     let inflow = 0;
     let outflow = 0;
     
-    entries.forEach(entry => {
+    entries.forEach((entry: any) => {
       const debit = parseFloat((entry as any).debitAmount);
       const credit = parseFloat((entry as any).creditAmount);
       

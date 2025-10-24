@@ -7,18 +7,13 @@ npm-debug.log
 !README.md
 .git
 .gitignore
-.env
 .env.local
 .env.*.local
 /index.html
 
-# Source files MUST be included for Vercel builds
-# Do NOT ignore client/src, server, or shared
-
-# Build tools (must include Tailwind/PostCSS for CSS build)
-# Keep tsconfig and drizzle config if needed by build tooling
-# Do NOT ignore Tailwind or PostCSS configs
-vite.config.ts
+# Build tools - CRITICAL: Don't ignore vite or rollup packages 
+# Vercel needs these to build correctly
+# vite.config.ts
 
 # Scripts
 *.sh

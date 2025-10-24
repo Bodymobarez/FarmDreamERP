@@ -4,7 +4,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { createServer as createViteServer, createLogger } from "vite";
 import { type Server } from "http";
-import viteConfig from "../vite.config.ts";
 import { nanoid } from "nanoid";
 
 const viteLogger = createLogger();
@@ -30,7 +29,8 @@ export async function setupVite(app: Express, server: Server) {
   };
 
   const vite = await createViteServer({
-    ...viteConfig,
+    // We don't load the project vite.config here to avoid TS resolution issues
+    // during server type-check/build on platforms like Vercel.
     configFile: false,
     server: serverOptions,
     appType: "custom",

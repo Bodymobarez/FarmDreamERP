@@ -1,7 +1,20 @@
 import express, { type Request, Response, NextFunction } from "express";
 import cors from "cors";
-import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+import { registerRoutes } from "./routes.js";
+
+// Conditional import for vite - only load in development
+let setupVite: any, serveStatic: any, log: any;
+if (!process.env.VERCEL && process.env.NODE_ENV !== "production") {
+  const viteModule = await import("./vite.js");
+  setupVite = viteModule.setupVite;
+  serveStatic = viteModule.serveStatic;
+  log = viteModule.log;
+} else {
+  // Simple logger for production/vercel
+  log = (message: string) => console.log(`[${new Date().toISOString()}] ${message}`);
+  serveStatic = () => {};
+  setupVite = async () => {};
+}
 
 const app = express();
 
