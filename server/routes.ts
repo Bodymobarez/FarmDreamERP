@@ -4,6 +4,20 @@ import { storage } from "./storage";
 import { insertAnimalSchema, insertReceptionSchema, insertSupplierSchema, insertCustomerSchema, insertTransactionSchema, insertVoucherSchema } from "../shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Health endpoint
+  app.get("/api/health", async (_req, res) => {
+    try {
+      // Light probe: list 1 barn if exists to check DB
+      try {
+        const barns = await storage.getBarns();
+        res.json({ status: "ok", barnsCount: barns.length });
+      } catch {
+        res.json({ status: "ok" });
+      }
+    } catch (error: any) {
+      res.status(500).json({ status: "error", message: error.message });
+    }
+  });
   // Animals endpoints
   app.get("/api/animals", async (req, res) => {
     try {
@@ -1078,6 +1092,155 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+
+  // ========= BULK IMPORT ENDPOINT =========
+  // Accepts arrays of entities and upserts by natural unique keys
+  app.post("/api/import/bulk", async (req, res) => {
+    const body = req.body || {};
+
+    const result: any = {};
+    async function processArray<T>(items: T[] | undefined, handler: (item: any) => Promise<void>, label: string) {
+      const summary = { inserted: 0, updated: 0, errors: 0, errorDetails: [] as any[] };
+      if (!Array.isArray(items) || items.length === 0) {
+        result[label] = summary;
+        return;
+      }
+      for (const item of items) {
+        try {
+          await handler(item);
+        } catch (e: any) {
+          summary.errors += 1;
+          summary.errorDetails.push({ item, message: e?.message || String(e) });
+        }
+      }
+      result[label] = summary;
+    }
+
+    try {
+      // Animals: upsert by earTag
+      await processArray(body.animals, async (raw) => {
+        if (!raw?.earTag) throw new Error("animal.earTag is required");
+        // Keep partial allowed but enforce required for insert
+        const exists = await storage.getAnimalByEarTag(raw.earTag);
+        if (!exists) {
+          // For insert, require minimum fields
+          const required = { earTag: raw.earTag, animalType: raw.animalType, sex: raw.sex, entryWeight: raw.entryWeight };
+          if (!required.animalType || !required.sex || !required.entryWeight) {
+            throw new Error("animal insert requires animalType, sex, entryWeight");
+          }
+        }
+        const { action } = await storage.upsertAnimalByEarTag(raw);
+        const s = result.animals || { inserted: 0, updated: 0, errors: 0, errorDetails: [] };
+        s[action === "insert" ? "inserted" : "updated"] += 1;
+        result.animals = s;
+      }, "animals");
+
+      // Suppliers: upsert by supplierNumber
+      await processArray(body.suppliers, async (raw) => {
+        if (!raw?.supplierNumber) throw new Error("supplier.supplierNumber is required");
+        const exists = await storage.getSupplierByNumber(raw.supplierNumber);
+        if (!exists) {
+          if (!raw.name) throw new Error("supplier insert requires name");
+        }
+        const { action } = await storage.upsertSupplierByNumber(raw);
+        const s = result.suppliers || { inserted: 0, updated: 0, errors: 0, errorDetails: [] };
+        s[action === "insert" ? "inserted" : "updated"] += 1;
+        result.suppliers = s;
+      }, "suppliers");
+
+      // Customers: upsert by customerNumber
+      await processArray(body.customers, async (raw) => {
+        if (!raw?.customerNumber) throw new Error("customer.customerNumber is required");
+        const exists = await storage.getCustomerByNumber(raw.customerNumber);
+        if (!exists) {
+          if (!raw.name) throw new Error("customer insert requires name");
+        }
+        const { action } = await storage.upsertCustomerByNumber(raw);
+        const s = result.customers || { inserted: 0, updated: 0, errors: 0, errorDetails: [] };
+        s[action === "insert" ? "inserted" : "updated"] += 1;
+        result.customers = s;
+      }, "customers");
+
+      // Inventory Items: upsert by itemCode
+      await processArray(body.inventoryItems, async (raw) => {
+        if (!raw?.itemCode) throw new Error("inventory.itemCode is required");
+        const exists = await storage.getInventoryItemByCode(raw.itemCode);
+        if (!exists) {
+          if (!raw.itemName || !raw.category || !raw.unit) {
+            throw new Error("inventory insert requires itemName, category, unit");
+          }
+        }
+        const { action } = await storage.upsertInventoryItemByCode(raw);
+        const s = result.inventoryItems || { inserted: 0, updated: 0, errors: 0, errorDetails: [] };
+        s[action === "insert" ? "inserted" : "updated"] += 1;
+        result.inventoryItems = s;
+      }, "inventoryItems");
+
+      // Transactions: upsert by transactionNumber
+      await processArray(body.transactions, async (raw) => {
+        if (!raw?.transactionNumber) throw new Error("transaction.transactionNumber is required");
+        const exists = await storage.getTransactionByNumber(raw.transactionNumber);
+        if (!exists) {
+          if (!raw.transactionType || !raw.amount) {
+            throw new Error("transaction insert requires transactionType, amount");
+          }
+        }
+        const { action } = await storage.upsertTransactionByNumber(raw);
+        const s = result.transactions || { inserted: 0, updated: 0, errors: 0, errorDetails: [] };
+        s[action === "insert" ? "inserted" : "updated"] += 1;
+        result.transactions = s;
+      }, "transactions");
+
+      // Batches: upsert by batchNumber
+      await processArray(body.batches, async (raw) => {
+        if (!raw?.batchNumber) throw new Error("batch.batchNumber is required");
+        const exists = await storage.getBatchByNumber(raw.batchNumber);
+        if (!exists) {
+          if (!raw.batchName || typeof raw.capacity === "undefined") {
+            throw new Error("batch insert requires batchName, capacity");
+          }
+        }
+        const { action } = await storage.upsertBatchByNumber(raw);
+        const s = result.batches || { inserted: 0, updated: 0, errors: 0, errorDetails: [] };
+        s[action === "insert" ? "inserted" : "updated"] += 1;
+        result.batches = s;
+      }, "batches");
+
+      // Receptions: upsert by receptionNumber
+      await processArray(body.receptions, async (raw) => {
+        if (!raw?.receptionNumber) throw new Error("reception.receptionNumber is required");
+        const exists = await storage.getReceptionByNumber(raw.receptionNumber);
+        if (!exists) {
+          if (!raw.supplierId || !raw.totalAnimals || !raw.totalWeight || !raw.pricePerKg) {
+            throw new Error("reception insert requires supplierId, totalAnimals, totalWeight, pricePerKg");
+          }
+        }
+        const { action } = await storage.upsertReceptionByNumber(raw);
+        const s = result.receptions || { inserted: 0, updated: 0, errors: 0, errorDetails: [] };
+        s[action === "insert" ? "inserted" : "updated"] += 1;
+        result.receptions = s;
+      }, "receptions");
+
+      // Barns: upsert by barnNumber
+      await processArray(body.barns, async (raw) => {
+        if (!raw?.barnNumber) throw new Error("barn.barnNumber is required");
+        const exists = await storage.getBarnByNumber(raw.barnNumber);
+        if (!exists) {
+          if (!raw.barnName || typeof raw.capacity === "undefined") {
+            throw new Error("barn insert requires barnName, capacity");
+          }
+        }
+        const { action } = await storage.upsertBarnByNumber(raw);
+        const s = result.barns || { inserted: 0, updated: 0, errors: 0, errorDetails: [] };
+        s[action === "insert" ? "inserted" : "updated"] += 1;
+        result.barns = s;
+      }, "barns");
+
+      res.status(200).json({ message: "Import completed", result });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message, result });
+    }
+  });
 
   return httpServer;
 }

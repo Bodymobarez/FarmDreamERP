@@ -9,6 +9,23 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  // Bulk/Upsert helpers (by natural unique keys)
+  getAnimalByEarTag(earTag: string): Promise<Animal | undefined>;
+  upsertAnimalByEarTag(data: InsertAnimal): Promise<{ action: "insert" | "update"; record: Animal }>;
+  getSupplierByNumber(supplierNumber: string): Promise<Supplier | undefined>;
+  upsertSupplierByNumber(data: InsertSupplier): Promise<{ action: "insert" | "update"; record: Supplier }>;
+  getCustomerByNumber(customerNumber: string): Promise<Customer | undefined>;
+  upsertCustomerByNumber(data: InsertCustomer): Promise<{ action: "insert" | "update"; record: Customer }>;
+  getInventoryItemByCode(itemCode: string): Promise<InventoryItem | undefined>;
+  upsertInventoryItemByCode(data: InsertInventoryItem): Promise<{ action: "insert" | "update"; record: InventoryItem }>;
+  getTransactionByNumber(transactionNumber: string): Promise<Transaction | undefined>;
+  upsertTransactionByNumber(data: InsertTransaction): Promise<{ action: "insert" | "update"; record: Transaction }>;
+  getBatchByNumber(batchNumber: string): Promise<Batch | undefined>;
+  upsertBatchByNumber(data: InsertBatch): Promise<{ action: "insert" | "update"; record: Batch }>;
+  getReceptionByNumber(receptionNumber: string): Promise<Reception | undefined>;
+  upsertReceptionByNumber(data: InsertReception): Promise<{ action: "insert" | "update"; record: Reception }>;
+  getBarnByNumber(barnNumber: string): Promise<any | undefined>;
+  upsertBarnByNumber(data: any): Promise<{ action: "insert" | "update"; record: any }>;
   
   // Animals methods
   getAnimals(): Promise<Animal[]>;
@@ -148,6 +165,112 @@ export class InMemoryStorage implements IStorage {
   constructor() {
     // Initialize with some mock data
     this.initializeMockData();
+  }
+  // Upsert helpers - InMemory implementation
+  async getAnimalByEarTag(earTag: string): Promise<Animal | undefined> {
+    return Array.from(this.animals.values()).find(a => a.earTag === earTag);
+  }
+  async upsertAnimalByEarTag(data: InsertAnimal) {
+    const existing = await this.getAnimalByEarTag(data.earTag);
+    if (existing) {
+      const updated = { ...existing, ...data, updatedAt: new Date() } as Animal;
+      this.animals.set(updated.id, updated);
+      return { action: "update", record: updated };
+    }
+    const inserted = await this.insertAnimal(data);
+    return { action: "insert", record: inserted };
+  }
+  async getSupplierByNumber(supplierNumber: string): Promise<Supplier | undefined> {
+    return Array.from(this.suppliers.values()).find(s => s.supplierNumber === supplierNumber);
+  }
+  async upsertSupplierByNumber(data: InsertSupplier) {
+    const existing = await this.getSupplierByNumber(data.supplierNumber);
+    if (existing) {
+      const updated = { ...existing, ...data, updatedAt: new Date() } as Supplier;
+      this.suppliers.set(updated.id, updated);
+      return { action: "update", record: updated };
+    }
+    const inserted = await this.insertSupplier(data);
+    return { action: "insert", record: inserted };
+  }
+  async getCustomerByNumber(customerNumber: string): Promise<Customer | undefined> {
+    return Array.from(this.customers.values()).find(c => c.customerNumber === customerNumber);
+  }
+  async upsertCustomerByNumber(data: InsertCustomer) {
+    const existing = await this.getCustomerByNumber(data.customerNumber);
+    if (existing) {
+      const updated = { ...existing, ...data, updatedAt: new Date() } as Customer;
+      this.customers.set(updated.id, updated);
+      return { action: "update", record: updated };
+    }
+    const inserted = await this.insertCustomer(data);
+    return { action: "insert", record: inserted };
+  }
+  async getInventoryItemByCode(itemCode: string): Promise<InventoryItem | undefined> {
+    return Array.from(this.inventory.values()).find(i => i.itemCode === itemCode);
+  }
+  async upsertInventoryItemByCode(data: InsertInventoryItem) {
+    const existing = await this.getInventoryItemByCode(data.itemCode);
+    if (existing) {
+      const updated = { ...existing, ...data, updatedAt: new Date() } as InventoryItem;
+      this.inventory.set(updated.id, updated);
+      return { action: "update", record: updated };
+    }
+    const inserted = await this.insertInventoryItem(data);
+    return { action: "insert", record: inserted };
+  }
+  async getTransactionByNumber(transactionNumber: string): Promise<Transaction | undefined> {
+    return Array.from(this.transactions.values()).find(t => t.transactionNumber === transactionNumber);
+  }
+  async upsertTransactionByNumber(data: InsertTransaction) {
+    const existing = await this.getTransactionByNumber(data.transactionNumber);
+    if (existing) {
+      const updated = { ...existing, ...data, updatedAt: new Date() } as Transaction;
+      this.transactions.set(updated.id, updated);
+      return { action: "update", record: updated };
+    }
+    const inserted = await this.insertTransaction(data);
+    return { action: "insert", record: inserted };
+  }
+  async getBatchByNumber(batchNumber: string): Promise<Batch | undefined> {
+    return Array.from(this.batches.values()).find(b => b.batchNumber === batchNumber);
+  }
+  async upsertBatchByNumber(data: InsertBatch) {
+    const existing = await this.getBatchByNumber(data.batchNumber);
+    if (existing) {
+      const updated = { ...existing, ...data, updatedAt: new Date() } as Batch;
+      this.batches.set(updated.id, updated);
+      return { action: "update", record: updated };
+    }
+    const inserted = await this.insertBatch(data);
+    return { action: "insert", record: inserted };
+  }
+  async getReceptionByNumber(receptionNumber: string): Promise<Reception | undefined> {
+    return Array.from(this.receptions.values()).find(r => r.receptionNumber === receptionNumber);
+  }
+  async upsertReceptionByNumber(data: InsertReception) {
+    const existing = await this.getReceptionByNumber(data.receptionNumber);
+    if (existing) {
+      const updated = { ...existing, ...data, updatedAt: new Date() } as Reception;
+      this.receptions.set(updated.id, updated);
+      return { action: "update", record: updated };
+    }
+    const inserted = await this.insertReception(data);
+    return { action: "insert", record: inserted };
+  }
+  async getBarnByNumber(barnNumber: string): Promise<any | undefined> {
+    return Array.from(this.batches.values() as any).find((b: any) => b.barnNumber === barnNumber) as any;
+  }
+  async upsertBarnByNumber(data: any) {
+    const existing = await this.getBarnByNumber(data.barnNumber);
+    if (existing) {
+      const updated = { ...existing, ...data, updatedAt: new Date() } as any;
+      // barns are not stored in a map here; implement a simple set through get/insert pattern
+      await this.updateBarn(existing.id, data);
+      return { action: "update", record: updated };
+    }
+    const inserted = await this.insertBarn(data);
+    return { action: "insert", record: inserted };
   }
 
   private initializeMockData() {
@@ -908,6 +1031,118 @@ export class DbStorage implements IStorage {
   async getUserByUsername(username: string): Promise<User | undefined> {
     const result = await db.select().from(users).where(eq(users.username, username)).limit(1);
     return result[0];
+  }
+  // Upsert helpers - Database implementation
+  async getAnimalByEarTag(earTag: string): Promise<Animal | undefined> {
+    const result = await db.select().from(animals).where(eq(animals.earTag, earTag)).limit(1);
+    return result[0];
+  }
+  async upsertAnimalByEarTag(data: InsertAnimal) {
+    const existing = await this.getAnimalByEarTag(data.earTag);
+    if (existing) {
+      const updated = await this.updateAnimal(existing.id, data);
+      return { action: "update", record: updated! };
+    }
+    const inserted = await this.insertAnimal(data);
+    return { action: "insert", record: inserted };
+  }
+
+  async getSupplierByNumber(supplierNumber: string): Promise<Supplier | undefined> {
+    const result = await db.select().from(suppliers).where(eq(suppliers.supplierNumber, supplierNumber)).limit(1);
+    return result[0];
+  }
+  async upsertSupplierByNumber(data: InsertSupplier) {
+    const existing = await this.getSupplierByNumber(data.supplierNumber);
+    if (existing) {
+      const updated = await this.updateSupplier(existing.id, data);
+      return { action: "update", record: updated! };
+    }
+    const inserted = await this.insertSupplier(data);
+    return { action: "insert", record: inserted };
+  }
+
+  async getCustomerByNumber(customerNumber: string): Promise<Customer | undefined> {
+    const result = await db.select().from(customers).where(eq(customers.customerNumber, customerNumber)).limit(1);
+    return result[0];
+  }
+  async upsertCustomerByNumber(data: InsertCustomer) {
+    const existing = await this.getCustomerByNumber(data.customerNumber);
+    if (existing) {
+      const updated = await this.updateCustomer(existing.id, data);
+      return { action: "update", record: updated! };
+    }
+    const inserted = await this.insertCustomer(data);
+    return { action: "insert", record: inserted };
+  }
+
+  async getInventoryItemByCode(itemCode: string): Promise<InventoryItem | undefined> {
+    const result = await db.select().from(inventoryItems).where(eq(inventoryItems.itemCode, itemCode)).limit(1);
+    return result[0];
+  }
+  async upsertInventoryItemByCode(data: InsertInventoryItem) {
+    const existing = await this.getInventoryItemByCode(data.itemCode);
+    if (existing) {
+      const updated = await this.updateInventoryItem(existing.id, data);
+      return { action: "update", record: updated! };
+    }
+    const inserted = await this.insertInventoryItem(data);
+    return { action: "insert", record: inserted };
+  }
+
+  async getTransactionByNumber(transactionNumber: string): Promise<Transaction | undefined> {
+    const result = await db.select().from(transactions).where(eq(transactions.transactionNumber, transactionNumber)).limit(1);
+    return result[0];
+  }
+  async upsertTransactionByNumber(data: InsertTransaction) {
+    const existing = await this.getTransactionByNumber(data.transactionNumber);
+    if (existing) {
+      const updated = await this.updateTransaction(existing.id, data);
+      return { action: "update", record: updated! };
+    }
+    const inserted = await this.insertTransaction(data);
+    return { action: "insert", record: inserted };
+  }
+
+  async getBatchByNumber(batchNumber: string): Promise<Batch | undefined> {
+    const result = await db.select().from(batches).where(eq(batches.batchNumber, batchNumber)).limit(1);
+    return result[0];
+  }
+  async upsertBatchByNumber(data: InsertBatch) {
+    const existing = await this.getBatchByNumber(data.batchNumber);
+    if (existing) {
+      const updated = await this.updateBatch(existing.id, data);
+      return { action: "update", record: updated! };
+    }
+    const inserted = await this.insertBatch(data);
+    return { action: "insert", record: inserted };
+  }
+
+  async getReceptionByNumber(receptionNumber: string): Promise<Reception | undefined> {
+    const result = await db.select().from(receptions).where(eq(receptions.receptionNumber, receptionNumber)).limit(1);
+    return result[0];
+  }
+  async upsertReceptionByNumber(data: InsertReception) {
+    const existing = await this.getReceptionByNumber(data.receptionNumber);
+    if (existing) {
+      const updated = await this.updateReception(existing.id, data);
+      return { action: "update", record: updated! };
+    }
+    const inserted = await this.insertReception(data);
+    return { action: "insert", record: inserted };
+  }
+
+  async getBarnByNumber(barnNumber: string): Promise<any | undefined> {
+    const result = await db.select().from(barns).where(eq(barns.barnNumber, barnNumber)).limit(1);
+    return result[0];
+  }
+  async upsertBarnByNumber(data: any) {
+    const existing = await this.getBarnByNumber(data.barnNumber);
+    if (existing) {
+      const updated = await this.updateBarn(existing.id, data);
+      return { action: "update", record: updated! };
+    }
+    const inserted = await this.insertBarn(data);
+    return { action: "insert", record: inserted };
   }
 
   async createUser(user: InsertUser): Promise<User> {
